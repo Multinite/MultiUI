@@ -1,0 +1,42 @@
+{
+  "name": "multiui",
+  "description": "The component library which powers Multinite!",
+  "author": {
+    "name": "Multinite",
+    "url": "https://github.com/Multinite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Multinite/MultiUI"
+  },
+  "license": "MIT",
+  "version": "0.0.1",
+  "type": "module",
+  "dependencies": {
+    "@types/react": "^18.0.1",
+    "@types/react-dom": "^18.0.0",
+    "eslint": "^7.29.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-config-ts-lambdas": "^1.2.3",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "react": "^18.0.0",
+    "react-aria-components": "^1.2.1",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
