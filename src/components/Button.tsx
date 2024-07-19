@@ -1,8 +1,15 @@
 "use client";
-import { Button as RACButton } from "react-aria-components";
+import { Button as RACButton, type ButtonProps } from "react-aria-components";
+import { cn } from "../utils/cn";
 
-function Button({ children }: { children: React.ReactNode }) {
-  return <RACButton>{children}</RACButton>;
+cn;
+
+function Button({
+  children,
+}: { children: React.ReactNode } & ButtonProps & {
+    className?: Parameters<typeof cn>[0];
+  }) {
+  return <RACButton className={""}>{children}</RACButton>;
 }
 
 export default Button;
