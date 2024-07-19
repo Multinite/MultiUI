@@ -1,7 +1,7 @@
 import plugin from "tailwindcss/plugin";
 import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
 
-export default plugin(function ({
+const MultiUIPlugin = plugin(function ({
   theme,
   addUtilities,
   addComponents,
@@ -24,7 +24,6 @@ export default plugin(function ({
     | 800
     | 900
     | "DEFAULT";
-
   type ColorIndexValues =
     | 50
     | 100
@@ -36,7 +35,6 @@ export default plugin(function ({
     | 700
     | 800
     | 900;
-
   const allColorTypes = [
     "primary",
     "secondary",
@@ -44,46 +42,47 @@ export default plugin(function ({
     "background",
   ] as const;
   type StyleObj = RecursiveKeyValuePair;
-
   const allColorUtils = ["bg", "text"] as const;
   const allColorUtilValues = {
     bg: (
       colorType: (typeof allColorTypes)[number],
       colorIndex: ColorIndexs
     ) => ({
-      backgroundColor: theme(`colors.${colorType}.${colorIndex}`),
+      backgroundColor: "red" || theme(`colors.${colorType}.${colorIndex}`),
     }),
     text: (
       colorType: (typeof allColorTypes)[number],
       colorIndex: ColorIndexs
     ) => ({
-      color: theme(`colors.${colorType}.${colorIndex}`),
+      color: "red" || theme(`colors.${colorType}.${colorIndex}`),
     }),
   };
-
   type Utils = Record<
     `.${(typeof allColorUtils)[number]}-${(typeof allColorTypes)[number]}${
       | ""
       | `-${ColorIndexValues}`}`,
     StyleObj
   >;
-
-  const utils: Utils = allColorUtils.reduce((acc, z) => {
-    return allColorTypes.reduce((acc, x) => {
-      return allColorIndexs.reduce((acc2, x2) => {
-        return {
-          ...acc2,
-          [`.${z}-${x}${x2 === -1 ? "" : `-${x2}`}`]: allColorUtilValues[z](
-            x,
-            x2 === -1 ? "DEFAULT" : x2
-          ),
-        };
-      }, acc);
-    }, {});
+  const utils: Utils = allColorUtils.reduce((zacc, z) => {
+    return {
+      ...zacc,
+      ...allColorTypes.reduce((acc, x) => {
+        return allColorIndexs.reduce((acc2, x2) => {
+          return {
+            ...acc2,
+            [`.${z}-${x}${x2 === -1 ? "" : `-${x2}`}`]: allColorUtilValues[z](
+              x,
+              x2 === -1 ? "DEFAULT" : x2
+            ),
+          };
+        }, acc);
+      }, {}),
+    };
   }, {}) as Utils;
-
   addUtilities({
     ...utils,
   });
 },
 {});
+
+export default MultiUIPlugin;

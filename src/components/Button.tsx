@@ -10,7 +10,7 @@ function Button(
   return (
     <RACButton
       slot={`Button`}
-      className={cn("w-fit", cn_seperator, props.className)}
+      className={cn("w-fit ", cn_seperator, props.className)}
     >
       {props.children}
     </RACButton>
