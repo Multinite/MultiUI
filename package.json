@@ -1,6 +1,7 @@
 {
   "name": "multiui",
   "description": "The component library which powers Multinite!",
+  "version": "0.0.2",
   "author": {
     "name": "Multinite",
     "url": "https://github.com/Multinite"
@@ -9,8 +10,11 @@
     "type": "git",
     "url": "https://github.com/Multinite/MultiUI"
   },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
   "license": "MIT",
-  "version": "0.0.1",
   "type": "module",
   "dependencies": {
     "@types/react": "^18.0.1",
