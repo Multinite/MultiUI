@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
- 
+
 jobs:
   release:
     name: Release
@@ -15,23 +15,21 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
- 
+
       - name: Install
         uses: ./.github/common-actions/install
- 
+
       - name: Build
-        run: | 
-          cd pacakges/MultiUI
-          npm run build:prod
- 
-      - name: Dir
         run: |
-          pwd
-          echo pwd
- 
+          cd packages/MultiUI
+          npm run build:prod
+
+      - name: Dir
+        run: pwd
+
       - name: Tests
         run: npm run test
- 
+
       - name: Create Release Pull Request or Publish to NPM
         id: changesets
         uses: changesets/action@v1
@@ -44,7 +42,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
- 
+
       # - name: Sync files from canary to main branch if a publish happens
       #   if: steps.changesets.outputs.published == 'true'
       #   run: |
@@ -53,7 +51,7 @@ jobs:
       #       -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
       #       https://api.github.com/repos/owner/repo/dispatches \
       #       -d '{"event_type":"sync-canary-to-main"}'
- 
+
       # - name: Create canary release
       #   if: steps.changesets.outputs.published != 'true'
       #   run: |

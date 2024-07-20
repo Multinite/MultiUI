@@ -24,5 +24,5 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        cd pacakges/MultiUI
+        cd packages/MultiUI
         npm ci
