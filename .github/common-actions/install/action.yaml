@@ -17,4 +17,6 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: npm install
+      run: |
+        cd pacakges/MultiUI
+        npm ci

@@ -20,7 +20,14 @@ jobs:
         uses: ./.github/common-actions/install
  
       - name: Build
-        run: npm run build:prod
+        run: | 
+          cd pacakges/MultiUI
+          npm run build:prod
+ 
+      - name: Dir
+        run: |
+          pwd
+          echo pwd
  
       - name: Tests
         run: npm run test
