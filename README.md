@@ -17,6 +17,8 @@
 
 - [MultiUI Documentation 📚](https://multiui.org)
 - [Multinite Discord Server 💬](https://discord.gg/Q38kKV9PUT)
+- [NPM 📡](https://www.npmjs.com/package/@multinite_official/multiui)
+- [GitHub 💾](https://github.com/Multinite/MultiUI)
 
 ## Installation
 
