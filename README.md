@@ -1,8 +1,9 @@
 # [MultiUI](https://multiui.org)
 
-[![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui)](https://npmjs.com/package/@multinite_official/multiui)
-[![npm downloads](https://flat.badgen.net/npm/dm/@multinite_official/multiui)](https://npmjs.com/package/@multinite_official/multiui)
-[![license](https://flat.badgen.net/github/license/multinite/multiui)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
+[![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
+[![npm downloads](https://flat.badgen.net/npm/dm/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
+[![npm downloads](https://flat.badgen.net/npm/dependents/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
+[![license](https://flat.badgen.net/github/license/multinite/multiui?icon=github)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
 
 #### The best React Component Library focused on everything.
 
@@ -33,7 +34,7 @@ Create your own Button component!
 `@/components/multiUi/Button.tsx`
 
 ```tsx
-import {
+import {💾
   ButtonEl,
   Content,
   Start_Content,
