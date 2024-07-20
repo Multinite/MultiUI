@@ -1,5 +1,22 @@
 # @multinite_official/multiui
 
+## 2.0.0
+
+### Major Changes
+
+- e07c084: Removed `/dist` to gitignore
+
+### Minor Changes
+
+- 8cccaf2: Updated README.md
+- 5dd3ead: Update RM
+
+### Patch Changes
+
+- 2990c8a: Update: Readme
+- ca73e7a: Update RM
+- 205bd7e: Readme had code which was incorrect
+
 ## 1.0.1
 
 ### Patch Changes
