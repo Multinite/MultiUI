@@ -1,5 +1,11 @@
 # @multinite_official/multiui-typescript-config
 
+## 0.0.2
+
+### Patch Changes
+
+- fe2f62e: Core package.json update
+
 ## 0.0.1
 
 ### Patch Changes

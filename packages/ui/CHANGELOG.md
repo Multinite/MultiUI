@@ -1,5 +1,11 @@
 # @multinite_official/multiui-ui
 
+## 0.0.3
+
+### Patch Changes
+
+- fe2f62e: Core package.json update
+
 ## 0.0.2
 
 ### Patch Changes
