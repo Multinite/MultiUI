@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "build:prod": "tsc",
     "test": "echo 'No tests yet'",
     "release": "changeset publish --access public"
   },
