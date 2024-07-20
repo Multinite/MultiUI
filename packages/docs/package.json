@@ -1,0 +1,28 @@
+{
+  "name": "multiui-docs",
+  "version": "1.0.0",
+  "description": "The MultiUI documentation codebase.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Multinite/MultiUI.git"
+  },
+  "keywords": [
+    "multinite",
+    "multiui",
+    "component-library",
+    "nextjs",
+    "reactjs",
+    "react"
+  ],
+  "author": "Multinite",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Multinite/MultiUI/issues"
+  },
+  "homepage": "https://github.com/Multinite/MultiUI#readme"
+}

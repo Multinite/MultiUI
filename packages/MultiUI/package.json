@@ -1,20 +1,13 @@
 {
-  "name": "multiui-monorepo",
+  "name": "multiui",
   "description": "The best React Component Library focused on everything.",
   "author": "Multinite (https://github.com/Multinite)",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Multinite/MultiUI.git"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "tsc && npx changeset",
-    "build:prod": "tsc",
-    "test": "echo 'No tests yet'",
-    "release": "changeset publish --access public"
   },
   "license": "MIT",
   "type": "module",

@@ -1,5 +1,4 @@
-// // {
-// //   "compilerOptions": {
+// // {// //   "compilerOptions": {
 // //     // Enable latest features
 // //     "lib": ["ESNext", "DOM"],
 // //     "target": "ESNext",
@@ -88,6 +87,6 @@
     "noImplicitAny": false,
     "outDir": "dist"
   },
-  "include": ["src", "package.json", "package-lock.json"],
+  "include": ["/src"],
   "exclude": ["**/node_modules", "**/dist", "tailwind.config.ts"]
 }
