@@ -1,4 +1,4 @@
-# MultiUI
+# [MultiUI](https://multiui.org)
 
 [![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui)](https://npmjs.com/package/@multinite_official/multiui)
 [![npm downloads](https://flat.badgen.net/npm/dm/@multinite_official/multiui)](https://npmjs.com/package/@multinite_official/multiui)
@@ -12,6 +12,8 @@
 - Accessible. 👍
 - We love animations. 💈
 - You own the code, you own the style. 🎉
+
+[Visit the documentation.](https://multiui.org)
 
 ## Installation
 
