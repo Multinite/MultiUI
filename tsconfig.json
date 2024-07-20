@@ -85,7 +85,8 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "outDir": "dist"
   },
   // "include": ["packages"],
   "exclude": ["**/node_modules", "**/dist", "**/.turbo"]
