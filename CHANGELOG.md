@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.2.1
+
+### Patch Changes
+
+- efc8442: Updated pckg.json's desc
+
 ## 2.2.0
 
 ### Minor Changes
