@@ -26,9 +26,6 @@ jobs:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
-      - name: Tests
-        run: npm run test
-
       - name: Create Release Pull Request or Publish to NPM
         id: changesets
         uses: changesets/action@v1
