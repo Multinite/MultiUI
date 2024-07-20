@@ -1,14 +1,11 @@
 {
-  "name": "multiui",
+  "name": "@multinite_official/multiui",
   "description": "The component library which powers Multinite!",
   "version": "0.0.2",
-  "author": {
-    "name": "Multinite",
-    "url": "https://github.com/Multinite"
-  },
+  "author": "Multinite (https://github.com/Multinite)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Multinite/MultiUI"
+    "url": "git+https://github.com/Multinite/MultiUI.git"
   },
   "scripts": {
     "build": "tsc",
@@ -37,5 +34,17 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "main": "index.js",
+  "keywords": [
+    "multinite",
+    "multi",
+    "component-library",
+    "component",
+    "react"
+  ],
+  "bugs": {
+    "url": "https://github.com/Multinite/MultiUI/issues"
+  },
+  "homepage": "https://github.com/Multinite/MultiUI#readme"
 }
