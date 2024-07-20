@@ -88,6 +88,6 @@
     "noImplicitAny": false,
     "outDir": "dist"
   },
-  // "include": ["packages"],
-  "exclude": ["**/node_modules", "**/dist", "**/.turbo"]
+  "include": ["src", "package.json"],
+  "exclude": ["**/node_modules", "**/dist", "tailwind.config.ts"]
 }
