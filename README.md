@@ -5,7 +5,11 @@
 [![npm downloads](https://flat.badgen.net/npm/dependents/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
 [![license](https://flat.badgen.net/github/license/multinite/multiui?icon=github)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
 
-> Note: This is the monorepo for MultiUI. You can find MultiUI [here](https://github.com/Multinite/MultiUI/tree/main/packages/MultiUI).
+> **Note:** This is the monorepo for MultiUI.
+> <br />
+> You can find MultiUI [here](https://github.com/Multinite/MultiUI/tree/main/packages/MultiUI).
+> <br />
+> You can find MultiUI's docs [here](https://github.com/Multinite/MultiUI/tree/main/apps/docs).
 
 #### The best React Component Library focused on everything.
 
