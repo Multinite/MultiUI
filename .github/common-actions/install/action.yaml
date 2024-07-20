@@ -15,6 +15,12 @@ runs:
         git config --global user.email "maxwell.multinite@gmail.com"
         git config --global user.name "Multinite"
 
+    - name: Dir
+      shell: bash
+      run: |
+        pwd
+        echo pwd
+
     - name: Install dependencies
       shell: bash
       run: |
