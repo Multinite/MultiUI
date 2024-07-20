@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.2.0
+
+### Minor Changes
+
+- 10afec1: Fix: Readme & npm publish
+
 ## 2.1.1
 
 ### Patch Changes
