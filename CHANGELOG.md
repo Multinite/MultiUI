@@ -1,5 +1,12 @@
 # @multinite_official/multiui
 
+## 2.1.1
+
+### Patch Changes
+
+- 123a2ff: Update RM
+- f5b15e8: Updated README
+
 ## 2.1.0
 
 ### Minor Changes
