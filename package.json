@@ -11,7 +11,8 @@
     "build": "tsc && npm run build:copy && npx changeset",
     "build:copy": "cp LICENSE.md dist/ && cp README.md dist/ && cp CHANGELOG.md dist/",
     "version": "changeset version",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "status": "changeset status --verbose"
   },
   "license": "MIT",
   "type": "module",

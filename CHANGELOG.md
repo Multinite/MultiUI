@@ -1,7 +1,7 @@
 # @multinite_official/multiui
 
-## 1.0.0
+## 2.0.0
 
 ### Major Changes
 
-- 6ec8b82: Init changeset & tsconfig ready
+- I'm learning changeset - don't blame me
