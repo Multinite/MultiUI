@@ -37,6 +37,7 @@ import {
   Start_Content,
   End_Content,
   ButtonProps,
+  MultiUI,
 } from "@multinite_official/multiui/button";
 
 function Button({ children, endContent, startContent }: ButtonProps) {
