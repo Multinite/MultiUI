@@ -20,16 +20,16 @@ jobs:
         uses: ./.github/common-actions/install
  
       - name: Build
-        run: pnpm build:prod
+        run: npm run build:prod
  
       - name: Tests
-        run: pnpm test
+        run: npm run test
  
       - name: Create Release Pull Request or Publish to NPM
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm release
+          publish: npm run release
           title: "ci(changesets): :package: version packages"
           commit: "ci(changesets): version packages"
           setupGitUser: false
@@ -38,21 +38,21 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
  
-      - name: Sync files from canary to main branch if a publish happens
-        if: steps.changesets.outputs.published == 'true'
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/owner/repo/dispatches \
-            -d '{"event_type":"sync-canary-to-main"}'
+      # - name: Sync files from canary to main branch if a publish happens
+      #   if: steps.changesets.outputs.published == 'true'
+      #   run: |
+      #     curl -X POST \
+      #       -H "Accept: application/vnd.github.v3+json" \
+      #       -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #       https://api.github.com/repos/owner/repo/dispatches \
+      #       -d '{"event_type":"sync-canary-to-main"}'
  
-      - name: Create canary release
-        if: steps.changesets.outputs.published != 'true'
-        run: |
-          git checkout canary
-          pnpm version:canary
-          pnpm release:canary
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Create canary release
+      #   if: steps.changesets.outputs.published != 'true'
+      #   run: |
+      #     git checkout canary
+      #     npm run version:canary
+      #     pnpm release:canary
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
