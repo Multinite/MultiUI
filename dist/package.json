@@ -1,7 +1,7 @@
 {
     "name": "@multinite_official/multiui",
     "description": "The component library which powers Multinite!",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "author": "Multinite (https://github.com/Multinite)",
     "repository": {
         "type": "git",
@@ -45,5 +45,5 @@
     "bugs": {
         "url": "https://github.com/Multinite/MultiUI/issues"
     },
-    "homepage": "https://github.com/Multinite/MultiUI#readme"
+    "homepage": "https://multiui.org"
 }

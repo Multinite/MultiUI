@@ -88,6 +88,6 @@
     "noImplicitAny": false,
     "outDir": "dist"
   },
-  "include": ["src", "package.json"],
+  "include": ["src", "package.json", "package-lock.json"],
   "exclude": ["**/node_modules", "**/dist", "tailwind.config.ts"]
 }

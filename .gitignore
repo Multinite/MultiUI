@@ -115,6 +115,7 @@ web_modules/
 .next
 out
 
+dist
 
 # Gatsby files
 
