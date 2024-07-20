@@ -13,8 +13,10 @@
 - We love animations. 💈
 - You own the code, you own the style. 🎉
 
-[Visit the documentation.](https://multiui.org)
-[Join the Discord.](https://discord.gg/Q38kKV9PUT)
+#### Helpful Links:
+
+- [MultiUI Documentation 📚](https://multiui.org)
+- [Multinite Discord Server 💬](https://discord.gg/Q38kKV9PUT)
 
 ## Installation
 
@@ -60,9 +62,7 @@ Access your new Button component!
 import Button from "@/components/multiUi/Button";
 
 export default function Home() {
-  return (
-    <Button>Hello World</Button>
-  );
+  return <Button>Hello World</Button>;
 }
 ```
 
