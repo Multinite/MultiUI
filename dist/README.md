@@ -4,7 +4,7 @@
 [![npm downloads](https://flat.badgen.net/npm/dm/@multinite_official/multiui)](https://npmjs.com/package/@multinite_official/multiui)
 [![license](https://flat.badgen.net/github/license/multinite/multiui)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
 
-#### The **best** React Component Library focused on everything.
+#### The best React Component Library focused on everything.
 
 - Highly customizable. 🔧
 - Custom themes. 🎨
@@ -28,7 +28,7 @@ npm install @multinite_official/multiui
 
 Create your own Button component!
 <br />
-`/components/multiUi/Button.tsx`
+`@/components/multiUi/Button.tsx`
 
 ```tsx
 import {
