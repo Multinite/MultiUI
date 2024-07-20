@@ -14,6 +14,7 @@
 - You own the code, you own the style. 🎉
 
 [Visit the documentation.](https://multiui.org)
+[Join the Discord.](https://discord.gg/Q38kKV9PUT)
 
 ## Installation
 
