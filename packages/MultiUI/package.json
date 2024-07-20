@@ -21,6 +21,9 @@
   "bugs": {
     "url": "https://github.com/Multinite/MultiUI/issues"
   },
+  "bin": {
+    "multiui": "./dist/cli/index.js"
+  },
   "keywords": [
     "multinite",
     "multi",
