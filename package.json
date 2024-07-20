@@ -1,14 +1,15 @@
 {
   "name": "@multinite_official/multiui",
   "description": "The component library which powers Multinite!",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "author": "Multinite (https://github.com/Multinite)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Multinite/MultiUI.git"
   },
   "scripts": {
-    "build": "tsc && cp LICENSE.md dist/ && cp README.md dist/",
+    "build": "tsc && npm run build:copy && npx changeset",
+    "build:copy": "cp LICENSE.md dist/ && cp README.md dist/ && cp CHANGELOG.md dist/",
     "version": "changeset version",
     "release": "changeset publish"
   },
