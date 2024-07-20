@@ -12,11 +12,17 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "version": "changeset version",
+    "release": "changeset publish"
   },
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.7",
+    "@changesets/get-release-plan": "^4.0.3",
+    "@changesets/types": "^6.0.0",
     "@types/react": "^18.0.1",
     "@types/react-dom": "^18.0.0",
     "clsx": "^2.1.1",
