@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/common-actions/install
  
       - name: Build
-        run: pnpm build
+        run: pnpm build:prod
  
       - name: Tests
         run: pnpm test

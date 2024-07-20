@@ -9,9 +9,11 @@
   },
   "scripts": {
     "build": "tsc && npm run build:copy && npx changeset",
+    "build:prod": "tsc && npm run build:copy",
     "build:copy": "cp LICENSE.md dist/ && cp README.md dist/ && cp CHANGELOG.md dist/",
+    "tests": "echo 'No tests yet'",
     "version": "changeset version",
-    "release": "changeset publish",
+    "release": "changeset publish --access public",
     "status": "changeset status --verbose"
   },
   "license": "MIT",
