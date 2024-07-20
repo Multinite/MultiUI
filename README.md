@@ -1,3 +1,68 @@
 # MultiUI
 
-MultUI is a React Component Library focused on the best Dx.
+[![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui)](https://npmjs.com/package/@multinite_official/multiui)
+[![npm downloads](https://flat.badgen.net/npm/dm/@multinite_official/multiui)](https://npmjs.com/package/@multinite_official/multiui)
+[![license](https://flat.badgen.net/github/license/multinite/multiui)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
+
+#### The **best** React Component Library focused on everything.
+
+- Highly customizable. 🔧
+- Custom themes. 🎨
+- Performance in mind. 🚀
+- Accessible. 👍
+- We love animations. 💈
+- You own the code, you own the style. 🎉
+
+## Installation
+
+```bash
+npm install @multinite_official/multiui
+```
+
+## Usage
+
+Create your own Button component!
+<br />
+`/components/multiUi/Button.tsx`
+
+```tsx
+import {
+  ButtonEl,
+  Content,
+  Start_Content,
+  End_Content,
+  ButtonProps,
+} from "@multinite_official/multiui/button";
+
+function Button({ children, endContent, startContent }: ButtonProps) {
+  const element = (
+    <ButtonEl>
+      <Start_Content>{startContent}</Start_Content>
+      <Content>{children}</Content>
+      <End_Content>{endContent}</End_Content>
+    </ButtonEl>
+  );
+
+  return MultiUI(element);
+}
+
+export default Button;
+```
+
+Access your new Button component!
+<br />
+`/app/home/index.tsx`
+
+```tsx
+import Button from "@/components/multiUi/Button";
+
+export default function Home() {
+  return (
+    <Button>Hello World</Button>
+  );
+}
+```
+
+## License
+
+[MIT](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
