@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.1.0
+
+### Minor Changes
+
+- aa77dd9: updated tsconfig
+
 ## 2.0.0
 
 ### Major Changes
