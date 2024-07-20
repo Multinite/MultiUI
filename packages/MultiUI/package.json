@@ -1,16 +1,27 @@
 {
-  "name": "multiui",
+  "name": "@multinite_official/multiui",
+  "version": "1.0.0",
   "description": "The best React Component Library focused on everything.",
-  "author": "Multinite (https://github.com/Multinite)",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && npx changeset",
+    "build:prod": "tsc",
+    "test": "echo 'No tests yet'",
+    "release": "changeset publish --access public"
+  },
   "publishConfig": {
     "access": "public"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Multinite/MultiUI.git"
   },
+  "author": "Multinite (https://github.com/Multinite)",
   "license": "MIT",
-  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Multinite/MultiUI/issues"
+  },
   "dependencies": {
     "@types/react": "^18.0.1",
     "@types/react-dom": "^18.0.0",
@@ -35,8 +46,5 @@
     "component",
     "react"
   ],
-  "bugs": {
-    "url": "https://github.com/Multinite/MultiUI/issues"
-  },
-  "homepage": "https://multiui.org"
+  "homepage": "https://github.com/Multinite/MultiUI#readme"
 }

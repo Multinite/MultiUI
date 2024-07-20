@@ -1,75 +1,81 @@
-# [MultiUI](https://multiui.org)
+# Turborepo starter
 
-[![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
-[![npm downloads](https://flat.badgen.net/npm/dm/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
-[![npm downloads](https://flat.badgen.net/npm/dependents/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
-[![license](https://flat.badgen.net/github/license/multinite/multiui?icon=github)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
+This is an official starter Turborepo.
 
-#### The best React Component Library focused on everything.
+## Using this example
 
-- Highly customizable. 🔧
-- Custom themes. 🎨
-- Performance in mind. 🚀
-- Accessible. 👍
-- We love animations. 💈
-- You own the code, you own the style. 🎉
+Run the following command:
 
-#### Helpful Links:
-
-- [MultiUI Documentation 📚](https://multiui.org)
-- [Multinite Discord Server 💬](https://discord.gg/Q38kKV9PUT)
-- [NPM 📡](https://www.npmjs.com/package/@multinite_official/multiui)
-- [GitHub 💾](https://github.com/Multinite/MultiUI)
-
-## Installation
-
-```bash
-npm install @multinite_official/multiui
+```sh
+npx create-turbo@latest
 ```
 
-## Usage
+## What's inside?
 
-Create your own Button component!
-<br />
-`@/components/multiUi/Button.tsx`
+This Turborepo includes the following packages/apps:
 
-```tsx
-import {
-  ButtonEl,
-  Content,
-  Start_Content,
-  End_Content,
-  ButtonProps,
-  MultiUI,
-} from "@multinite_official/multiui/button";
+### Apps and Packages
 
-function Button({ children, endContent, startContent }: ButtonProps) {
-  const element = (
-    <ButtonEl>
-      <Start_Content>{startContent}</Start_Content>
-      <Content>{children}</Content>
-      <End_Content>{endContent}</End_Content>
-    </ButtonEl>
-  );
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-  return MultiUI(element);
-}
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-export default Button;
+### Utilities
+
+This Turborepo has some additional tools already setup for you:
+
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
+
+### Build
+
+To build all apps and packages, run the following command:
+
+```
+cd my-turborepo
+pnpm build
 ```
 
-Access your new Button component!
-<br />
-`/app/home/index.tsx`
+### Develop
 
-```tsx
-import Button from "@/components/multiUi/Button";
+To develop all apps and packages, run the following command:
 
-export default function Home() {
-  return <Button>Hello World</Button>;
-}
+```
+cd my-turborepo
+pnpm dev
 ```
 
-## License
+### Remote Caching
 
-[MIT](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
+Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+
+```
+cd my-turborepo
+npx turbo login
+```
+
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+
+```
+npx turbo link
+```
+
+## Useful Links
+
+Learn more about the power of Turborepo:
+
+- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
+- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
+- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
+- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
+- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
+- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
