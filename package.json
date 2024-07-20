@@ -16,6 +16,9 @@
     "release": "changeset publish --access public",
     "status": "changeset status --verbose"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "type": "module",
   "dependencies": {

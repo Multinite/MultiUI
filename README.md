@@ -34,7 +34,7 @@ Create your own Button component!
 `@/components/multiUi/Button.tsx`
 
 ```tsx
-import {💾
+import {
   ButtonEl,
   Content,
   Start_Content,
