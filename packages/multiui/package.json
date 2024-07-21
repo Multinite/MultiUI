@@ -2,6 +2,7 @@
   "name": "@multinite_official/multiui",
   "version": "2.1.4",
   "description": "The best React Component Library focused on everything.",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "build:prod": "tsc",
