@@ -1,3 +1,5 @@
+![MultiUI logo](https://github.com/Multinite/MultiUI/blob/main/resources/assets/multiui/logo_125.png?raw=true "MultiUI Logo")
+
 # [MultiUI](https://multiui.org)
 
 [![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
