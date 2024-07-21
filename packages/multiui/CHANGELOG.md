@@ -1,5 +1,13 @@
 # @multinite_official/multiui
 
+## 2.1.2
+
+### Patch Changes
+
+- 2f0b251: Fix: Readme
+- abb60d2: Added .npmignore to exclude src dir
+- 9ab5e58: fix: package.json's deps
+
 ## 2.1.1
 
 ### Patch Changes
