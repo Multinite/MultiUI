@@ -10,11 +10,14 @@ program
 
 program
   .command("add")
+  .alias("a")
+  .alias("install")
+  .alias("i")
   .description("Add a new component to your project.")
-  .argument("<name>", "name of the component")
-  .action((name) => {
+  .argument("[name]", "name of the component")
+  .action((name: string | undefined) => {
+    throw new Error("Not implemented yet.");
     console.log(`Adding ${name} component...`);
   });
 
 program.parse();
-
