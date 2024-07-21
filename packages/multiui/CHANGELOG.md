@@ -1,5 +1,13 @@
 # @multinite_official/multiui
 
+## 2.1.3
+
+### Patch Changes
+
+- 8cd8bdd: Fix: Package.json to not include "main"
+- d0f8854: Added: LICENSE.md & Updated: .npmignore
+- 229d3c0: Removed CLI in favour of seperate package
+
 ## 2.1.2
 
 ### Patch Changes
