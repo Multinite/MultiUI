@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.1.4
+
+### Patch Changes
+
+- 087309d: Updated README
+
 ## 2.1.3
 
 ### Patch Changes
@@ -21,7 +27,6 @@
 ### Patch Changes
 
 - d11c6f7: FIx: incorrect package
-
 
 ### Minor Changes
 
