@@ -1,4 +1,4 @@
-![MultiUI logo](https://github.com/Multinite/MultiUI/blob/main/resources/assets/multiui/logo_125.png?raw=true "MultiUI Logo")
+![MultiUI Banner](https://github.com/Multinite/MultiUI/blob/main/resources/assets/multiui/MultiUI_Banner_830x200.png?raw=true "MultiUI Banner")
 
 # [MultiUI](https://multiui.org)
 
