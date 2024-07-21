@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.1.1
+
+### Patch Changes
+
+- d11c6f7: FIx: incorrect package
+
 ## 3.0.0
 
 ### Major Changes
