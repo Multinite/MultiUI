@@ -1,3 +1,5 @@
+![MultiUI Banner](https://github.com/Multinite/MultiUI/blob/main/resources/assets/multiui/MultiUI_Banner_830x200.png?raw=true "MultiUI Banner")
+
 # [MultiUI](https://multiui.org)
 
 [![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
