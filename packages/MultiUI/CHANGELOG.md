@@ -1,5 +1,15 @@
 # @multinite_official/multiui
 
+## 3.0.0
+
+### Major Changes
+
+- 42a5564: Added CLI
+
+### Minor Changes
+
+- 368393d: CLI update
+
 ## 2.1.0
 
 ### Minor Changes
