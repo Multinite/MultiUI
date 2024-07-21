@@ -1,0 +1,45 @@
+{
+  "name": "multiui-cli",
+  "version": "0.0.0",
+  "description": "The MultiUI CLI",
+  "scripts": {
+    "build": "tsc",
+    "build:prod": "tsc",
+    "test": "echo 'No tests yet'"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Multinite/MultiUI.git"
+  },
+  "author": "Multinite (https://github.com/Multinite)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Multinite/MultiUI/issues"
+  },
+  "bin": {
+    "multiui": "./dist/cli/index.js"
+  },
+  "keywords": [
+    "multinite",
+    "multi",
+    "component-library",
+    "component",
+    "react",
+    "nextjs",
+    "cli"
+  ],
+  "homepage": "https://multiui.org",
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11"
+  },
+  "peerDependencies": {
+    "typescript": "^5.5.3"
+  }
+}
