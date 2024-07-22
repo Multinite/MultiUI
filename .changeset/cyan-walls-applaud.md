@@ -1,5 +1,5 @@
 ---
-"multiui-doc": patch
+"multiui-docs": patch
 ---
 
 Imported multiui

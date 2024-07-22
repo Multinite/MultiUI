@@ -1,5 +1,5 @@
 ---
-"multiui-doc": major
+"multiui-docs": major
 ---
 
 Deleted everything and npx installed nextjs from start
