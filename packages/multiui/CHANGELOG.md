@@ -1,5 +1,14 @@
 # @multinite_official/multiui
 
+## 2.1.5
+
+### Patch Changes
+
+- f7bcf4b: Update: Package.json values
+- f2c38e0: Updated export fields
+- f09107e: Removed index.ts
+- eae2cec: Fixed import paths
+
 ## 2.1.4
 
 ### Patch Changes
