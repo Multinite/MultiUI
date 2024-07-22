@@ -1,6 +1,19 @@
 {
   "name": "multiui",
   "private": true,
+  "license": "MIT",
+  "author": "Multinite",
+  "description": "The only component library you'll ever need.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/multinite/multiui"
+  },
+  "displayName": "MultiUI",
+  "homepage": "https://multiui.org",
+  "sponsor": {
+    "url": "https://github.com/sponsors/Multinite"
+  },
+  "readme": "README.md",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",

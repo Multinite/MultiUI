@@ -10,11 +10,16 @@
   "publishConfig": {
     "access": "public"
   },
-  "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Multinite/MultiUI.git"
+    "url": "https://github.com/multinite/multiui"
   },
+  "displayName": "MultiUI CLI",
+  "sponsor": {
+    "url": "https://github.com/sponsors/Multinite"
+  },
+  "readme": "README.md",
+  "type": "module",
   "author": "Multinite (https://github.com/Multinite)",
   "license": "MIT",
   "bugs": {

@@ -11,10 +11,15 @@
   "publishConfig": {
     "access": "public"
   },
+  "displayName": "MultiUI",
+  "sponsor": {
+    "url": "https://github.com/sponsors/Multinite"
+  },
+  "readme": "README.md",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Multinite/MultiUI.git"
+    "url": "https://github.com/Multinite/MultiUI"
   },
   "author": "Multinite (https://github.com/Multinite)",
   "license": "MIT",

@@ -1,7 +1,20 @@
 {
   "name": "@multinite_official/multiui-docs",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
+  "license": "MIT",
+  "author": "Multinite",
+  "description": "The only component library you'll ever need.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/multinite/multiui"
+  },
+  "displayName": "MultiUI",
+  "homepage": "https://multiui.org",
+  "sponsor": {
+    "url": "https://github.com/sponsors/Multinite"
+  },
+  "readme": "README.md",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
