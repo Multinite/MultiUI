@@ -3,9 +3,10 @@ import { Button as RACButton, type ButtonProps } from "react-aria-components";
 import { cn, cn_seperator } from "../utils/cn";
 
 function Button(
-  props: { children: React.ReactNode } & ButtonProps & {
-      className?: Parameters<typeof cn>[0];
-    }
+  props: ButtonProps & {
+    className?: Parameters<typeof cn>[0];
+    children?: React.ReactNode;
+  }
 ) {
   return (
     <RACButton
@@ -18,3 +19,4 @@ function Button(
 }
 
 export default Button;
+//213

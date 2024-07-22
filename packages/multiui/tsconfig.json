@@ -19,6 +19,6 @@
     "downlevelIteration": true,
     "noImplicitAny": false
   },
-  "include": [ "providers", "utils"],
+  "include": [ "providers", "utils", "components"],
   "exclude": ["**/node_modules", "tailwind.config.ts"]
 }

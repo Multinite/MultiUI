@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "build:prod": "tsc",
+    "dev": "tsc --watch",
     "test": "echo 'No tests yet'"
   },
   "publishConfig": {
