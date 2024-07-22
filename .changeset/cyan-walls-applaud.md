@@ -1,5 +1,5 @@
 ---
-"multiui-docs": patch
+"@multinite_official/multiui-docs": patch
 ---
 
 Imported multiui
