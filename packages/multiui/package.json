@@ -1,7 +1,7 @@
 {
   "name": "@multinite_official/multiui",
   "version": "2.1.5",
-  "description": "The best React Component Library focused on everything.",
+  "description": "The first and only Component Framework.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

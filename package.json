@@ -3,7 +3,7 @@
   "private": true,
   "license": "MIT",
   "author": "Multinite",
-  "description": "The only component library you'll ever need.",
+  "description": "The first and only Component Framework.",
   "repository": {
     "type": "git",
     "url": "https://github.com/multinite/multiui"
