@@ -32,6 +32,8 @@
     "multi",
     "component-library",
     "component",
+    "component-framework",
+    "framework",
     "react",
     "nextjs"
   ],
