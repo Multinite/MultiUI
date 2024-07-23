@@ -1,5 +1,17 @@
 # @multinite_official/multiui
 
+## 2.2.0
+
+### Minor Changes
+
+- 9870df8: Fixed MultiUI API
+- fd769e9: Updated API for multiUI
+
+### Patch Changes
+
+- 422ddf6: Added 'createMultiUIComponent' to MultiUI
+- bcdb852: Updated readme
+
 ## 2.1.6
 
 ### Patch Changes

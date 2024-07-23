@@ -1,5 +1,22 @@
 # @multinite_official/multiui-docs
 
+## 1.1.0
+
+### Minor Changes
+
+- 9870df8: Fixed MultiUI API
+- fd769e9: Updated API for multiUI
+
+### Patch Changes
+
+- 422ddf6: Added 'createMultiUIComponent' to MultiUI
+- 9ebf16e: Added Vercel Analytics
+- Updated dependencies [9870df8]
+- Updated dependencies [422ddf6]
+- Updated dependencies [bcdb852]
+- Updated dependencies [fd769e9]
+  - @multinite_official/multiui@2.2.0
+
 ## 1.0.1
 
 ### Patch Changes
