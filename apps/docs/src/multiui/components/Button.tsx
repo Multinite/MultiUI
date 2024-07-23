@@ -1,16 +1,14 @@
-import { createComponent } from "@multinite_official/multiui";
+import {
+  createComponent,
+  CreateComponentValues,
+} from "@multinite_official/multiui";
 
-const { create_baseComponent, create_subComponent } = createComponent({
-  name: "Button",
-  version: "1.0.0",
-});
+const { create_baseComponent, create_subComponent }: CreateComponentValues =
+  createComponent({
+    name: "Button",
+    version: "1.0.0",
+  });
 
-const Button = create_baseComponent((props) => {
+export const Button = create_baseComponent((props) => {
   return <button className={props.className}>{props.children}</button>;
 });
-
-const D = (
-  <div>
-    <Button className="Sup ">Hello world!</Button>
-  </div>
-);

@@ -11,6 +11,7 @@ interface Create_baseComponent {
   (...props: Parameters<Parameters<Create_baseComponentFn>[0]>): ReactNode;
   name: string;
   version: string;
+  style: ({}) => void;
 }
 
 type Create_subComponentFn = (
@@ -24,6 +25,7 @@ interface Create_subComponent {
   (...props: Parameters<Parameters<Create_subComponentFn>[0]>): ReactNode;
   version: string;
   name: string;
+  style: ({}) => void;
 }
 
 type CreateComponent = (props: {
@@ -34,6 +36,8 @@ type CreateComponent = (props: {
   create_subComponent: Create_subComponentFn;
 };
 
+type CreateComponentValues = ReturnType<CreateComponent>;
+
 const createComponent: CreateComponent = function (props) {
   const create_baseComponent: ReturnType<CreateComponent>["create_baseComponent"] =
     (create_baseComponentFn) => {
@@ -41,6 +45,7 @@ const createComponent: CreateComponent = function (props) {
       const create_baseComponent: Create_baseComponent = create_baseComponentFn;
       create_baseComponent.version = props.version;
       create_baseComponent.name = props.name;
+      create_baseComponent.style = () => {};
       return create_baseComponent;
     };
 
@@ -50,6 +55,7 @@ const createComponent: CreateComponent = function (props) {
       const create_subComponent: Create_subComponent = create_subComponentFn;
       create_subComponent.version = props.version;
       create_subComponent.name = props.name;
+      create_subComponent.style = () => {};
       return create_subComponent;
     };
 
@@ -61,3 +67,11 @@ const createComponent: CreateComponent = function (props) {
   return ReturnFn;
 };
 export default createComponent;
+export type {
+  Create_baseComponentFn,
+  Create_subComponentFn,
+  CreateComponent,
+  Create_baseComponent,
+  Create_subComponent,
+  CreateComponentValues,
+};
