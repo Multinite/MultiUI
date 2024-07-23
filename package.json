@@ -6,7 +6,7 @@
   "description": "The first and only Component Framework.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/multinite/multiui"
+    "url": "git+https://github.com/multinite/multiui.git"
   },
   "displayName": "MultiUI",
   "homepage": "https://multiui.org",
@@ -37,5 +37,6 @@
   ],
   "dependencies": {
     "@vercel/analytics": "^1.3.1"
-  }
+  },
+  "version": ""
 }
