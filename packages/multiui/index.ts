@@ -1,4 +1,3 @@
-import createMultiUIComponent from "./providers/createMultiUIComponent";
+import createComponent from "./providers/createComponent";
 
-export { createMultiUIComponent };
-export type { MultiUIComponentReturnType } from "./providers/createMultiUIComponent";
+export { createComponent };
