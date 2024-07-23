@@ -7,6 +7,9 @@
 [![npm downloads](https://flat.badgen.net/npm/dependents/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
 [![license](https://flat.badgen.net/github/license/multinite/multiui?icon=github)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
 
+> [!WARNING]  
+> This repo is still in development.
+
 > [!IMPORTANT]  
 > This is the monorepo for MultiUI.
 > <br />
@@ -16,14 +19,12 @@
 > <br />
 > You can find MultiUI's CLI [here](https://github.com/Multinite/MultiUI/tree/main/packages/multiui-cli).
 
-#### The best React Component Library focused on everything.
+#### The first and only Component Framework.
 
-- Highly customizable. 🔧
-- Custom themes. 🎨
-- Performance in mind. 🚀
-- Accessible. 👍
-- We love animations. 💈
-- You own the code, you own the style. 🎉
+- ~~Highly customizable. 🔧~~
+- ~~Accessible. 👍~~
+- ~~Performance in mind. 🚀~~
+- We are focused on **everything**. 💪
 
 #### Helpful Links:
 
