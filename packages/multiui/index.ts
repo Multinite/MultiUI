@@ -5,7 +5,7 @@ import type {
   Create_subComponent,
   Create_baseComponentFn,
   Create_subComponentFn,
-  CreateComponentValues,
+  CreateComponents,
 } from "./providers/createComponent";
 
 export { createComponent };
@@ -15,5 +15,5 @@ export type {
   Create_subComponent,
   Create_baseComponentFn,
   Create_subComponentFn,
-  CreateComponentValues,
+  CreateComponents,
 };

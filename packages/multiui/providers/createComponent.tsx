@@ -28,7 +28,7 @@ interface Create_subComponent {
   style: ({}) => void;
 }
 
-type CreateComponent = (props: {
+type CreateComponent = (namespace: {
   readonly name: string;
   readonly version: string;
 }) => {
@@ -36,7 +36,7 @@ type CreateComponent = (props: {
   create_subComponent: Create_subComponentFn;
 };
 
-type CreateComponentValues = ReturnType<CreateComponent>;
+type CreateComponents = ReturnType<CreateComponent>;
 
 const createComponent: CreateComponent = function (props) {
   const create_baseComponent: ReturnType<CreateComponent>["create_baseComponent"] =
@@ -73,5 +73,5 @@ export type {
   CreateComponent,
   Create_baseComponent,
   Create_subComponent,
-  CreateComponentValues,
+  CreateComponents,
 };
