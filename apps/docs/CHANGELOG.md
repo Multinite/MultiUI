@@ -1,5 +1,19 @@
 # @multinite_official/multiui-docs
 
+## 1.0.1
+
+### Patch Changes
+
+- 8e176de: Updated package.json
+- 1eb8746: Updated README
+- 1946ebb: Updated docs favicon
+- c4ba62d: Updated package.json desc
+- Updated dependencies [8e176de]
+- Updated dependencies [1eb8746]
+- Updated dependencies [c4ba62d]
+- Updated dependencies [70c35c2]
+  - @multinite_official/multiui@2.1.6
+
 ## 1.0.0
 
 ### Major Changes
