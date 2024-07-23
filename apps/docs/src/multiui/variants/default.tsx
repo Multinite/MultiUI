@@ -1,5 +1,5 @@
-import Button from "../components/Button";
 import { MultiUIComponentReturnType } from "@multinite_official/multiui";
+import { Button } from "../components/Button";
 
 type Variant = {
   className: string;

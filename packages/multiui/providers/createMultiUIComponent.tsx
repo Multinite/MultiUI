@@ -1,51 +1,49 @@
 import { ReactNode } from "react";
 
-type MultiUIComponent = {
+interface create_baseComponent {
+  (props: { children: ReactNode | ReactNode[]; className: string }): ReactNode;
   name: string;
   version: string;
-  slots: {
-    base: string;
-    wrapper: string;
-  };
-  component: (prop: {
-    children: ReactNode | ReactNode[];
-    [key: string]: any;
-  }) => ReactNode;
+}
+
+interface create_subComponent {
+  (props: { children: ReactNode | ReactNode[]; className: string }): ReactNode;
+  version: string;
+  name: string;
+}
+
+type CreateMultiUIComponent = (props: {
+  readonly name: string;
+  readonly version: string;
+}) => {
+  create_baseComponent: create_baseComponent;
+  create_subComponent: create_subComponent;
 };
 
-function createMultiUIComponent(props: MultiUIComponent) {
-  type Slots = keyof typeof props.slots;
+const createMultiUIComponent: CreateMultiUIComponent = function (props) {
+  const create_baseComponent: ReturnType<CreateMultiUIComponent>["create_baseComponent"] =
+    (props1) => {
+      return props1.children;
+    };
+  create_baseComponent.version = props.version;
 
-  type ReturnFunction = {
-    (props_0: { children: any }): ReactNode;
-    details: Omit<MultiUIComponent, "component">;
-    style: (
-      props1: Partial<Record<"className" | Slots, string>> & {
-        className: string;
-      }
-    ) => 1;
-  };
-  const ReturnFn: ReturnFunction = ((
-    ...props_: Parameters<typeof props.component>
-  ) => {
-    return props.component(...props_);
-  }) as ReturnFunction;
+  const create_subComponent: ReturnType<CreateMultiUIComponent>["create_subComponent"] =
+    (props1) => {
+      return props1.children;
+    };
+  create_subComponent.version = props.version;
 
-  ReturnFn.details = {
-    name: props.name,
-    version: props.version,
-    slots: props.slots,
-  };
-  ReturnFn.style = ({ className, ...slots }) => {
-    return 1;
+  const ReturnFn: ReturnType<CreateMultiUIComponent> = {
+    create_baseComponent,
+    create_subComponent,
   };
 
   return ReturnFn;
-}
+};
 
-type MultiUIComponentReturnType = ReturnType<
-  ReturnType<typeof createMultiUIComponent>["style"]
->;
+// type MultiUIComponentReturnType = ReturnType<
+//   ReturnType<typeof createMultiUIComponent>["style"]
+// >;
 
-export type { MultiUIComponentReturnType };
+// export type { MultiUIComponentReturnType };
 export default createMultiUIComponent;

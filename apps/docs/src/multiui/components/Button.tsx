@@ -1,15 +1,10 @@
 import { createMultiUIComponent } from "@multinite_official/multiui";
 
-const Button = createMultiUIComponent({
+const { create_baseComponent, create_subComponent } = createMultiUIComponent({
   name: "Button",
   version: "1.0.0",
-  slots: {
-    base: "button",
-    wrapper: "button-wrapper",
-  },
-  component: ({ children }) => {
-    return <button>{children}</button>;
-  },
 });
 
-export default Button;
+const Button = create_baseComponent(({children, className}: {children: ReactNode | ReactNode[], className: string}) => {
+  return <div>hey</div>;
+});
