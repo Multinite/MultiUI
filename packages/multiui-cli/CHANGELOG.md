@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 1.0.3
+
+### Patch Changes
+
+- 8e176de: Updated package.json
+
 ## 1.0.2
 
 ### Patch Changes

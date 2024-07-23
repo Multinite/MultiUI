@@ -1,5 +1,14 @@
 # @multinite_official/multiui
 
+## 2.1.6
+
+### Patch Changes
+
+- 8e176de: Updated package.json
+- 1eb8746: Updated README
+- c4ba62d: Updated package.json desc
+- 70c35c2: Updated cn seperator & button className
+
 ## 2.1.5
 
 ### Patch Changes
