@@ -1,6 +1,4 @@
-import { createComponent } from "@multinite_official/multiui";
-import { CreateComponents } from "@multinite_official/multiui/providers/createComponent";
-
+import { createComponent, CreateComponents } from "@multinite_official/multiui";
 /**
  * ## Button component
  * This is the default button component.
