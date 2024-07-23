@@ -24,4 +24,5 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const cn_seperator = cn("➜");
+// export const cn_seperator = cn("➜");
+export const cn_seperator = cn("•");
