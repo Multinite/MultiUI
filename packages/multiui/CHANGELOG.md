@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.3.1
+
+### Patch Changes
+
+- e9bd3e7: Fixed versions
+
 ## 2.2.0
 
 ### Minor Changes

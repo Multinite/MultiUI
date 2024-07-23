@@ -1,5 +1,13 @@
 # @multinite_official/multiui-docs
 
+## 1.1.1
+
+### Patch Changes
+
+- e9bd3e7: Fixed versions
+- Updated dependencies [e9bd3e7]
+  - @multinite_official/multiui@2.3.1
+
 ## 1.1.0
 
 ### Minor Changes
