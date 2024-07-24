@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 1.0.4
+
+### Patch Changes
+
+- 10a6533: Updated: package.json's keywords
+
 ## 1.0.3
 
 ### Patch Changes
