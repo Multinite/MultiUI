@@ -1,4 +1,6 @@
+import { Button as RACButton, type ButtonProps } from "react-aria-components";
 import { createComponent, CreateComponents } from "@multinite_official/multiui";
+import { cn, cn_seperator } from "../utils/cn";
 /**
  * ## Button component
  * This is the default button component.
@@ -23,7 +25,17 @@ namespace ButtonComponent {
    * @author Multinite
    */
   export const base = create_baseComponent((props) => {
-    return <button className={props.className}>{props.children}</button>;
+    return (
+      <RACButton
+        slot={`Button`}
+        className={cn(
+          "w-fit h-fit",
+          ...(props.className ? [cn_seperator, props.className] : [])
+        )}
+      >
+        {props.children}
+      </RACButton>
+    );
   });
 
   /**
