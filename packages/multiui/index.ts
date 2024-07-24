@@ -5,7 +5,7 @@ import type {
   CreateSubComponent,
   CreateBaseComponentFn,
   CreateSubComponentFn,
-  CreateComponents,
+  
 } from "./providers/createComponent";
 
 export { createComponent };
@@ -15,5 +15,4 @@ export type {
   CreateSubComponent,
   CreateBaseComponentFn,
   CreateSubComponentFn,
-  CreateComponents,
 };

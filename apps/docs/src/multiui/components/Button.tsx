@@ -3,7 +3,7 @@ import {
   Button as RACButton,
   type ButtonProps as RACButtonProps,
 } from "react-aria-components";
-import { createComponent, CreateComponents } from "@multinite_official/multiui";
+import { createComponent } from "@multinite_official/multiui";
 import { cn, cn_seperator } from "../utils/cn";
 /**
  * ## Button component

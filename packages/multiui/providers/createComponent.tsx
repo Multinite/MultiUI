@@ -32,10 +32,7 @@ type CreateComponent = (namespace: { name: string; version: string }) => {
   createSubComponent: CreateSubComponentFn;
 };
 
-// CreateComponents type
-type CreateComponents = ReturnType<CreateComponent>;
 
-// Implementation of createComponent
 const createComponent = ({ name, version }: Parameters<CreateComponent>[0]) => {
   const createBaseComponent = <ComponentProps extends {}>(
     componentFn: CreateBaseComponentFn<ComponentProps>
@@ -72,5 +69,4 @@ export type {
   CreateComponent,
   CreateBaseComponent,
   CreateSubComponent,
-  CreateComponents,
 };
