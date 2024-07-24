@@ -1,77 +1,76 @@
 import { ReactNode } from "react";
 
-type Create_baseComponentFn = (
-  prop: (props: {
-    children: ReactNode | ReactNode[] | string;
-    className?: string;
-  }) => ReactNode
-) => Create_baseComponent;
-
-interface Create_baseComponent {
-  (...props: Parameters<Parameters<Create_baseComponentFn>[0]>): ReactNode;
-  name: string;
-  version: string;
-  style: ({}) => void;
-}
-
-type Create_subComponentFn = (
-  prop: (props: {
-    children: ReactNode | ReactNode[] | string;
-    className?: string;
-  }) => ReactNode
-) => Create_subComponent;
-
-interface Create_subComponent {
-  (...props: Parameters<Parameters<Create_subComponentFn>[0]>): ReactNode;
-  version: string;
-  name: string;
-  style: ({}) => void;
-}
-
-type CreateComponent = (namespace: {
-  readonly name: string;
-  readonly version: string;
-}) => {
-  create_baseComponent: Create_baseComponentFn;
-  create_subComponent: Create_subComponentFn;
+type DefaultComponentProps = {
+  children: ReactNode | ReactNode[] | string;
+  className?: string;
 };
 
+type CreateBaseComponentFn<ComponentProps extends {} = {}> = (
+  props: DefaultComponentProps & ComponentProps
+) => ReactNode;
+
+interface CreateBaseComponent<ComponentProps extends {}> {
+  (props: DefaultComponentProps & ComponentProps): ReactNode;
+  component_name: string;
+  version: string;
+  style: (styleProps: {}) => void;
+}
+
+type CreateSubComponentFn<ComponentProps extends {} = {}> = (
+  props: DefaultComponentProps & ComponentProps
+) => ReactNode;
+
+interface CreateSubComponent<ComponentProps extends {}> {
+  (props: DefaultComponentProps & ComponentProps): ReactNode;
+  component_name: string;
+  version: string;
+  style: (styleProps: {}) => void;
+}
+
+type CreateComponent = (namespace: { name: string; version: string }) => {
+  createBaseComponent: CreateBaseComponentFn;
+  createSubComponent: CreateSubComponentFn;
+};
+
+// CreateComponents type
 type CreateComponents = ReturnType<CreateComponent>;
 
-const createComponent: CreateComponent = function (props) {
-  const create_baseComponent: ReturnType<CreateComponent>["create_baseComponent"] =
-    (create_baseComponentFn) => {
-      //@ts-ignore
-      const create_baseComponent: Create_baseComponent = create_baseComponentFn;
-      create_baseComponent.version = props.version;
-      create_baseComponent.name = props.name;
-      create_baseComponent.style = () => {};
-      return create_baseComponent;
-    };
-
-  const create_subComponent: ReturnType<CreateComponent>["create_subComponent"] =
-    (create_subComponentFn) => {
-      //@ts-ignore
-      const create_subComponent: Create_subComponent = create_subComponentFn;
-      create_subComponent.version = props.version;
-      create_subComponent.name = props.name;
-      create_subComponent.style = () => {};
-      return create_subComponent;
-    };
-
-  const ReturnFn: ReturnType<CreateComponent> = {
-    create_baseComponent: create_baseComponent,
-    create_subComponent: create_subComponent,
+// Implementation of createComponent
+const createComponent = ({ name, version }: Parameters<CreateComponent>[0]) => {
+  const createBaseComponent = <ComponentProps extends {}>(
+    componentFn: CreateBaseComponentFn<ComponentProps>
+  ) => {
+    const baseComponent: CreateBaseComponent<ComponentProps> =
+      componentFn as CreateBaseComponent<ComponentProps>;
+    baseComponent.component_name = name;
+    baseComponent.version = version;
+    baseComponent.style = () => {};
+    return baseComponent;
   };
 
-  return ReturnFn;
+  const createSubComponent = <ComponentProps extends {}>(
+    componentFn: CreateSubComponentFn<ComponentProps>
+  ) => {
+    const subComponent: CreateSubComponent<ComponentProps> =
+      componentFn as CreateSubComponent<ComponentProps>;
+    subComponent.component_name = name;
+    subComponent.version = version;
+    subComponent.style = () => {};
+    return subComponent;
+  };
+
+  return {
+    createBaseComponent,
+    createSubComponent,
+  };
 };
+
 export default createComponent;
 export type {
-  Create_baseComponentFn,
-  Create_subComponentFn,
+  CreateBaseComponentFn,
+  CreateSubComponentFn,
   CreateComponent,
-  Create_baseComponent,
-  Create_subComponent,
+  CreateBaseComponent,
+  CreateSubComponent,
   CreateComponents,
 };
