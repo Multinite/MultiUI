@@ -27,13 +27,9 @@ interface CreateSubComponent<ComponentProps extends {}> {
   style: (styleProps: {}) => void;
 }
 
-type CreateComponent = (namespace: { name: string; version: string }) => {
-  createBaseComponent: CreateBaseComponentFn;
-  createSubComponent: CreateSubComponentFn;
-};
+type CreateComponentProps = { name: string; version: string };
 
-
-const createComponent = ({ name, version }: Parameters<CreateComponent>[0]) => {
+const createComponent = ({ name, version }: CreateComponentProps) => {
   const createBaseComponent = <ComponentProps extends {}>(
     componentFn: CreateBaseComponentFn<ComponentProps>
   ) => {
@@ -56,9 +52,14 @@ const createComponent = ({ name, version }: Parameters<CreateComponent>[0]) => {
     return subComponent;
   };
 
+  const styleVariant = (styleProps: {}) => {
+    return {};
+  };
+
   return {
     createBaseComponent,
     createSubComponent,
+    styleVariant,
   };
 };
 
@@ -66,7 +67,6 @@ export default createComponent;
 export type {
   CreateBaseComponentFn,
   CreateSubComponentFn,
-  CreateComponent,
   CreateBaseComponent,
   CreateSubComponent,
 };

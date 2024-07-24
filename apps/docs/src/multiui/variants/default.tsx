@@ -1,4 +1,4 @@
-import Button from "../components/Button";
+import { ButtonComponent } from "../components/Button";
 
 type Variant = {
   className: string;
@@ -7,7 +7,7 @@ type Variant = {
 
 const variant: Variant = {
   className: "Hello world",
-  components: [Button.style({})],
+  components: [ButtonComponent.style({})],
 };
 
 export default variant;

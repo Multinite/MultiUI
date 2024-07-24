@@ -12,14 +12,15 @@ import { cn, cn_seperator } from "../utils/cn";
  * @see https://multiui.org/packages/Button@1.0.0
  * @version 1.0.0
  * @author Multinite
- * @
  */
 namespace ButtonComponent {
   export const name = "Button";
   export const version = "1.0.0";
 
-  const { createBaseComponent, createSubComponent } =
+  const { createBaseComponent, createSubComponent, styleVariant } =
     createComponent(ButtonComponent);
+
+  export const style = styleVariant;
 
   export type ButtonProps = RACButtonProps & {
     cool: true;
@@ -64,5 +65,6 @@ namespace ButtonComponent {
   });
 }
 
-export { ButtonComponent };
+const ButtonLabel = ButtonComponent.ButtonLabel;
+export { ButtonComponent, ButtonLabel };
 export default ButtonComponent.base;
