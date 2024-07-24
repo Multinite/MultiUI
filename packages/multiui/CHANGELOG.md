@@ -1,5 +1,17 @@
 # @multinite_official/multiui
 
+## 2.4.0
+
+### Minor Changes
+
+- fd31c10: MultiUI API updated
+- 68ae27d: Update: API update, further typesafety improvements
+
+### Patch Changes
+
+- e9bd3e7: Fixed versions
+- 10a6533: Updated: package.json's keywords
+
 ## 2.2.0
 
 ### Minor Changes

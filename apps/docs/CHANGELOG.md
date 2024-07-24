@@ -1,5 +1,23 @@
 # @multinite_official/multiui-docs
 
+## 1.2.0
+
+### Minor Changes
+
+- fd31c10: MultiUI API updated
+- 68ae27d: Update: API update, further typesafety improvements
+
+### Patch Changes
+
+- 08d5b09: Fixed import paths
+- ac44b81: Updated button component
+- e9bd3e7: Fixed versions
+- Updated dependencies [fd31c10]
+- Updated dependencies [e9bd3e7]
+- Updated dependencies [10a6533]
+- Updated dependencies [68ae27d]
+  - @multinite_official/multiui@2.4.0
+
 ## 1.1.0
 
 ### Minor Changes
