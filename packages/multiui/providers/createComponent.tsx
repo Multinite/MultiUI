@@ -27,7 +27,11 @@ interface CreateSubComponent<ComponentProps extends {}> {
   style: (styleProps: {}) => void;
 }
 
-type CreateComponentProps = { name: string; version: string };
+type CreateComponentProps = {
+  name: string;
+  version: string;
+  description?: string;
+};
 
 const createComponent = ({ name, version }: CreateComponentProps) => {
   const createBaseComponent = <ComponentProps extends {}>(
