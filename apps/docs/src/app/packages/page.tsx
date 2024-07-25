@@ -1,5 +1,7 @@
 function Page() {
-  return <div className="w-screen h-screen">Hello, World!</div>;
+  return <div className="w-screen h-screen">
+    
+  </div>;
 }
 
 export default Page;

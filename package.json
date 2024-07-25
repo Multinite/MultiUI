@@ -22,7 +22,8 @@
     "release": "changeset publish --access public",
     "db:check": "turbo run db:check",
     "db:generate": "turbo run db:generate",
-    "db:migrate": "turbo run db:migrate"
+    "db:migrate": "turbo run db:migrate",
+    "db:push": "turbo run db:push"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
