@@ -1,9 +1,9 @@
-import { serial, text, datetime } from "drizzle-orm/mysql-core";
+import { serial, varchar, datetime } from "drizzle-orm/mysql-core";
 import { mysqlTable } from "drizzle-orm/mysql-core/table";
 
 const user = mysqlTable("user", {
-  id: serial("id").autoincrement().primaryKey(),
-  name: text("name").notNull(),
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 35 }).notNull(),
   createdAt: datetime("created_at").default(new Date()).notNull(),
   updatedAt: datetime("updated_at").default(new Date()).notNull(),
 });
