@@ -20,9 +20,7 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "release": "changeset publish --access public",
-    "db:check": "turbo run db:check",
-    "db:generate": "turbo run db:generate",
-    "db:migrate": "turbo run db:migrate",
+    "db:studio": "turbo run db:studio",
     "db:push": "turbo run db:push"
   },
   "devDependencies": {
