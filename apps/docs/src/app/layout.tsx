@@ -1,7 +1,8 @@
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "./globals.scss";
+import { cn } from "../multiui/utils/cn";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className, "overflow-hidden bg-black text-zinc-50")}>
         <Analytics />
         {children}
       </body>

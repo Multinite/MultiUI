@@ -15,6 +15,8 @@ const packages = mysqlTable("packages", {
   likes: int("likes").default(0).notNull(),
   dislikes: int("dislikes").default(0).notNull(),
   downloads: int("downloads").default(0).notNull(),
+  github_repo_name: varchar("github_repo_name", { length: 100 }).notNull(),
+  github_repo_owner: varchar("github_repo_owner", { length: 100 }).notNull(),
 });
 
 type Packages = typeof packages.$inferSelect;

@@ -1,14 +1,19 @@
 "use client";
-import { useEffect, useState } from "react";
+import Markdown from "markdown-to-jsx";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getPackages } from "./actions/getPackages";
 import { Packages } from "../../db/schema/packages";
 import Image from "next/image";
+import { cn } from "../../multiui/utils/cn";
+import useSWR from "swr";
 
 function Page() {
   const [packages, $packages] = useState<Packages[]>([]);
+  const [selectedPackage, $selectedPackage] = useState<Packages | null>(null);
 
   useEffect(() => {
     getPackages().then((res) => {
+      console.log(res);
       if (res.success) {
         $packages(res.data);
       } else {
@@ -18,113 +23,331 @@ function Page() {
   }, []);
 
   return (
-    <div className="w-screen h-screen p-16 flex flex-wrap content-start justify-center gap-10">
-      {packages.map((pkg) => {
-        console.log(pkg);
-        const percentage_of_likes = Math.round(
-          (pkg.likes / (pkg.likes + pkg.dislikes)) * 100
-        );
-        return (
-          <div
-            key={pkg.id}
-            className="group w-[350px] h-[255px] bg-black rounded-lg border-2 border-zinc-900/80 hover:scale-110 transition-all duration-150 cursor-pointer select-none"
-          >
-            <div className="w-full h-[140px] opacity-80 group-hover:opacity-100 transition-opacity duration-150 ease-in-out">
-              <Image
-                src={`${pkg.thumbnail_url}`}
-                alt={`${pkg.name} thumbnail`}
-                width={350}
-                height={140}
-                className="object-cover w-full h-full rounded-lg rounded-b-none"
-                draggable={false}
-              />
-            </div>
-            <div className="w-full h-[calc(250px_-_140px)] px-4 mt-2">
-              <h1 className="font-bold text-lg group-hover:underline">
-                {pkg.name}
-              </h1>
-              <p className="text-sm text-zinc-500 mt-0.5">{pkg.description}</p>
-              <div className="mt-2 h-10 w-full flex items-end pb-3">
-                <div className="flex gap-1.5 min-w-[100px] w-fit text-zinc-600 justify-start items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 384 512"
-                    className="size-3.5 min-w-3.5 fill-current"
-                  >
-                    <path d="M32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32l320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 480zM214.6 342.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 242.7 160 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 178.7 73.4-73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-128 128z" />
-                  </svg>
-                  <span className="text-[12px] w-fit text-nowrap">{pkg.downloads} Downloads</span>
-                </div>
-                <div className="w-full flex text-zinc-600 justify-end items-center">
-                  <div className="w-fit h-fit flex gap-1.5 text-zinc-600 justify-center items-center relative">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                      className="size-3.5 fill-current"
-                    >
-                      <path d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z" />
-                    </svg>
-                    <span className="text-[12px]">{pkg.likes}</span>
-                    <div className="w-2"></div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                      className="size-3.5 fill-current rotate-180"
-                    >
-                      <path d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z" />
-                    </svg>
-                    <span className="text-[12px]">{pkg.dislikes}</span>
-                    <div className="absolute -bottom-2 w-[calc(100%_+_5px)] h-1 grid grid-cols-4 gap-0.5">
-                      <div
-                        className={
-                          "w-full h-full rounded-sm " +
-                          (percentage_of_likes === 0
-                            ? "bg-zinc-800"
-                            : percentage_of_likes > 0
-                              ? "bg-zinc-600"
-                              : "bg-zinc-800")
-                        }
-                      ></div>
-                      <div
-                        className={
-                          "w-full h-full rounded-sm " +
-                          (percentage_of_likes === 0
-                            ? "bg-zinc-800"
-                            : percentage_of_likes > 25
-                              ? "bg-zinc-600"
-                              : "bg-zinc-800")
-                        }
-                      ></div>
-                      <div
-                        className={
-                          "w-full h-full rounded-sm " +
-                          (percentage_of_likes === 0
-                            ? "bg-zinc-800"
-                            : percentage_of_likes > 50
-                              ? "bg-zinc-600"
-                              : "bg-zinc-800")
-                        }
-                      ></div>
-                      <div
-                        className={
-                          "w-full h-full rounded-sm " +
-                          (percentage_of_likes === 0
-                            ? "bg-zinc-800"
-                            : percentage_of_likes > 75
-                              ? "bg-zinc-600"
-                              : "bg-zinc-800")
-                        }
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
+    <div className="w-screen h-screen flex overflow-auto">
+      <div
+        className={cn(
+          "h-screen p-16 flex flex-wrap content-start justify-center gap-10",
+          selectedPackage ? "w-[500px]" : "w-screen"
+        )}
+      >
+        {packages.map((pkg) => {
+          return (
+            <PackageCard
+              pkg={pkg}
+              key={pkg.id}
+              $selectedPackage={$selectedPackage}
+            />
+          );
+        })}
+      </div>
+      {selectedPackage ? (
+        <PackageDisplay
+          pkg={selectedPackage}
+          $selectedPackage={$selectedPackage}
+        />
+      ) : null}
     </div>
   );
 }
 
 export default Page;
+const fetcher = (url: string) => fetch(url).then((res) => res.text());
+
+function PackageDisplay({
+  pkg,
+  $selectedPackage,
+}: {
+  pkg: Packages;
+  $selectedPackage: Dispatch<SetStateAction<Packages | null>>;
+}) {
+  const { data, error, isLoading } = useSWR(
+    `https://raw.githubusercontent.com/${pkg.github_repo_owner}/${pkg.github_repo_name}/main/README.md`,
+    fetcher
+  );
+
+  console.log(data);
+
+  return (
+    <div className="w-full h-full sticky overflow-x-hidden top-0 border-l-2 border-zinc-900/80 p-10 grid grid-cols-[75%_25%] gap-5 overflow-y-auto">
+      {/* left column */}
+      <div className="w-full h-full">
+        <div slot="header" className="w-full flex gap-5">
+          <button
+            className="w-fit h-10 rounded-lg bg-transparent outline-none border-none px-4 hover:bg-[rgba(255,255,255,0.2)] transition-all duration-150 ease-in-out flex gap-2 justify-center items-center"
+            aria-label="Back"
+            onClick={() => $selectedPackage(null)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              className="w-4 fill-current"
+            >
+              <path d="M7.4 273.4C2.7 268.8 0 262.6 0 256s2.7-12.8 7.4-17.4l176-168c9.6-9.2 24.8-8.8 33.9 .8s8.8 24.8-.8 33.9L83.9 232 424 232c13.3 0 24 10.7 24 24s-10.7 24-24 24L83.9 280 216.6 406.6c9.6 9.2 9.9 24.3 .8 33.9s-24.3 9.9-33.9 .8l-176-168z" />
+            </svg>
+            Back
+          </button>
+        </div>
+        <h1 className="text-4xl font-bold mt-10">{pkg.name}</h1>
+        <p className="text-zinc-500 mt-2">{pkg.description}</p>
+        <div className="w-full h-fit mt-10 mb-5">
+          <Image
+            src={pkg.thumbnail_url}
+            alt={pkg.name}
+            width={350}
+            height={140}
+            quality={100}
+            className=" w-full h-full rounded-lg"
+          />
+        </div>
+
+        {isLoading ? (
+          "loading"
+        ) : (
+          <Markdown options={{ wrapper: "article" }}>{data as string}</Markdown>
+        )}
+      </div>
+      {/* right column */}
+      <div className="w-full h-full sticky top-0">
+        <div className="w-0 h-10 mb-36"></div>
+        <div className="w-full h-fit flex flex-col gap-0.5">
+          {[
+            {
+              name: "Repository",
+              value: pkg.github_repo_name,
+              url: pkg.github_url,
+              type: "link",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 496 512"
+                  className="w-4 fill-current"
+                >
+                  <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z" />
+                </svg>
+              ),
+            },
+            {
+              name: "Version",
+              value: pkg.version,
+              action: () => {},
+              type: "button",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 640 512"
+                  className="w-4 fill-current"
+                >
+                  <path
+                    opacity=".4"
+                    d="M0 256c0 17.7 14.3 32 32 32l131.2 0c-2.1-10.3-3.2-21-3.2-32c0-1.4 0-2.7 .1-4.1s.1-2.7 .2-4.1c.1-2.7 .3-5.4 .6-8.1c.5-5.3 1.3-10.6 2.4-15.8L32 224c-17.7 0-32 14.3-32 32zm476.8-32c2.1 10.3 3.2 21 3.2 32c0 1.4 0 2.7-.1 4.1s-.1 2.7-.2 4.1c-.1 2.7-.3 5.4-.6 8.1c-.5 5.3-1.3 10.6-2.4 15.8L608 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-131.2 0z"
+                  />
+                  <path d="M320 176a80 80 0 1 1 0 160 80 80 0 1 1 0-160zm0 240a160 160 0 1 0 0-320 160 160 0 1 0 0 320z" />
+                </svg>
+              ),
+            },
+            {
+              name: "Likes",
+              value: pkg.likes,
+              action: () => {},
+              type: "button",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  className="w-4 fill-current"
+                >
+                  <path d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z" />
+                </svg>
+              ),
+            },
+            {
+              name: "Dislikes",
+              value: pkg.dislikes,
+              action: () => {},
+              type: "button",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  className="w-4 fill-current rotate-180"
+                >
+                  <path d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z" />
+                </svg>
+              ),
+            },
+            {
+              name: "Downloads",
+              value: pkg.downloads,
+              action: () => {},
+              type: "button",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 384 512"
+                  className="size-3.5 min-w-3.5 fill-current"
+                >
+                  <path d="M32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32l320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 480zM214.6 342.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 242.7 160 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 178.7 73.4-73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-128 128z" />
+                </svg>
+              ),
+            },
+            {
+              name: "Created At",
+              value: new Intl.DateTimeFormat("en-US").format(
+                new Date(pkg.createdAt)
+              ),
+              action: () => {},
+              type: "button",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="w-4 fill-current"
+                >
+                  <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+                </svg>
+              ),
+            },
+          ].map((item, index) => {
+            return item.type === "link" ? (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                key={index}
+                className="w-fit h-10 rounded-lg bg-transparent outline-none border-none px-4 hover:bg-[rgba(255,255,255,0.2)] transition-all duration-150 ease-in-out flex gap-2 justify-center items-center"
+              >
+                {item.icon}
+                <span className="">{item.name}:</span>{" "}
+                <span className="font-bold">{item.value}</span>
+              </a>
+            ) : (
+              <button
+                aria-label={item.name}
+                onClick={item.action}
+                className="w-fit h-10 rounded-lg bg-transparent outline-none border-none px-4 hover:bg-[rgba(255,255,255,0.2)] transition-all duration-150 ease-in-out flex gap-2 justify-center items-center"
+              >
+                {item.icon}
+                <span className="">{item.name}:</span>{" "}
+                <span className="font-bold">{item.value}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PackageCard({
+  pkg,
+  $selectedPackage,
+}: {
+  pkg: Packages;
+  $selectedPackage: Dispatch<SetStateAction<Packages | null>>;
+}) {
+  const percentage_of_likes = Math.round(
+    (pkg.likes / (pkg.likes + pkg.dislikes)) * 100
+  );
+  return (
+    <div
+      className="group w-[350px] h-[255px] bg-black rounded-lg border-2 border-zinc-900/80 hover:scale-110 transition-all duration-150 cursor-pointer select-none"
+      role="button"
+      aria-label={`${pkg.name} package`}
+      onClick={() => {
+        $selectedPackage(pkg);
+      }}
+    >
+      <div className="w-full h-[140px] opacity-80 group-hover:opacity-100 transition-opacity duration-150 ease-in-out">
+        <Image
+          src={`${pkg.thumbnail_url}`}
+          alt={`${pkg.name} thumbnail`}
+          width={350}
+          height={140}
+          className="object-cover w-full h-full rounded-lg rounded-b-none"
+          draggable={false}
+        />
+      </div>
+      <div className="w-full h-[calc(250px_-_140px)] px-4 mt-2">
+        <h1 className="font-bold text-lg group-hover:underline">{pkg.name}</h1>
+        <p className="text-sm text-zinc-500 mt-0.5">{pkg.description}</p>
+        <div className="mt-2 h-10 w-full flex items-end pb-3">
+          <div className="flex gap-1.5 min-w-[100px] w-fit text-zinc-600 justify-start items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 384 512"
+              className="size-3.5 min-w-3.5 fill-current"
+            >
+              <path d="M32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32l320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 480zM214.6 342.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 242.7 160 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 178.7 73.4-73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-128 128z" />
+            </svg>
+            <span className="text-[12px] w-fit text-nowrap">
+              {pkg.downloads} Downloads
+            </span>
+          </div>
+          <div className="w-full flex text-zinc-600 justify-end items-center">
+            <div className="w-fit h-fit flex gap-1.5 text-zinc-600 justify-center items-center relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="size-3.5 fill-current"
+              >
+                <path d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z" />
+              </svg>
+              <span className="text-[12px]">{pkg.likes}</span>
+              <div className="w-2"></div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="size-3.5 fill-current rotate-180"
+              >
+                <path d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z" />
+              </svg>
+              <span className="text-[12px]">{pkg.dislikes}</span>
+              <div className="absolute -bottom-2 w-[calc(100%_+_5px)] h-1 grid grid-cols-4 gap-0.5">
+                <div
+                  className={cn(
+                    "w-full h-full rounded-sm ",
+                    percentage_of_likes === 0
+                      ? "bg-zinc-800"
+                      : percentage_of_likes > 0
+                        ? "bg-zinc-600"
+                        : "bg-zinc-800"
+                  )}
+                ></div>
+                <div
+                  className={cn(
+                    "w-full h-full rounded-sm ",
+                    percentage_of_likes === 0
+                      ? "bg-zinc-800"
+                      : percentage_of_likes > 25
+                        ? "bg-zinc-600"
+                        : "bg-zinc-800"
+                  )}
+                ></div>
+                <div
+                  className={cn(
+                    "w-full h-full rounded-sm ",
+                    percentage_of_likes === 0
+                      ? "bg-zinc-800"
+                      : percentage_of_likes > 50
+                        ? "bg-zinc-600"
+                        : "bg-zinc-800"
+                  )}
+                ></div>
+                <div
+                  className={cn(
+                    "w-full h-full rounded-sm ",
+                    percentage_of_likes === 0
+                      ? "bg-zinc-800"
+                      : percentage_of_likes > 75
+                        ? "bg-zinc-600"
+                        : "bg-zinc-800"
+                  )}
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

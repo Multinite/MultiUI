@@ -25,15 +25,7 @@ type Result = Result_success | Result_error;
 export async function getPackages(): Promise<Result> {
   try {
     const result_packages = await db
-      .select({
-        id: packages.id,
-        name: packages.name,
-        description: packages.description,
-        likes: packages.likes,
-        dislikes: packages.dislikes,
-        downloads: packages.downloads,
-        thumbnail_url: packages.thumbnail_url,
-      })
+      .select()
       .from(packages)
       .orderBy(asc(packages.downloads))
       .limit(10);
