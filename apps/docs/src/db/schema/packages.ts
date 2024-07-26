@@ -5,6 +5,7 @@ import { mysqlTable } from "drizzle-orm/mysql-core/table";
 const packages = mysqlTable("packages", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 35 }).unique().notNull(),
+  version: varchar("version", { length: 10 }).notNull(),
   createdAt: datetime("created_at").default(new Date()).notNull(),
   updatedAt: datetime("updated_at").default(new Date()).notNull(),
   userId: int("user_id").notNull(),
