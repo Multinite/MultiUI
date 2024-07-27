@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.scss";
 import { cn } from "../multiui/utils/cn";
+import ClientLayout from "./ClientLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "overflow-hidden bg-black text-zinc-50")}>
+      <body
+        className={cn(inter.className, "overflow-hidden bg-black text-zinc-50")}
+      >
         <Analytics />
-        {children}
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
