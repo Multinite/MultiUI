@@ -14,6 +14,21 @@
     "version": {
       "type": "string",
       "description": "The version of the component."
+    },
+    "author": {
+      "type": "string",
+      "description": "The author of the component."
+    },
+    "website": {
+      "type": "string",
+      "description": "The website of the component."
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "An array of dependencies for the component.",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }
