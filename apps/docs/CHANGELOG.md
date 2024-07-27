@@ -1,5 +1,13 @@
 # @multinite_official/multiui-docs
 
+## 2.0.1
+
+### Patch Changes
+
+- 3d33de9: Updated: MultiUI api
+- Updated dependencies [3d33de9]
+  - @multinite_official/multiui@2.4.3
+
 ## 2.0.0
 
 ### Major Changes
