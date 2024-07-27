@@ -1,5 +1,15 @@
 # multiui-cli
 
+## 2.0.0
+
+### Major Changes
+
+- d548cca: Updated: MultiUI-docs to use `components` over `packages`. & Updated: multiui-cli's `add` command
+
+### Minor Changes
+
+- 6963050: Updated MultiUI CLI's add command
+
 ## 1.0.4
 
 ### Patch Changes
