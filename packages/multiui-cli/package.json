@@ -42,7 +42,9 @@
   ],
   "homepage": "https://multiui.org",
   "dependencies": {
-    "commander": "^12.1.0"
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0",
+    "log-update": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.11"

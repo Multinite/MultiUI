@@ -27,6 +27,12 @@ export async function GET(
     });
   }
 
+  if (find_component_.length === 0)
+    return Response.json({
+      success: false,
+      error: "Invalid component",
+    });
+
   const find_component = find_component_[0] as Component;
 
   const git_url = `https://api.github.com/repos/${find_component.github_repo_owner}/${find_component.github_repo_name}/contents/src/component.json`;
@@ -38,13 +44,12 @@ export async function GET(
     if (!data.content)
       return Response.json({
         success: false,
-        error:
-          "Something went wrong while fetching the component: content is missing",
+        error: "Invalid component repository: content is missing",
       });
     const component_info = JSON.parse(atob(data.content));
     delete component_info["$schema"];
     return Response.json({
-      data: component_info,
+      data: { ...component_info, info: find_component },
       success: true,
     });
   } catch (err) {
