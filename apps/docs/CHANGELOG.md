@@ -1,5 +1,29 @@
 # @multinite_official/multiui-docs
 
+## 2.0.0
+
+### Major Changes
+
+- bc077fd: Added Supabase DB w/ Drizzle ORM.
+- 586fff1: Made /packages page much better
+
+### Minor Changes
+
+- edd1206: Updated: DB to use mysql (planetscale)
+- e06cd92: Updated: DB schemas
+- a709651: Updated: /packages UI
+
+### Patch Changes
+
+- 35a28cd: Update: Further support for Drizzle to Supa
+- 880eb89: Removed env file
+- 55f3d0b: Updated: /packages UI
+- f282f0c: Added example env files
+- 030d05e: Updated: DB to allow `packages` to have `version`.
+- Updated dependencies [496b78d]
+- Updated dependencies [e1f1908]
+  - @multinite_official/multiui@2.4.1
+
 ## 1.2.0
 
 ### Minor Changes
