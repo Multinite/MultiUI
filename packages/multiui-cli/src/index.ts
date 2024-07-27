@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-
 const program = new Command();
+
+const isDev = true;
+
+const MULTIUI_URL = isDev ? `http://localhost:3000` : `https://multiui.org`;
 
 program
   .name("MultiUI")
@@ -10,14 +13,23 @@ program
 
 program
   .command("add")
-  .alias("a")
   .alias("install")
   .alias("i")
   .description("Add a new component to your project.")
   .argument("[name]", "name of the component")
   .action((name: string | undefined) => {
-    throw new Error("Not implemented yet.");
     console.log(`Adding ${name} component...`);
+
+    fetch(new URL(`/api/v1/components/${name}`, MULTIUI_URL), {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   });
 
 program.parse();

@@ -2,7 +2,7 @@
 import { asc } from "drizzle-orm";
 import "server-only";
 import { db } from "../../../db";
-import { packages } from "../../../db/schema";
+import { component } from "../../../db/schema";
 
 //TODO: Cache values.
 
@@ -22,20 +22,20 @@ interface Result_error extends Result_base {
 
 type Result = Result_success | Result_error;
 
-export async function getPackages(): Promise<Result> {
+export async function getComponent(): Promise<Result> {
   try {
-    const result_packages = await db
+    const res_component = await db
       .select()
-      .from(packages)
-      .orderBy(asc(packages.downloads))
+      .from(component)
+      .orderBy(asc(component.downloads))
       .limit(10);
 
     return {
       success: true,
-      data: result_packages,
+      data: res_component,
     };
   } catch (error) {
-    console.log(`An error occurred while querying the DB for packages:`);
+    console.log(`An error occurred while querying the DB for component:`);
     console.error(error);
     return {
       success: false,

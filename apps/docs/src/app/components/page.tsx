@@ -1,20 +1,20 @@
 "use client";
-import { Highlight, themes } from "prism-react-renderer";
-import Markdown, { RuleType } from "markdown-to-jsx";
+import { Highlight } from "prism-react-renderer";
+import Markdown from "markdown-to-jsx";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { getPackages } from "./actions/getPackages";
-import { Packages } from "../../db/schema/packages";
+import { getComponent } from "./actions/getComponent";
 import Image from "next/image";
 import useSWR from "swr";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { cn } from "@multinite_official/multiui";
+import { Component } from "../../db/schema/component";
 
 function Page() {
-  const [packages, $packages] = useState<Packages[]>([]);
-  const [selectedPackage, $selectedPackage] = useState<Packages | null>(null);
+  const [packages, $packages] = useState<Component[]>([]);
+  const [selectedPackage, $selectedPackage] = useState<Component | null>(null);
 
   useEffect(() => {
-    getPackages().then((res) => {
+    getComponent().then((res) => {
       console.log(res);
       if (res.success) {
         $packages(res.data);
@@ -63,8 +63,8 @@ function PackageDisplay({
   pkg,
   $selectedPackage,
 }: {
-  pkg: Packages;
-  $selectedPackage: Dispatch<SetStateAction<Packages | null>>;
+  pkg: Component;
+  $selectedPackage: Dispatch<SetStateAction<Component | null>>;
 }) {
   const { data, error, isLoading } = useSWR(
     `https://raw.githubusercontent.com/${pkg.github_repo_owner}/${pkg.github_repo_name}/main/README.md`,
@@ -263,8 +263,8 @@ function PackageCard({
   pkg,
   $selectedPackage,
 }: {
-  pkg: Packages;
-  $selectedPackage: Dispatch<SetStateAction<Packages | null>>;
+  pkg: Component;
+  $selectedPackage: Dispatch<SetStateAction<Component | null>>;
 }) {
   const percentage_of_likes = Math.round(
     (pkg.likes / (pkg.likes + pkg.dislikes)) * 100
