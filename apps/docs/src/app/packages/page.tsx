@@ -73,7 +73,7 @@ function PackageDisplay({
 
   return (
     <motion.div
-      className="w-full h-full sticky overflow-x-hidden top-0 border-l-2 border-zinc-900/80 p-10 bg-black grid grid-cols-[75%_25%] gap-5 overflow-y-auto"
+      className="w-full h-full sticky overflow-x-hidden top-0 border-l-2 border-zinc-900/80 p-10 bg-black grid grid-cols-[65%_35%] gap-5 overflow-y-auto"
       initial={{ translateX: "100%" }}
       animate={{ translateX: 0 }}
       exit={{ translateX: "100%" }}
@@ -151,6 +151,7 @@ function PackageDisplay({
             {data as string}
           </Markdown>
         )}
+        <div className="w-0 h-56"></div>
       </div>
       {/* right column */}
       <div className="w-full h-full sticky top-0">
