@@ -38,7 +38,14 @@ export async function GET(
   const git_url = `https://api.github.com/repos/${find_component.github_repo_owner}/${find_component.github_repo_name}/contents/src/component.json`;
 
   try {
-    const res = await fetch(git_url);
+    const res = await fetch(git_url, {
+      next: {
+        revalidate: 60 * 60 * 24,
+        tags: [
+          `${find_component.github_repo_owner}/${find_component.github_repo_name}`,
+        ],
+      },
+    });
     const data = await res.json();
     console.log(data);
     if (!data.content)
