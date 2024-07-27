@@ -1,0 +1,19 @@
+{
+  "title": "MultiUI Component Schema",
+  "description": "Schema for defining a new MultiUI Component.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the component."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the component."
+    },
+    "version": {
+      "type": "string",
+      "description": "The version of the component."
+    }
+  }
+}
