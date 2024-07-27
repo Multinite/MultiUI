@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.4.2
+
+### Patch Changes
+
+- b81c21e: Added CN utils to MultiUI
+
 ## 2.4.1
 
 ### Patch Changes
