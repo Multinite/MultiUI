@@ -2,8 +2,8 @@ import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.scss";
-import { cn } from "../multiui/utils/cn";
 import ClientLayout from "./ClientLayout";
+import { cn } from "@multinite_official/multiui";
 
 const inter = Inter({ subsets: ["latin"] });
 

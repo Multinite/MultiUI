@@ -5,9 +5,9 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { getPackages } from "./actions/getPackages";
 import { Packages } from "../../db/schema/packages";
 import Image from "next/image";
-import { cn } from "../../multiui/utils/cn";
 import useSWR from "swr";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { cn } from "@multinite_official/multiui";
 
 function Page() {
   const [packages, $packages] = useState<Packages[]>([]);
@@ -116,33 +116,6 @@ function PackageDisplay({
           <Markdown
             options={{
               wrapper: "article",
-              renderRule(next, node, renderChildren, state) {
-                // @ts-ignore
-                if (node.type === 27) console.log(node);
-                if (
-                  // @ts-ignore
-                  node.type === 21 &&
-                  // @ts-ignore
-                  node.children &&
-                  // @ts-ignore
-                  node.children.length > 2 &&
-                  // @ts-ignore
-                  node.children[0].text === "[" &&
-                  // @ts-ignore
-                  node.children[1].text === "!WARNING" &&
-                  // @ts-ignore
-                  node.children[2].text === "]"
-                ) {
-                  console.log(123, node);
-
-                  return (
-                    // @ts-ignore
-                    <p className="special lol">{String.raw`${node.children.map((x) => x.text).join("")}`}</p>
-                  );
-                }
-
-                return next();
-              },
               overrides: {
                 code: SyntaxHighlightedCode,
               },
