@@ -1,5 +1,20 @@
 # @multinite_official/multiui-docs
 
+## 3.0.0
+
+### Major Changes
+
+- d548cca: Updated: MultiUI-docs to use `components` over `packages`. & Updated: multiui-cli's `add` command
+
+### Minor Changes
+
+- 6963050: Updated MultiUI CLI's add command
+
+### Patch Changes
+
+- ebf3b0b: Added MultiUI Schema
+- 7c4bcd5: Updated: MultiUI Schema
+
 ## 2.0.1
 
 ### Patch Changes
