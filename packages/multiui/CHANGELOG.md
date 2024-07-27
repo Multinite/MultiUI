@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.4.3
+
+### Patch Changes
+
+- 3d33de9: Updated: MultiUI api
+
 ## 2.4.2
 
 ### Patch Changes
