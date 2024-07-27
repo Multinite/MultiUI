@@ -2,10 +2,11 @@
 
 # [MultiUI](https://multiui.org)
 
-[![npm version](https://flat.badgen.net/npm/v/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
-[![npm downloads](https://flat.badgen.net/npm/dm/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
-[![npm downloads](https://flat.badgen.net/npm/dependents/@multinite_official/multiui?icon=npm)](https://npmjs.com/package/@multinite_official/multiui)
-[![license](https://flat.badgen.net/github/license/multinite/multiui?icon=github)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
+[![npm version](https://img.shields.io/npm/v/%40multinite_official%2Fmultiui)](https://npmjs.com/package/@multinite_official/multiui)
+[![npm downloads](https://img.shields.io/npm/dm/%40multinite_official%2Fmultiui)](https://npmjs.com/package/@multinite_official/multiui)
+[![license](https://img.shields.io/npm/l/%40multinite_official%2Fmultiui)](https://github.com/Multinite/MultiUI/blob/main/LICENSE.md)
+[![release CI](https://github.com/multinite/multiui/actions/workflows/release.yml/badge.svg)](https://github.com/Multinite/MultiUI/actions)
+[![Follow me pls](https://img.shields.io/twitter/follow/PingStruggles)](https://twitter.com/pingstruggles)
 
 # Table of Contents
 
