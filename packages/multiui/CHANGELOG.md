@@ -1,5 +1,12 @@
 # @multinite_official/multiui
 
+## 2.4.1
+
+### Patch Changes
+
+- 496b78d: Updated: README.md's badges
+- e1f1908: Updated some minor stuff
+
 ## 2.4.0
 
 ### Minor Changes
