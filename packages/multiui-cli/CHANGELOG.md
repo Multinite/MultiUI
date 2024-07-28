@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 2.2.0
+
+### Minor Changes
+
+- 7157c7f: Fixed CLI bin command
+
 ## 2.1.0
 
 ### Minor Changes
