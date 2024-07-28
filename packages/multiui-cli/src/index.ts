@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import add from "./add.js";
+import add from "./commands/add.js";
+import showConfig from "./commands/config.js";
 
 const program = new Command();
 
@@ -23,5 +24,10 @@ program
   .argument("<name...>", "name of the component")
   .option("-o --output <dir>", "output directory", "src")
   .action(add);
+
+program
+  .command("config")
+  .description("Show MultiUI CLI config.")
+  .action(showConfig);
 
 program.parse();

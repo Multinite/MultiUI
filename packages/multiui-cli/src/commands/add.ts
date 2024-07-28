@@ -4,7 +4,7 @@ import fs from "fs";
 import logUpdate from "log-update";
 import chalk from "chalk";
 import cliProgress from "cli-progress";
-import { MULTIUI_URL } from "./index.js";
+import { MULTIUI_URL } from "../index.js";
 import path from "path";
 
 export default async function add(
@@ -184,7 +184,7 @@ export default async function add(
       fetchFileNamesInDir(
         component.info.github_repo_owner,
         component.info.github_repo_name,
-        "src"
+        "src/components/multiui"
       )
         .then((fileNames) => {
           if (fileNames) {
