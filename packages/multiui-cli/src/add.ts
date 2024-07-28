@@ -4,9 +4,41 @@ import logUpdate from "log-update";
 import chalk from "chalk";
 import cliProgress from "cli-progress";
 import { MULTIUI_URL } from "./index.js";
+import path from "path";
 
-export default async function add(name: string | undefined) {
+export default async function add(
+  name: string | undefined,
+  options: { output: string }
+) {
   if (!name) return console.log("❌ Please provide a component name.");
+
+  const output_dir = path.resolve(process.cwd(), options.output);
+  logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);
+
+  try {
+    if (!fs.lstatSync(output_dir).isDirectory()) {
+      logUpdate(`❌ Output path is a file, not a directory.`);
+      logUpdate.done();
+      console.log(chalk.gray(`path: ${output_dir}`));
+      process.exit(1);
+    } else {
+      logUpdate(`✅ ${chalk.blue(options.output)} directory exists. `);
+    }
+  } catch (error: any) {
+    if (error.code === "ENOENT") {
+      logUpdate(`❌ Output directory does not exist.`);
+      logUpdate.done();
+      console.log(chalk.gray(`path: ${output_dir}`));
+      process.exit(1);
+    } else {
+      logUpdate(
+        "❌ An error occurred while checking if output directory exists."
+      );
+      logUpdate.done();
+      console.log(chalk.gray(`path: ${output_dir}`));
+      throw error;
+    }
+  }
 
   const componentNames = name.split(",").map((x) => x.trim());
 
@@ -35,21 +67,21 @@ export default async function add(name: string | undefined) {
           await installComponent(data.data);
           logUpdate.done();
         } catch (err: any) {
-          throw new Error(err);
+          throw err;
         }
       } else {
-        logUpdate.done();
         console.log(
-          `❌ An error occurred while searching for ${name} component.`
+          `❌ An error occurred while searching for ${chalk.blue(name)} component:`,
+          data.error
         );
-        throw new Error(data.error);
+        process.exit(1);
       }
     } catch (error: any) {
       logUpdate.done();
       console.log(
         `❌ An error occurred while searching for ${name} component.`
       );
-      throw new Error(error);
+      throw error;
     }
   }
   process.exit(0);
@@ -64,7 +96,7 @@ export default async function add(name: string | undefined) {
       fetchFileNamesInDir(
         component.info.github_repo_owner,
         component.info.github_repo_name,
-        "src"
+        options.output
       )
         .then((fileNames) => {
           if (fileNames) {
@@ -130,21 +162,6 @@ export default async function add(name: string | undefined) {
     });
   }
 }
-
-// async function fetchFileContent(url: string | URL) {
-//   try {
-//     const response = await fetch(url);
-
-//     if (!response.ok) {
-//       throw new Error(`Error: ${response.status}`);
-//     }
-
-//     const content = await response.text();
-//     return content;
-//   } catch (error) {
-//     console.error("Failed to fetch file content:", error);
-//   }
-// }
 
 const exampleComponentData = {
   name: "Button",

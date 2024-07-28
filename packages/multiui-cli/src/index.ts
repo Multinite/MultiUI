@@ -17,10 +17,9 @@ program
 
 program
   .command("add")
-  .alias("install")
-  .alias("i")
   .description("Install one or more components to your project.")
   .argument("[name]", "name of the component")
-  .action((name: string | undefined) => add(name));
+  .option("-o --output <dir>", "output directory", "src")
+  .action(add);
 
 program.parse();
