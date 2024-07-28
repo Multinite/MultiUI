@@ -1,5 +1,11 @@
 # @multinite_official/multiui-docs
 
+## 3.1.1
+
+### Patch Changes
+
+- fb30f4b: Updated: schema for config & updated some cli commands for multiui-cli
+
 ## 3.1.0
 
 ### Minor Changes
