@@ -1,0 +1,9 @@
+{
+  "$schema": "https://multiui.org/schema.json",
+  "name": "Button",
+  "description": "MultiUI Button component.",
+  "version": "0.0.1",
+  "author": "Multinite",
+  "website": "https://multiui.org",
+  "dependencies": []
+}

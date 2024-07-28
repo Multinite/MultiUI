@@ -8,6 +8,9 @@ let configSchema = object({
   framework: string<"react" | "angular" | "svelte">()
     .required()
     .default("react"),
+  package_manager: string<"npm" | "yarn" | "pnpm" | "bun">()
+    .required()
+    .default("npm"),
 });
 
 export type Config = yup.InferType<typeof configSchema>;
@@ -15,6 +18,7 @@ export type Config = yup.InferType<typeof configSchema>;
 export const defaultConfig: Config = {
   components_output_dir: "src/components/multiui",
   framework: "react",
+  package_manager: "npm",
 };
 
 export default function getMultiUIConfig(): Config {
