@@ -5,18 +5,30 @@ import * as yup from "yup";
 
 let configSchema = object({
   components_output_dir: string().required(),
+  framework: string<"react" | "angular" | "svelte">()
+    .required()
+    .default("react"),
 });
 
-type Config = yup.InferType<typeof configSchema>;
+export type Config = yup.InferType<typeof configSchema>;
+
+export const defaultConfig: Config = {
+  components_output_dir: "src/components/multiui",
+  framework: "react",
+};
 
 export default function getMultiUIConfig(): Config {
   const configPath = path.join(process.cwd() + "multiui.config.json");
   if (fs.existsSync(configPath)) {
     const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
-    return config;
+    delete config["$schema"];
+
+    const result = configSchema.validateSync(config);
+    return result;
   } else {
-    return {
-      components_output_dir: "src/components/multiui",
-    };
+    console.log(
+      "❌ No config file found, please run `multiui init` to create one."
+    );
+    process.exit(1);
   }
 }

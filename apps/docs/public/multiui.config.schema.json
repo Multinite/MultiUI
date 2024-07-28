@@ -1,0 +1,15 @@
+{
+  "title": "MultiUI Config Schema",
+  "description": "Schema for defining a new MultiUI Config.",
+  "type": "object",
+  "properties": {
+    "components_output_dir": {
+      "type": "string",
+      "description": "The output directory for components."
+    },
+    "framework": {
+      "type": "string",
+      "description": "The framework to use for components."
+    }
+  }
+}

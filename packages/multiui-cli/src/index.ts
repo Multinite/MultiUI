@@ -2,6 +2,7 @@
 import { Command } from "commander";
 import add from "./commands/add.js";
 import showConfig from "./commands/config.js";
+import init from "./commands/init.js";
 
 const program = new Command();
 
@@ -29,5 +30,10 @@ program
   .command("config")
   .description("Show MultiUI CLI config.")
   .action(showConfig);
+
+program
+  .command("init")
+  .description("Initialize MultiUI CLI config.")
+  .action(init);
 
 program.parse();
