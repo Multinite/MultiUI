@@ -1,5 +1,17 @@
 # multiui-cli
 
+## 2.3.0
+
+### Minor Changes
+
+- 7545ee0: Updated: CLI's `init` command.
+
+### Patch Changes
+
+- fb30f4b: Updated: schema for config & updated some cli commands for multiui-cli
+- 6d71fb1: Fix: GetCOnfig & updated: init
+- 2ebe6dd: Updated: MultiUI CLI commands
+
 ## 2.2.0
 
 ### Minor Changes
