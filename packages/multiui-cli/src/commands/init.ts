@@ -4,11 +4,13 @@ import add from "./add.js";
 import logUpdate from "log-update";
 import path from "path";
 import { defaultConfig } from "../utils/multiUIConfig.js";
+import chalk from "chalk";
 
 function init() {
-  const configPath = path.join(process.cwd() + "multiui.config.json");
+  const configPath = path.join(process.cwd(), "multiui.config.json");
   if (fs.existsSync(configPath)) {
-    console.log(`❌ Config file already exists: ${configPath}`);
+    console.log(`❌ Config file already exists:`);
+    console.log(chalk.gray(`${configPath}`));
     process.exit(1);
   }
 
@@ -47,7 +49,7 @@ function init() {
       },
     ])
     .then((answers) => {
-      console.log(answers);
+      // console.log(answers);
 
       const default_config = {
         [`$schema`]: "https://multiui.org/multiui.config.schema.json",
@@ -55,12 +57,20 @@ function init() {
       };
 
       fs.writeFileSync(configPath, JSON.stringify(default_config, null, 2));
-      console.log(`✅ Config file created: ${configPath}`);
+      console.log();
+      console.log(`✅ Config file created!`);
 
       if (answers.components.length !== 0) {
-        console.log(`🛠️ Now installing components...`);
+        console.log(
+          chalk.grey(
+            `\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`
+          )
+        );
+        console.log(
+          `🛠️  Now installing components: ${answers.components.map(x => chalk.magenta(x)).join(", ")}...`
+        );
         logUpdate.done();
-        add(answers.components, { output: "NULL" });
+        add(answers.components, { output: "" });
       }
     })
     .catch((error) => {

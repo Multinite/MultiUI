@@ -113,6 +113,7 @@ export default async function add(
           console.log(
             `🔄 It's likely due to Github API rate-limiting. Please try again later.\n`
           );
+          console.log(chalk.grey());
           console.error(err);
           console.log();
           finishedLog(
@@ -181,11 +182,10 @@ export default async function add(
         `🎉 Component found: ${chalk.blue(component.name)} ${chalk.gray(`v${component.version} (${Date.now() - startTime}ms)`)}`
       );
 
-      fetchFileNamesInDir(
-        component.info.github_repo_owner,
-        component.info.github_repo_name,
-        "src/components/multiui"
-      )
+      fetchFileNamesInDir({
+        owner: component.info.github_repo_owner,
+        repo: component.info.github_repo_name,
+      })
         .then((fileNames) => {
           if (fileNames) {
             logUpdate.done();
@@ -214,15 +214,19 @@ export default async function add(
               bar.update(0, { filename: name });
 
               try {
-                await downloadFile(
-                  downloadUrl +
+                await downloadFile({
+                  url:
+                    downloadUrl +
                     (version.toLowerCase() === "latest"
                       ? ""
                       : `?ref=${version}`),
-                  path.join(output_dir, path.join(component.name, name)),
+                  outputPath: path.join(
+                    output_dir,
+                    path.join(component.name, name)
+                  ),
                   bar,
-                  name
-                );
+                  name,
+                });
                 installedIndex++;
                 finished();
               } catch (err: any) {
@@ -281,12 +285,14 @@ const exampleComponentData = {
 
 type ComponentData = typeof exampleComponentData;
 
-async function fetchFileNamesInDir(
-  owner: string,
-  repo: string,
-  dirPath: string
-) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${dirPath}`;
+async function fetchFileNamesInDir({
+  owner,
+  repo,
+}: {
+  repo: string;
+  owner: string;
+}) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/src`;
 
   try {
     const response = await fetch(url);
@@ -307,11 +313,22 @@ async function fetchFileNamesInDir(
 
     return fileNames;
   } catch (error) {
+    console.log(`Error fetching file names in remote dir, url: ${url}`);
     throw error;
   }
 }
 
-function downloadFile(url: string, outputPath: string, bar: any, name: string) {
+function downloadFile({
+  bar,
+  name,
+  outputPath,
+  url,
+}: {
+  url: string;
+  outputPath: string;
+  bar: any;
+  name: string;
+}) {
   return new Promise((resolve, reject) => {
     https
       .get(url, (response) => {
