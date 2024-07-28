@@ -1,5 +1,12 @@
 # @multinite_official/multiui-docs
 
+## 3.1.0
+
+### Minor Changes
+
+- 84977d4: Updated: `add` command of the cli to have better DX
+- 7d5b321: Updated: Componet Version support
+
 ## 3.0.0
 
 ### Major Changes
