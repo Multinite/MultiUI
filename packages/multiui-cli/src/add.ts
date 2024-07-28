@@ -1,3 +1,4 @@
+import inquirer from "inquirer";
 import https from "https";
 import fs from "fs";
 import logUpdate from "log-update";
@@ -13,7 +14,36 @@ export default async function add(
   if (!componentNames || componentNames.length === 0)
     return console.log("❌ Please provide a component name.");
   logUpdate.done();
-  componentNames = uniqueStringsArray(componentNames);
+  componentNames = uniqueStringsArray(
+    componentNames.map((name) => name.trim().toLowerCase())
+  );
+  logUpdate(`🔎 Checking if component versions are valid...`);
+  const findInvalidComponentVersions = componentNames.find(
+    (x) =>
+      x.split("@").length > 2 ||
+      x.split("@").length === 0 ||
+      x.split("@")[1] === ""
+  );
+  if (findInvalidComponentVersions) {
+    console.log(
+      chalk.red(`❌ Invalid component version: ${findInvalidComponentVersions}`)
+    );
+    return process.exit(1);
+  }
+  const desired_component_versions = componentNames.map((name) => {
+    if (name.includes("@")) {
+      const [name_, version] = name.split("@");
+      return {
+        name: name_,
+        version,
+      };
+    }
+    return {
+      name,
+      version: "latest",
+    };
+  });
+  componentNames = componentNames.map((name) => name.split("@")[0]!);
 
   const output_dir = path.resolve(process.cwd(), options.output);
   logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);
@@ -52,8 +82,12 @@ export default async function add(
       `🔎 Now searching for ${chalk.blue(name)} component... ${chalk.gray(`(${componentSearchCount}/${componentNames.length})`)}`
     );
     logUpdate.done();
-    const fetchUrl = new URL(`/api/v1/components/${name}`, MULTIUI_URL);
+    const fetchUrl = new URL(
+      `/api/v1/components/${[desired_component_versions.find((x) => x.name === name)!].map((x) => `${x.name}@${x.version}`).join(",")}`,
+      MULTIUI_URL
+    );
     try {
+      const startTime = Date.now();
       const res = await fetch(fetchUrl, {
         method: "GET",
       });
@@ -65,7 +99,11 @@ export default async function add(
 
       if (data.success === true) {
         try {
-          await installComponent(data.data);
+          await installComponent(
+            data.data,
+            desired_component_versions.find((x) => x.name === name)!.version!,
+            startTime
+          );
           logUpdate.done();
         } catch (err: any) {
           logUpdate.done();
@@ -89,7 +127,11 @@ export default async function add(
         console.log(
           `❌ An error occurred while searching for ${chalk.blue(name)} component:`
         );
-        console.error(data.error);
+        if (data.error.startsWith(`No commit found for the ref`)) {
+          console.error(
+            `❌ Invalid version ${chalk.red(desired_component_versions.find((x) => x.name === name)!.version)} for ${chalk.blue(name)}`
+          );
+        } else console.error(data.error);
         console.log();
         finishedLog(
           componentNames,
@@ -129,10 +171,14 @@ export default async function add(
   );
   process.exit(0);
 
-  function installComponent(component: ComponentData) {
+  function installComponent(
+    component: ComponentData,
+    version: string,
+    startTime: number
+  ) {
     return new Promise((resolve, reject) => {
       logUpdate(
-        `🎉 Component found: ${chalk.blue(component.name)} ${chalk.gray(`(v${component.version})`)}`
+        `🎉 Component found: ${chalk.blue(component.name)} ${chalk.gray(`v${component.version} (${Date.now() - startTime}ms)`)}`
       );
 
       fetchFileNamesInDir(
@@ -145,7 +191,6 @@ export default async function add(
             logUpdate.done();
             logUpdate(
               `📄 installing ${chalk.yellow(fileNames.length.toString())} files...`
-              //${chalk.gray(`(${(Date.now() - get_files_time).toFixed(0)}ms)`)}
             );
             logUpdate.done();
             console.log();
@@ -160,16 +205,21 @@ export default async function add(
               },
               cliProgress.Presets.rect
             );
-
+            fs.mkdirSync(path.join(output_dir, component.name), {
+              recursive: true,
+            });
+            clearDirectory(path.join(output_dir, component.name));
             fileNames.forEach(async ({ downloadUrl, name, size }, index) => {
               const bar = multibar.create(size, 0);
               bar.update(0, { filename: name });
 
               try {
-                // var content = await fetchFileContent(downloadUrl);
                 await downloadFile(
-                  downloadUrl,
-                  path.join(output_dir, name),
+                  downloadUrl +
+                    (version.toLowerCase() === "latest"
+                      ? ""
+                      : `?ref=${version}`),
+                  path.join(output_dir, path.join(component.name, name)),
                   bar,
                   name
                 );
@@ -187,7 +237,6 @@ export default async function add(
 
             function finished() {
               if (!fileNames || installedIndex !== fileNames.length) return;
-              // bar.stop();
               multibar.stop();
               console.log();
               logUpdate(
@@ -349,4 +398,24 @@ function finishedLog(
 
 function uniqueStringsArray(arr: string[]): string[] {
   return Array.from(new Set(arr));
+}
+
+function clearDirectory(directory) {
+  try {
+    // Read the contents of the directory
+    const files = fs.readdirSync(directory);
+
+    // Loop through each file in the directory
+    for (const file of files) {
+      const filePath = path.join(directory, file);
+
+      // Check if the path is a file and not a directory
+      if (fs.lstatSync(filePath).isFile()) {
+        // Remove the file
+        fs.unlinkSync(filePath);
+      }
+    }
+  } catch (error) {
+    return error;
+  }
 }
