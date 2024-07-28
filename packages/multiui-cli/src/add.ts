@@ -7,10 +7,13 @@ import { MULTIUI_URL } from "./index.js";
 import path from "path";
 
 export default async function add(
-  name: string | undefined,
+  componentNames: string[],
   options: { output: string }
 ) {
-  if (!name) return console.log("❌ Please provide a component name.");
+  if (!componentNames || componentNames.length === 0)
+    return console.log("❌ Please provide a component name.");
+  logUpdate.done();
+  componentNames = uniqueStringsArray(componentNames);
 
   const output_dir = path.resolve(process.cwd(), options.output);
   logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);
@@ -40,22 +43,20 @@ export default async function add(
     }
   }
 
-  const componentNames = name.split(",").map((x) => x.trim());
-
   let componentSearchCount = 0;
+  const successfullyInstalledComponents: string[] = [];
+  const total_install_time = Date.now();
   for await (const name of componentNames) {
     componentSearchCount++;
     logUpdate(
-      `🔎 Searching for ${chalk.blue(name)} component... ${chalk.gray(`(${componentSearchCount}/${componentNames.length})`)}`
+      `🔎 Now searching for ${chalk.blue(name)} component... ${chalk.gray(`(${componentSearchCount}/${componentNames.length})`)}`
     );
-
+    logUpdate.done();
+    const fetchUrl = new URL(`/api/v1/components/${name}`, MULTIUI_URL);
     try {
-      const res = await fetch(
-        new URL(`/api/v1/components/${name}`, MULTIUI_URL),
-        {
-          method: "GET",
-        }
-      );
+      const res = await fetch(fetchUrl, {
+        method: "GET",
+      });
       const data: {
         success: boolean;
         data: ComponentData;
@@ -67,23 +68,65 @@ export default async function add(
           await installComponent(data.data);
           logUpdate.done();
         } catch (err: any) {
-          throw err;
+          logUpdate.done();
+          console.log(
+            `❌ An error occurred while installing the ${chalk.blue(name)} component.`
+          );
+          console.log(
+            `🔄 It's likely due to Github API rate-limiting. Please try again later.\n`
+          );
+          console.error(err);
+          console.log();
+          finishedLog(
+            componentNames,
+            total_install_time,
+            successfullyInstalledComponents,
+            componentSearchCount
+          );
+          process.exit(1);
         }
       } else {
         console.log(
-          `❌ An error occurred while searching for ${chalk.blue(name)} component:`,
-          data.error
+          `❌ An error occurred while searching for ${chalk.blue(name)} component:`
+        );
+        console.error(data.error);
+        console.log();
+        finishedLog(
+          componentNames,
+          total_install_time,
+          successfullyInstalledComponents,
+          componentSearchCount
         );
         process.exit(1);
       }
     } catch (error: any) {
       logUpdate.done();
       console.log(
-        `❌ An error occurred while searching for ${name} component.`
+        `❌ An error occurred while fetching for the ${chalk.blue(name)} component.\nFetch URL: ${fetchUrl}`
       );
-      throw error;
+      console.error(error);
+      console.log();
+      finishedLog(
+        componentNames,
+        total_install_time,
+        successfullyInstalledComponents,
+        componentSearchCount
+      );
+      process.exit(1);
     }
+    successfullyInstalledComponents.push(name);
+    console.log(
+      chalk.grey(
+        `\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`
+      )
+    );
   }
+  finishedLog(
+    componentNames,
+    total_install_time,
+    successfullyInstalledComponents,
+    componentSearchCount
+  );
   process.exit(0);
 
   function installComponent(component: ComponentData) {
@@ -92,11 +135,10 @@ export default async function add(
         `🎉 Component found: ${chalk.blue(component.name)} ${chalk.gray(`(v${component.version})`)}`
       );
 
-      //   const get_files_time = Date.now();
       fetchFileNamesInDir(
         component.info.github_repo_owner,
         component.info.github_repo_name,
-        options.output
+        "src"
       )
         .then((fileNames) => {
           if (fileNames) {
@@ -114,8 +156,6 @@ export default async function add(
               {
                 clearOnComplete: false,
                 hideCursor: true,
-                // format:
-                //   "[{bar}] | {percentage}% | {duration_formatted} | {value}/{total} | {filename}",
                 format: formatter,
               },
               cliProgress.Presets.rect
@@ -127,7 +167,12 @@ export default async function add(
 
               try {
                 // var content = await fetchFileContent(downloadUrl);
-                await downloadFile(downloadUrl, `./test/${name}`, bar, name);
+                await downloadFile(
+                  downloadUrl,
+                  path.join(output_dir, name),
+                  bar,
+                  name
+                );
                 installedIndex++;
                 finished();
               } catch (err: any) {
@@ -136,7 +181,7 @@ export default async function add(
                 console.log(
                   `❌ An error occurred while installing ${name} component.`
                 );
-                reject(err);
+                process.exit(1);
               }
             });
 
@@ -153,10 +198,6 @@ export default async function add(
           }
         })
         .catch((err) => {
-          logUpdate.done();
-          console.log(
-            `❌ An error occurred while fetching ${name} component files.\n🔄 It's likely due to Github API rate-limiting. Please try again later.\n`
-          );
           reject(err);
         });
     });
@@ -199,14 +240,10 @@ async function fetchFileNamesInDir(
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${dirPath}`;
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
+    const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
+      throw response;
     }
 
     const data = await response.json();
@@ -253,8 +290,6 @@ function downloadFile(url: string, outputPath: string, bar: any, name: string) {
         });
       })
       .on("error", (err) => {
-        // Handle errors
-        console.error(`Error: ${err.message}`);
         reject(err);
       });
   });
@@ -287,4 +322,31 @@ function formatter(options, params, payload) {
       ` ${params.eta != "NULL" ? chalk.cyan(`(${params.eta}s)`) : ""}`
     );
   }
+}
+
+function finishedLog(
+  componentNames: string[],
+  total_install_time: number,
+  successfullyInstalledComponents: string[],
+  componentSearchCount: number
+) {
+  logUpdate.done();
+  console.log(
+    `👍 Successfully installed ${chalk.green(successfullyInstalledComponents.length.toString())}${chalk.gray(`/`)}${componentNames.length} components: ${chalk.gray(`(${(Date.now() - total_install_time).toFixed(0)}ms)`)}`
+  );
+  let index = 0;
+  for (const name of componentNames) {
+    index++;
+    const isSkipped = componentSearchCount < index;
+    const isInstalled = successfullyInstalledComponents.find(
+      (x) => x.toLowerCase() === name
+    );
+    console.log(
+      `  - ${isSkipped ? `⏩️` : isInstalled ? "✅" : "❌"} ${isSkipped ? chalk.gray(name + " (skipped)") : isInstalled ? chalk.green(name) : chalk.red(name)}`
+    );
+  }
+}
+
+function uniqueStringsArray(arr: string[]): string[] {
+  return Array.from(new Set(arr));
 }
