@@ -18,7 +18,7 @@ export const defaultConfig: Config = {
 };
 
 export default function getMultiUIConfig(): Config {
-  const configPath = path.join(process.cwd() + "multiui.config.json");
+  const configPath = path.join(process.cwd(), "multiui.config.json");
   if (fs.existsSync(configPath)) {
     const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
     delete config["$schema"];

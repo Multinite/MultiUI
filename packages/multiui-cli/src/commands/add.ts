@@ -1,4 +1,3 @@
-import inquirer from "inquirer";
 import https from "https";
 import fs from "fs";
 import logUpdate from "log-update";
@@ -6,6 +5,7 @@ import chalk from "chalk";
 import cliProgress from "cli-progress";
 import { MULTIUI_URL } from "../index.js";
 import path from "path";
+import getMultiUIConfig from "../utils/multiUIConfig.js";
 
 export default async function add(
   componentNames: string[],
@@ -45,8 +45,13 @@ export default async function add(
   });
   componentNames = componentNames.map((name) => name.split("@")[0]!);
 
-  const output_dir = path.resolve(process.cwd(), options.output);
-  logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);
+  const output_dir = path.resolve(
+    process.cwd(),
+    options.output.length == 0
+      ? getMultiUIConfig().components_output_dir
+      : options.output
+  );
+  // logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);
 
   try {
     if (!fs.lstatSync(output_dir).isDirectory()) {
@@ -59,10 +64,11 @@ export default async function add(
     }
   } catch (error: any) {
     if (error.code === "ENOENT") {
-      logUpdate(`❌ Output directory does not exist.`);
-      logUpdate.done();
-      console.log(chalk.gray(`path: ${output_dir}`));
-      process.exit(1);
+      //? We do not care if it doesn't exist, we just want to create it
+      // logUpdate(`❌ Output directory does not exist.`);
+      // logUpdate.done();
+      // console.log(chalk.gray(`path: ${output_dir}`));
+      // process.exit(1);
     } else {
       logUpdate(
         "❌ An error occurred while checking if output directory exists."

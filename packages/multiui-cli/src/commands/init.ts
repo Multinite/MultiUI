@@ -67,7 +67,7 @@ function init() {
           )
         );
         console.log(
-          `🛠️  Now installing components: ${answers.components.map(x => chalk.magenta(x)).join(", ")}...`
+          `🛠️  Now installing components: ${answers.components.map((x) => chalk.magenta(x)).join(", ")}...`
         );
         logUpdate.done();
         add(answers.components, { output: "" });
