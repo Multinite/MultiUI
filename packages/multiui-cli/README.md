@@ -24,7 +24,7 @@ npm install multiui-cli -g
 Initialize your project with MultiUI
 
 ```bash
-multiui-cli init
+multiui init
 ```
 
 ## License
