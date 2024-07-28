@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 2.4.0
+
+### Minor Changes
+
+- 59b49ef: Updated: multiUI Cli
+
 ## 2.3.0
 
 ### Minor Changes
