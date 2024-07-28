@@ -1,5 +1,17 @@
 # multiui-cli
 
+## 2.1.0
+
+### Minor Changes
+
+- 84977d4: Updated: `add` command of the cli to have better DX
+- c2300a6: Updated: CLI's `add` outputs
+- 7d5b321: Updated: Componet Version support
+
+### Patch Changes
+
+- 8d215f8: Updated: CLI
+
 ## 2.0.0
 
 ### Major Changes
