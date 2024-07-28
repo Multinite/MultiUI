@@ -10,6 +10,10 @@
     "framework": {
       "type": "string",
       "description": "The framework to use for components."
+    },
+    "package_manager": {
+      "type": "string",
+      "description": "The package manager to use for components."
     }
   }
 }
