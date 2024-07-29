@@ -139,7 +139,7 @@ function init(args: {
       );
       console.log("✅ Skipping MultiUI installation.");
     } else {
-      await startInstallingMultiUi();
+      await startInstallingMultiUi(args);
     }
 
     startInstallingComponents(answers.components ?? []);
@@ -148,7 +148,7 @@ function init(args: {
 
 export default init;
 
-function startInstallingMultiUi() {
+function startInstallingMultiUi(args: any) {
   return new Promise(async (resolve, reject) => {
     console.log(
       chalk.grey(
@@ -168,11 +168,19 @@ function startInstallingMultiUi() {
       console.log("👍 Canceling MultiUI installation.");
       return process.exit(0);
     }
-    console.log(`🍭 Installing MultiUI...`);
+    args.workspace
+      ? console.log(
+          `🍭 Installing MultiUI in ${chalk.blue(args.workspace)} workspace...`
+        )
+      : console.log(`🍭 Installing MultiUI...`);
     const pkgManager = getMultiUIConfig().package_manager;
     const install = spawn(
       pkgManager,
-      ["install", "@multinite_official/multiui"],
+      [
+        "install",
+        "@multinite_official/multiui",
+        ...(args.workspace ? ["--workspace", args.workspace] : []),
+      ],
       {
         stdio: "inherit",
       }
