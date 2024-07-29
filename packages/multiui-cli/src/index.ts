@@ -23,12 +23,14 @@ program
   .command("add")
   .description("Install one or more components to your project.")
   .argument("<name...>", "name of the component")
-  .option("-o --output <dir>", "output directory", "src")
+  .option("-o --output <dir>", "output directory")
+  .option("--workspace <workspace>", "nodejs workspace directory")
   .action(add);
 
 program
   .command("config")
   .description("Show MultiUI CLI config.")
+  .option("--workspace <workspace>", "nodejs workspace directory")
   .action(showConfig);
 
 program

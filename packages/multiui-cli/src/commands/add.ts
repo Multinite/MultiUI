@@ -6,10 +6,11 @@ import cliProgress from "cli-progress";
 import { MULTIUI_URL } from "../index.js";
 import path from "path";
 import getMultiUIConfig from "../utils/multiUIConfig.js";
+import { getWorkspaces } from "../utils/getWorkspaces.js";
 
 export default async function add(
   componentNames: string[],
-  options: { output: string }
+  options: { output: string | undefined; workspace: string | undefined }
 ) {
   if (!componentNames || componentNames.length === 0)
     return console.log("❌ Please provide a component name.");
@@ -17,6 +18,27 @@ export default async function add(
   componentNames = uniqueStringsArray(
     componentNames.map((name) => name.trim().toLowerCase())
   );
+
+  console.log("options", options);
+  let workspace_path = path.resolve(process.cwd());
+
+  if (options.workspace) {
+    const workspaces = await getWorkspaces();
+
+    if (workspaces.find((x) => x.name === options.workspace)) {
+      const workspacePath = workspaces.find(
+        (x) => x.name === options.workspace
+      )!.path;
+      workspace_path = path.resolve(workspacePath);
+    } else {
+      console.log(`❌ Workspace ${chalk.blue(options.workspace)} not found.`);
+      console.log(
+        `Valid workspaces are: ${workspaces.map((x) => chalk.yellow(x.name)).join(", ")}`
+      );
+      process.exit(1);
+    }
+  }
+
   logUpdate(`🔎 Checking if component versions are valid...`);
   const findInvalidComponentVersions = componentNames.find(
     (x) =>
@@ -46,9 +68,9 @@ export default async function add(
   componentNames = componentNames.map((name) => name.split("@")[0]!);
 
   const output_dir = path.resolve(
-    process.cwd(),
-    options.output.length == 0
-      ? getMultiUIConfig().components_output_dir
+    workspace_path,
+    !options.output
+      ? (await getMultiUIConfig(workspace_path)).components_output_dir
       : options.output
   );
   // logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);

@@ -1,9 +1,9 @@
 import { AsciiTable3 } from "ascii-table3";
 import getMultiUIConfig from "../utils/multiUIConfig.js";
 
-function showConfig() {
-  const config = getMultiUIConfig();
-  var table = new AsciiTable3("MultiUI CLI Config")
+async function showConfig({ workspace }: { workspace: string | undefined }) {
+  const config = await getMultiUIConfig(workspace);
+  var table = new AsciiTable3("MultiUI CLI Config for " + workspace)
     .setAlignCenter(3)
     .addRowMatrix(Object.entries(config));
   table.setStyle("unicode-single");

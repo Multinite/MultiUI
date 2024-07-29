@@ -6,8 +6,9 @@ import path from "path";
 import getMultiUIConfig, { defaultConfig } from "../utils/multiUIConfig.js";
 import chalk from "chalk";
 import { spawn } from "child_process";
+import { getWorkspaces } from "../utils/getWorkspaces.js";
 
-function init(args: {
+async function init(args: {
   framework: string | undefined;
   package_manager: string | undefined;
   components_output_dir: string | undefined;
@@ -16,6 +17,21 @@ function init(args: {
   skipInstallComponents: boolean | undefined;
 }) {
   console.log("args", args);
+
+  let root_path = process.cwd();
+  if (args.workspace) {
+    const workspaces = await getWorkspaces();
+    if (!workspaces.find((x) => x.name === args.workspace)) {
+      console.log(`❌ Workspace ${chalk.blue(args.workspace)} not found.`);
+      console.log(`Available workspaces:`);
+      workspaces.forEach((workspace) => {
+        console.log(`- ${chalk.yellow(workspace.name)}`);
+      });
+      process.exit(1);
+    }
+    root_path = path.join(process.cwd(), args.workspace);
+  }
+
   const configPath = path.join(process.cwd(), "multiui.config.json");
   if (fs.existsSync(configPath)) {
     console.log(`❌ Config file already exists:`);
@@ -142,7 +158,7 @@ function init(args: {
       await startInstallingMultiUi(args);
     }
 
-    startInstallingComponents(answers.components ?? []);
+    startInstallingComponents(answers.components ?? [], args.workspace);
   }
 }
 
@@ -173,7 +189,7 @@ function startInstallingMultiUi(args: any) {
           `🍭 Installing MultiUI in ${chalk.blue(args.workspace)} workspace...`
         )
       : console.log(`🍭 Installing MultiUI...`);
-    const pkgManager = getMultiUIConfig().package_manager;
+    const pkgManager = (await getMultiUIConfig(args.workspace)).package_manager;
     const install = spawn(
       pkgManager,
       [
@@ -204,7 +220,10 @@ function startInstallingMultiUi(args: any) {
   });
 }
 
-function startInstallingComponents(components: string[]) {
+function startInstallingComponents(
+  components: string[],
+  workspace: string | undefined
+) {
   if (components.length !== 0) {
     console.log(
       chalk.grey(
@@ -215,7 +234,7 @@ function startInstallingComponents(components: string[]) {
       `🛠️  Now installing components: ${components.map((x) => chalk.magenta(x)).join(", ")}...`
     );
     logUpdate.done();
-    add(components, { output: "" });
+    add(components, { output: "", workspace: workspace });
   } else {
     console.log(
       chalk.grey(
