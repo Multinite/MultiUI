@@ -404,7 +404,7 @@ function finishedLog(
 ) {
   logUpdate.done();
   console.log(
-    `👍 Successfully installed ${chalk.green(successfullyInstalledComponents.length.toString())}${chalk.gray(`/`)}${componentNames.length} components: ${chalk.gray(`(${(Date.now() - total_install_time).toFixed(0)}ms)`)}`
+    `Installed ${chalk[componentNames.length === successfullyInstalledComponents.length ? "green" : "red"](successfullyInstalledComponents.length.toString())}${`/${componentNames.length}`} components: ${chalk.gray(`(${(Date.now() - total_install_time).toFixed(0)}ms)`)}`
   );
   let index = 0;
   for (const name of componentNames) {
