@@ -16,7 +16,6 @@ async function init(args: {
   skipInstallMultiui: boolean | undefined;
   skipInstallComponents: boolean | undefined;
 }) {
-  console.log("args", args);
 
   let root_path = process.cwd();
   if (args.workspace) {

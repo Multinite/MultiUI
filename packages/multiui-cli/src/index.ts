@@ -6,7 +6,7 @@ import init from "./commands/init.js";
 
 const program = new Command();
 
-export const isDev = true;
+export const isDev = false;
 
 isDev && console.log("🚀 MultiUI CLI is running in development mode.\n");
 
