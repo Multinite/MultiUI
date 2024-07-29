@@ -33,6 +33,15 @@ program
 
 program
   .command("init")
+  .option("-f --framework <framework>", "framework")
+  .option("-p --package_manager <package_manager>", "package manager")
+  .option(
+    "-c --components_output_dir <components_output_dir>",
+    "components output directory"
+  )
+  .option("--workspace <workspace>", "nodejs workspace directory")
+  .option("--skip-install-multiui", "skip installing multiui")
+  .option("--skip-install-components", "skip installing components")
   .description("Initialize MultiUI CLI config.")
   .action(init);
 

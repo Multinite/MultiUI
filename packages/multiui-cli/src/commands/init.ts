@@ -7,84 +7,143 @@ import getMultiUIConfig, { defaultConfig } from "../utils/multiUIConfig.js";
 import chalk from "chalk";
 import { spawn } from "child_process";
 
-function init() {
+function init(args: {
+  framework: string | undefined;
+  package_manager: string | undefined;
+  components_output_dir: string | undefined;
+  workspace: string | undefined;
+  skipInstallMultiui: boolean | undefined;
+  skipInstallComponents: boolean | undefined;
+}) {
+  console.log("args", args);
   const configPath = path.join(process.cwd(), "multiui.config.json");
   if (fs.existsSync(configPath)) {
     console.log(`❌ Config file already exists:`);
     console.log(chalk.gray(`${configPath}`));
     process.exit(1);
   }
-
-  inquirer
-    //@ts-ignore
-    .prompt([
-      {
-        type: "list",
-        name: "framework",
-        message: "What framework do you want to use?",
-        choices: ["react", "angular", "svelte"],
-        default: defaultConfig.framework,
-        required: true,
-      },
-      {
-        type: "list",
-        name: "package_manager",
-        message: "What package manager do you want to use?",
-        choices: ["npm", "yarn", "pnpm", "bun"],
-        default: defaultConfig.package_manager,
-        required: true,
-      },
-      {
-        type: "input",
-        name: "components_output_dir",
-        message: "What is the output directory for components?",
-        default: defaultConfig.components_output_dir,
-        required: true,
-      },
-      {
-        type: "checkbox",
-        name: "components",
-        message: "Would you like to add some components now?",
-        choices: [
-          "button",
-          "input",
-          "checkbox",
-          "dropdown",
-          "modal",
-          "radio",
-          "tabs",
-          "tooltip",
-        ],
-      },
-    ])
-    .then(async (answers) => {
-      const default_config = {
-        [`$schema`]: "https://multiui.org/multiui.config.schema.json",
-        ...defaultConfig,
-      };
-
-      fs.writeFileSync(configPath, JSON.stringify(default_config, null, 2));
-      console.log();
-      console.log(`✅ Config file created!`);
-
-      await startInstallingMultiUi();
-
-      startInstallingComponents(answers.components);
-    })
-    .catch((error) => {
-      if (error.isTtyError) {
-        // Prompt couldn't be rendered in the current environment
-        console.log(
-          "❌ Prompt couldn't be rendered in the current environment."
-        );
-        process.exit(1);
-      } else {
-        // Something else went wrong
-        console.log("❌ Something went wrong:");
-        console.error(error);
-        process.exit(1);
-      }
+  if (
+    args.package_manager &&
+    args.framework &&
+    args.components_output_dir &&
+    args.skipInstallComponents
+  )
+    run({
+      components: [],
+      components_output_dir:
+        args.components_output_dir || defaultConfig.components_output_dir,
+      framework: args.framework || defaultConfig.framework,
+      package_manager: args.package_manager || defaultConfig.package_manager,
     });
+  else
+    inquirer
+      .prompt(
+        //@ts-ignore
+        [
+          ...(args.framework
+            ? []
+            : [
+                {
+                  type: "list",
+                  name: "framework",
+                  message: "What framework do you want to use?",
+                  choices: ["react", "angular", "svelte"],
+                  default: defaultConfig.framework,
+                  required: true,
+                },
+              ]),
+          ,
+          ...(args.package_manager
+            ? []
+            : [
+                {
+                  type: "list",
+                  name: "package_manager",
+                  message: "What package manager do you want to use?",
+                  choices: ["npm", "yarn", "pnpm", "bun"],
+                  default: defaultConfig.package_manager,
+                  required: true,
+                },
+              ]),
+          ,
+          ...(args.components_output_dir
+            ? []
+            : [
+                {
+                  type: "input",
+                  name: "components_output_dir",
+                  message: "What is the output directory for components?",
+                  default: defaultConfig.components_output_dir,
+                  required: true,
+                },
+              ]),
+          ...(args.skipInstallComponents
+            ? []
+            : [
+                {
+                  type: "checkbox",
+                  name: "components",
+                  message: "Would you like to add some components now?",
+                  choices: [
+                    "button",
+                    "input",
+                    "checkbox",
+                    "dropdown",
+                    "modal",
+                    "radio",
+                    "tabs",
+                    "tooltip",
+                  ],
+                },
+              ]),
+        ].filter((x) => typeof x !== "undefined")
+      )
+      .then(async (answers: any) => {
+        await run(answers);
+      })
+      .catch((error) => {
+        if (error.isTtyError) {
+          // Prompt couldn't be rendered in the current environment
+          console.log(
+            "❌ Prompt couldn't be rendered in the current environment."
+          );
+          process.exit(1);
+        } else {
+          // Something else went wrong
+          console.log("❌ Something went wrong:");
+          console.error(error);
+          process.exit(1);
+        }
+      });
+
+  async function run(answers: {
+    framework: string | undefined;
+    package_manager: string | undefined;
+    components_output_dir: string | undefined;
+    components: string[] | undefined;
+  }) {
+    const default_config = {
+      [`$schema`]: "https://multiui.org/multiui.config.schema.json",
+      ...defaultConfig,
+    };
+
+    fs.writeFileSync(configPath, JSON.stringify(default_config, null, 2));
+    console.log();
+    console.log(`✅ Config file created!`);
+
+    if (args.skipInstallMultiui === true) {
+      console.log(
+        chalk.grey(
+          `\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`
+        )
+      );
+      console.log("✅ Skipping MultiUI installation.");
+    } else {
+      await startInstallingMultiUi();
+    }
+
+    startInstallingComponents(answers.components ?? []);
+  }
 }
 
 export default init;
@@ -149,5 +208,12 @@ function startInstallingComponents(components: string[]) {
     );
     logUpdate.done();
     add(components, { output: "" });
+  } else {
+    console.log(
+      chalk.grey(
+        `\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`
+      )
+    );
+    console.log("✅ No components to install, all finished!");
   }
 }
