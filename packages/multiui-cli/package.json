@@ -1,6 +1,6 @@
 {
   "name": "multiui-cli",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "The MultiUI CLI",
   "scripts": {
     "build": "tsc",
