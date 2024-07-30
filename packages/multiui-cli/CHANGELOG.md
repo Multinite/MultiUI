@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 2.5.1
+
+### Patch Changes
+
+- 46111fb: Fix: CLI versioning
+
 ## 2.5.0
 
 ### Minor Changes
