@@ -213,18 +213,37 @@ function startInstallingMultiUi(args: any) {
       resolve(1);
       return;
     }
+    const pkgManager = (await getMultiUIConfig(args.workspace)).package_manager;
+
     args.workspace
       ? console.log(
-          `🍭 Installing MultiUI in the ${chalk.blue(args.workspace)} workspace using ${chalk.green(args.package_manager || defaultConfig.package_manager)}...`
+          `🍭 Installing MultiUI in the ${chalk.blue(args.workspace)} workspace using ${chalk.green(pkgManager)}...`
         )
-      : console.log(`🍭 Installing MultiUI...`);
-    const pkgManager = (await getMultiUIConfig(args.workspace)).package_manager;
+      : console.log(
+          `🍭 Installing MultiUI using ${chalk.green(pkgManager)}...`
+        );
+
+    if (args.installFlags) {
+      console.log(
+        `🛠️  Using install flags: ${chalk.magenta(args.installFlags)}...`
+      );
+    }
+
+    if (pkgManager != "npm") {
+      console.log(
+        `❌ Currently we do not support other package managers besides npm.`
+      );
+      process.exit(1);
+    }
+    console.log();
+    console.log();
     const install = spawn(
       pkgManager,
       [
         "install",
         "@multinite_official/multiui",
         ...(args.workspace ? ["--workspace", args.workspace] : []),
+        ...(args.installFlags ? [args.installFlags] : []),
       ],
       {
         stdio: "inherit",

@@ -7,16 +7,11 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 
-// Convert import.meta.url to a file path
 const __filename = fileURLToPath(import.meta.url);
-
-// Get the directory name from the file path
 const __dirname = dirname(__filename);
 
 const pkgJsonPath = path.join(__dirname, "..", "package.json");
-
 const { version } = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
-
 const program = new Command();
 
 export const isDev = false;
@@ -58,6 +53,7 @@ program
     "components output directory"
   )
   .option("--workspace <workspace>", "nodejs workspace directory")
+  .option("--install-flags <flags>", "The flags to pass to the installation command for MultiUI")
   .option("--skip-install-multiui", "skip installing multiui")
   .option("--skip-install-components", "skip installing components")
   .description("Initialize MultiUI CLI config.")

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://multiui.org/multiui.config.schema.json",
+  "components_output_dir": "src/components/multiui",
+  "framework": "react",
+  "package_manager": "npm"
+}
