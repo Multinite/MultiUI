@@ -30,8 +30,9 @@ export default async function getMultiUIConfig(
     let root_path = process.cwd();
     if (workspace) {
       const workspaces = await getWorkspaces();
-      if (workspaces.find((x) => x.name === workspace)) {
-        root_path = path.join(process.cwd(), workspace);
+      const find = workspaces.find((x) => x.name === workspace);
+      if (find) {
+        root_path = find.path;
       } else {
         console.log(
           `❌ No config file found for the ${chalk.blue(workspace)} workspace, please run ${chalk.yellow(`multiui init '--workspace=${workspace}'`)} to create one.`
@@ -40,7 +41,7 @@ export default async function getMultiUIConfig(
       }
     }
 
-    const configPath = path.join(process.cwd(), "multiui.config.json");
+    const configPath = path.join(root_path, "multiui.config.json");
     if (fs.existsSync(configPath)) {
       const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
       delete config["$schema"];

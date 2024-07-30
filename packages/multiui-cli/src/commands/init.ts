@@ -8,6 +8,9 @@ import chalk from "chalk";
 import { spawn } from "child_process";
 import { getWorkspaces } from "../utils/getWorkspaces.js";
 
+const valid_frameworks = ["react", "angular", "svelte"];
+const valid_package_managers = ["npm", "yarn", "pnpm", "bun"];
+
 async function init(args: {
   framework: string | undefined;
   package_manager: string | undefined;
@@ -16,11 +19,32 @@ async function init(args: {
   skipInstallMultiui: boolean | undefined;
   skipInstallComponents: boolean | undefined;
 }) {
+  if (args.framework && valid_frameworks.indexOf(args.framework) === -1) {
+    console.log(`❌ Invalid framework ${chalk.blue(args.framework)}`);
+    console.log(
+      `Valid frameworks: ${valid_frameworks.map((x) => chalk.yellow(x)).join(", ")}`
+    );
+    process.exit(1);
+  }
+
+  if (
+    args.package_manager &&
+    valid_package_managers.indexOf(args.package_manager) === -1
+  ) {
+    console.log(
+      `❌ Invalid package manager ${chalk.blue(args.package_manager)}`
+    );
+    console.log(
+      `Valid package managers: ${valid_package_managers.map((x) => chalk.yellow(x)).join(", ")}`
+    );
+    process.exit(1);
+  }
 
   let root_path = process.cwd();
   if (args.workspace) {
     const workspaces = await getWorkspaces();
-    if (!workspaces.find((x) => x.name === args.workspace)) {
+    const find = workspaces.find((x) => x.name === args.workspace);
+    if (!find) {
       console.log(`❌ Workspace ${chalk.blue(args.workspace)} not found.`);
       console.log(`Available workspaces:`);
       workspaces.forEach((workspace) => {
@@ -28,10 +52,11 @@ async function init(args: {
       });
       process.exit(1);
     }
-    root_path = path.join(process.cwd(), args.workspace);
+    root_path = find.path;
   }
 
-  const configPath = path.join(process.cwd(), "multiui.config.json");
+  const configPath = path.join(root_path, "multiui.config.json");
+  console.log(`Root path: ${root_path}`);
   if (fs.existsSync(configPath)) {
     console.log(`❌ Config file already exists:`);
     console.log(chalk.gray(`${configPath}`));
@@ -114,7 +139,7 @@ async function init(args: {
         ].filter((x) => typeof x !== "undefined")
       )
       .then(async (answers: any) => {
-        await run(answers);
+        run(answers);
       })
       .catch((error) => {
         if (error.isTtyError) {
@@ -125,7 +150,7 @@ async function init(args: {
           process.exit(1);
         } else {
           // Something else went wrong
-          console.log("❌ Something went wrong:");
+          console.log("❌ Something went wrong while prompting:");
           console.error(error);
           process.exit(1);
         }
@@ -175,17 +200,22 @@ function startInstallingMultiUi(args: any) {
       {
         type: "confirm",
         name: "install_multiui",
-        message: "Do you want to install MultiUI as a dependency?",
+        message: args.workspace
+          ? `Do you want to install MultiUI as a dependency in the ${chalk.blue(
+              args.workspace
+            )} workspace?`
+          : "Do you want to install MultiUI as a dependency?",
         default: true,
       },
     ]);
     if (!answers.install_multiui) {
-      console.log("👍 Canceling MultiUI installation.");
-      return process.exit(0);
+      console.log("✅ Canceling MultiUI installation.");
+      resolve(1);
+      return;
     }
     args.workspace
       ? console.log(
-          `🍭 Installing MultiUI in ${chalk.blue(args.workspace)} workspace...`
+          `🍭 Installing MultiUI in the ${chalk.blue(args.workspace)} workspace using ${chalk.green(args.package_manager || defaultConfig.package_manager)}...`
         )
       : console.log(`🍭 Installing MultiUI...`);
     const pkgManager = (await getMultiUIConfig(args.workspace)).package_manager;

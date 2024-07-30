@@ -19,7 +19,6 @@ export default async function add(
     componentNames.map((name) => name.trim().toLowerCase())
   );
 
-  console.log("options", options);
   let workspace_path = path.resolve(process.cwd());
 
   if (options.workspace) {
@@ -70,7 +69,7 @@ export default async function add(
   const output_dir = path.resolve(
     workspace_path,
     !options.output
-      ? (await getMultiUIConfig(workspace_path)).components_output_dir
+      ? (await getMultiUIConfig(options.workspace)).components_output_dir
       : options.output
   );
   // logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);
@@ -109,7 +108,6 @@ export default async function add(
     logUpdate(
       `🔎 Now searching for ${chalk.blue(name)} component... ${chalk.gray(`(${componentSearchCount}/${componentNames.length})`)}`
     );
-    logUpdate.done();
     const fetchUrl = new URL(
       `/api/v1/components/${[desired_component_versions.find((x) => x.name === name)!].map((x) => `${x.name}@${x.version}`).join(",")}`,
       MULTIUI_URL
