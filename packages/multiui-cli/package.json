@@ -6,6 +6,7 @@
     "build": "tsc",
     "build:prod": "tsc",
     "dev": "tsc --watch",
+    "cli:run": "node dist/index.js",
     "test": "echo 'No tests yet'"
   },
   "publishConfig": {
@@ -27,7 +28,7 @@
     "url": "https://github.com/Multinite/MultiUI/issues"
   },
   "bin": {
-    "multiui": "./dist/src/index.js"
+    "multiui": "./dist/index.js"
   },
   "keywords": [
     "multinite",

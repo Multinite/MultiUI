@@ -21,7 +21,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "release": "changeset publish --access public",
     "db:studio": "turbo run db:studio",
-    "db:push": "turbo run db:push"
+    "db:push": "turbo run db:push",
+    "cli:run": "node packages/multiui-cli/dist/index.js"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",

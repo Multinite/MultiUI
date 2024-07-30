@@ -3,13 +3,28 @@ import { Command } from "commander";
 import add from "./commands/add.js";
 import showConfig from "./commands/config.js";
 import init from "./commands/init.js";
-import { version } from "../package.json";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import path, { dirname } from "path";
+
+// Convert import.meta.url to a file path
+const __filename = fileURLToPath(import.meta.url);
+
+// Get the directory name from the file path
+const __dirname = dirname(__filename);
+
+const pkgJsonPath = path.join(__dirname, "..", "package.json");
+
+const { version } = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
 
 const program = new Command();
 
 export const isDev = false;
 
-isDev && console.log("🚀 MultiUI CLI is running in development mode.\n");
+isDev &&
+  console.log(
+    "🚀 MultiUI CLI is running in development mode.v" + version + "\n"
+  );
 
 export const MULTIUI_URL = isDev
   ? `http://localhost:3000`

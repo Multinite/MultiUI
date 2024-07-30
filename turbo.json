@@ -20,6 +20,9 @@
     "db:push": {
       "cache": false,
       "persistent": true
+    },
+    "cli:run": {
+      "cache": false
     }
   }
 }
