@@ -3,6 +3,7 @@ import { Command } from "commander";
 import add from "./commands/add.js";
 import showConfig from "./commands/config.js";
 import init from "./commands/init.js";
+import { version } from "../package.json";
 
 const program = new Command();
 
@@ -17,7 +18,7 @@ export const MULTIUI_URL = isDev
 program
   .name("MultiUI")
   .description("The MultiUI Component Library CLI.")
-  .version("v1.0.0");
+  .version(version);
 
 program
   .command("add")
