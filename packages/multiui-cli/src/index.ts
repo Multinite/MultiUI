@@ -53,7 +53,6 @@ program
     "components output directory"
   )
   .option("--workspace <workspace>", "nodejs workspace directory")
-  .option("--install-flags <flags>", "The flags to pass to the installation command for MultiUI")
   .option("--skip-install-multiui", "skip installing multiui")
   .option("--skip-install-components", "skip installing components")
   .description("Initialize MultiUI CLI config.")

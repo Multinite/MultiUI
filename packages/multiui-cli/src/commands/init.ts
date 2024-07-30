@@ -215,6 +215,18 @@ function startInstallingMultiUi(args: any) {
     }
     const pkgManager = (await getMultiUIConfig(args.workspace)).package_manager;
 
+    const { installArgsOrFlags }: { installArgsOrFlags: string } =
+      await inquirer
+        //@ts-ignore
+        .prompt([
+          {
+            type: "input",
+            name: "installArgsOrFlags",
+            message: "Enter extra install arguments or flags (optional)",
+            required: false,
+          },
+        ]);
+
     args.workspace
       ? console.log(
           `🍭 Installing MultiUI in the ${chalk.blue(args.workspace)} workspace using ${chalk.green(pkgManager)}...`
@@ -223,9 +235,9 @@ function startInstallingMultiUi(args: any) {
           `🍭 Installing MultiUI using ${chalk.green(pkgManager)}...`
         );
 
-    if (args.installFlags) {
+    if (installArgsOrFlags) {
       console.log(
-        `🛠️  Using install flags: ${chalk.magenta(args.installFlags)}...`
+        `🛠️  Using install flags: ${chalk.magenta(installArgsOrFlags)}...`
       );
     }
 
@@ -236,19 +248,18 @@ function startInstallingMultiUi(args: any) {
       process.exit(1);
     }
     console.log();
+    const spawnArgs = [
+      "install",
+      "@multinite_official/multiui",
+      ...(args.workspace ? [`--workspace`, `${args.workspace}`] : []),
+      ...(installArgsOrFlags ? [installArgsOrFlags] : []),
+    ];
+    console.log(chalk.grey(`Running: ${pkgManager} ${spawnArgs.join(" ")}`));
     console.log();
-    const install = spawn(
-      pkgManager,
-      [
-        "install",
-        "@multinite_official/multiui",
-        ...(args.workspace ? ["--workspace", args.workspace] : []),
-        ...(args.installFlags ? [args.installFlags] : []),
-      ],
-      {
-        stdio: "inherit",
-      }
-    );
+
+    const install = spawn(pkgManager, spawnArgs, {
+      stdio: "inherit",
+    });
     install.on("error", (err) => {
       console.error(
         `❌ ${pkgManager} install process exited with error ${err}`
