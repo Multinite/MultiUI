@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 2.5.2
+
+### Patch Changes
+
+- 87a0080: Fix: MultiUI-CLI bin export path
+
 ## 2.5.1
 
 ### Patch Changes
