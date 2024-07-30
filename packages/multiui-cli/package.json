@@ -27,7 +27,7 @@
     "url": "https://github.com/Multinite/MultiUI/issues"
   },
   "bin": {
-    "multiui": "./dist/index.js"
+    "multiui": "./dist/src/index.js"
   },
   "keywords": [
     "multinite",
