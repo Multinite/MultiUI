@@ -1,5 +1,11 @@
 # @multinite_official/multiui-eslint-config
 
+## 0.0.3
+
+### Patch Changes
+
+- 82f03d5: Updated: `init` command to support workspaces.
+
 ## 0.0.2
 
 ### Patch Changes
