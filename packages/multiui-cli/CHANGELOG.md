@@ -1,5 +1,18 @@
 # multiui-cli
 
+## 2.5.0
+
+### Minor Changes
+
+- 02cebbd: Updated: More stability for workspaces
+
+### Patch Changes
+
+- 82f03d5: Updated: `init` command to support workspaces.
+- 471bb7b: Updated: init command styling
+- 4841212: Updated CLI's init
+- d628ece: Updated: init command
+
 ## 2.4.0
 
 ### Minor Changes
