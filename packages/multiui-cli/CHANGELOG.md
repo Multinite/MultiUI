@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 2.5.3
+
+### Patch Changes
+
+- f7876b9: FIx: multiui version & export paths
+
 ## 2.5.2
 
 ### Patch Changes
