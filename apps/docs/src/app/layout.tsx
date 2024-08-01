@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn(inter.className, "overflow-hidden bg-black text-zinc-50")}
+        className={cn(inter.className, "overflow-hidden ")}
       >
         <Analytics />
         <ClientLayout>{children}</ClientLayout>

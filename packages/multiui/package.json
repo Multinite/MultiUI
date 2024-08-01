@@ -2,7 +2,7 @@
   "name": "@multinite_official/multiui",
   "version": "2.4.3",
   "description": "The first and only Component Framework.",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "build:prod": "tsc",
