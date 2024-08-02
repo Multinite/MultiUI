@@ -4,6 +4,6 @@
   "framework": "react",
   "package_manager": "pnpm",
   "default_theme": "default",
-  "theme_prefix": "test-lol",
+  "theme_prefix": "multiui",
   "themes": []
 }
