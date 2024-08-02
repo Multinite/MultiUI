@@ -22,19 +22,36 @@ export type Theme = {
   warning: ColorValues<true>;
   danger: ColorValues<true>;
   default: ColorValues;
+  content1: {
+    DEFAULT: string;
+    foreground: string;
+  };
+  content2: {
+    DEFAULT: string;
+    foreground: string;
+  };
+  content3: {
+    DEFAULT: string;
+    foreground: string;
+  };
+  content4: {
+    DEFAULT: string;
+    foreground: string;
+  };
   borderRadius: {
     sm: string;
     md: string;
     lg: string;
   };
   textSize: {
-    xs: string;
-    sm: string;
-    md: string;
-    lg: string;
-    xl: string;
-    xxl: string;
+    [`extra-small`]: string;
+    [`small`]: string;
+    [`medium`]: string;
+    [`large`]: string;
+    [`extra-large`]: string;
+    [`extra-extra-large`]: string;
   };
+  focus: string;
 };
 
 export type ColorValues<includeForeground = false> =

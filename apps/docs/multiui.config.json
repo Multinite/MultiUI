@@ -4,5 +4,6 @@
   "framework": "react",
   "package_manager": "pnpm",
   "default_theme": "default",
+  "theme_prefix": "test-lol",
   "themes": []
 }

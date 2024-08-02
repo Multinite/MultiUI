@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.scss";
 import ClientLayout from "./ClientLayout";
 import { cn, MultiUIProvider } from "@multinite_official/multiui";
-import { themes, default_theme } from "../../multiui.config.json";
+import { themes, default_theme, theme_prefix } from "../../multiui.config.json";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,13 +20,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "overflow-hidden bg-background text-foreground")}>
+      <body
+        className={cn(
+          inter.className,
+          "overflow-hidden bg-background text-foreground ring-focus"
+        )}
+      >
         <Analytics />
         <ClientLayout>
           <MultiUIProvider
             config={{
               default_theme,
               themes,
+              theme_prefix,
             }}
           >
             {children}

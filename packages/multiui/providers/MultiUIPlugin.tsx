@@ -8,7 +8,10 @@ const MultiUIPlugin = function (
   const prefix = (multiUIConfig.theme_prefix || "multiui") as "multiui";
 
   function cssVar(value: string[]) {
-    return `var(--${prefix}-${value.map(x => x.replaceAll("-", "_")).filter(x => x).join("-")})` as const;
+    return `hsl(var(--${prefix}-${value
+      .map((x) => x.replaceAll("-", "_"))
+      .filter((x) => x)
+      .join("-")}))` as const;
   }
   return plugin(function ({
     theme,
@@ -98,13 +101,12 @@ const MultiUIPlugin = function (
     console.log(utils);
     addUtilities({
       ...utils,
-    });
-    addUtilities({
-      ".sup": {
-        "content-visibility": "auto",
+      ".outline-focus": {
+        outlineColor: `hsl(var(--${prefix}-focus))`,
       },
-      ".bro": {
-        "content-visibility": "hidden",
+      ".ring-focus": {
+        "--tw-ring-opacity": (1).toString(),
+        "--tw-ring-color": `hsl(var(--${prefix}-focus) / var(--tw-ring-opacity))`,
       },
     });
   }, {});
