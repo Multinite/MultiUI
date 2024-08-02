@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.scss";
 import ClientLayout from "./ClientLayout";
-import { cn } from "@multinite_official/multiui";
+import { cn, MultiUIProvider } from "@multinite_official/multiui";
+import { themes, default_theme } from "../../multiui.config.json";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,13 +18,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log(`running`);
   return (
     <html lang="en">
-      <body
-        className={cn(inter.className, "overflow-hidden ")}
-      >
+      <body className={cn(inter.className, "overflow-hidden ")}>
         <Analytics />
-        <ClientLayout>{children}</ClientLayout>
+        <ClientLayout>
+          <MultiUIProvider
+            config={{
+              default_theme,
+              themes,
+            }}
+          >
+            {children}
+          </MultiUIProvider>
+        </ClientLayout>
       </body>
     </html>
   );

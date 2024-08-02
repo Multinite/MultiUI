@@ -3,5 +3,6 @@
   "components_output_dir": "/src/components/multiui",
   "framework": "react",
   "package_manager": "pnpm",
-  "theme": []
+  "default_theme": "default",
+  "themes": []
 }

@@ -15,6 +15,10 @@
       "type": "string",
       "description": "The package manager to use for components."
     },
+    "default_theme": {
+      "type": "string",
+      "description": "The default theme to use for components."
+    },
     "themes": {
       "type": "array",
       "description": "The themes to use for components.",

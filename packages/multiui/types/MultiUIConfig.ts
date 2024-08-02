@@ -3,6 +3,7 @@ export type MultiUIConfig = {
   framework: string;
   package_manager: string;
   themes: Theme[];
+  default_theme: string;
   theme_prefix?: string;
 };
 
@@ -16,10 +17,10 @@ export type Theme = {
   secondary: ColorValues;
   background: ColorValues;
   foreground: ColorValues;
-  success: ColorValues;
-  info: ColorValues;
-  warning: ColorValues;
-  danger: ColorValues;
+  success: ColorValues<true>;
+  info: ColorValues<true>;
+  warning: ColorValues<true>;
+  danger: ColorValues<true>;
   default: ColorValues;
   borderRadius: {
     sm: string;
@@ -36,16 +37,32 @@ export type Theme = {
   };
 };
 
-export type ColorValues = {
-  DEFAULT: string;
-  50: string;
-  100: string;
-  200: string;
-  300: string;
-  400: string;
-  500: string;
-  600: string;
-  700: string;
-  800: string;
-  900: string;
-};
+export type ColorValues<includeForeground = false> =
+  includeForeground extends false
+    ? {
+        DEFAULT: string;
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+      }
+    : {
+        DEFAULT: string;
+        50: string;
+        100: string;
+        200: string;
+        300: string;
+        400: string;
+        500: string;
+        600: string;
+        700: string;
+        800: string;
+        900: string;
+        foreground: string;
+      };
