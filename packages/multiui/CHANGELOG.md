@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.4.4
+
+### Patch Changes
+
+- 0be783d: Theme init
+
 ## 2.4.3
 
 ### Patch Changes
