@@ -18,10 +18,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.log(`running`);
   return (
     <html lang="en">
-      <body className={cn(inter.className, "overflow-hidden ")}>
+      <body className={cn(inter.className, "overflow-hidden bg-background text-foreground")}>
         <Analytics />
         <ClientLayout>
           <MultiUIProvider

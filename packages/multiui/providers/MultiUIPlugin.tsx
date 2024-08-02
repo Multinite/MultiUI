@@ -8,7 +8,7 @@ const MultiUIPlugin = function (
   const prefix = (multiUIConfig.theme_prefix || "multiui") as "multiui";
 
   function cssVar(value: string[]) {
-    return `var(--${prefix}-${value.join("-")})` as const;
+    return `var(--${prefix}-${value.map(x => x.replaceAll("-", "_")).filter(x => x).join("-")})` as const;
   }
   return plugin(function ({
     theme,
@@ -57,13 +57,19 @@ const MultiUIPlugin = function (
         colorType: (typeof allColorTypes)[number],
         colorIndex: ColorIndexs
       ) => ({
-        backgroundColor: cssVar([colorType, colorIndex.toString()]),
+        backgroundColor: cssVar([
+          colorType,
+          colorIndex === "DEFAULT" ? "" : colorIndex.toString(),
+        ]),
       }),
       text: (
         colorType: (typeof allColorTypes)[number],
         colorIndex: ColorIndexs
       ) => ({
-        color: cssVar([colorType, colorIndex.toString()]),
+        color: cssVar([
+          colorType,
+          colorIndex === "DEFAULT" ? "" : colorIndex.toString(),
+        ]),
       }),
     };
     type Utils = Record<
@@ -88,6 +94,8 @@ const MultiUIPlugin = function (
         }, {}),
       };
     }, {}) as Utils;
+
+    console.log(utils);
     addUtilities({
       ...utils,
     });
