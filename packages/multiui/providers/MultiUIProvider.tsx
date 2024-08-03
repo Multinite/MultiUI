@@ -17,7 +17,7 @@ type MultiUIProvider = {
   currentTheme: string | undefined;
   currentThemeValue: Theme | undefined;
   themes: string[];
-  addTheme: (theme: Theme) => void;
+  addTheme: (theme: Theme | Theme[]) => void;
   onThemeChange: (
     callback: (
       themeName: MultiUIProvider["currentTheme"],
@@ -350,7 +350,10 @@ const MultiUIProvider = memo(function ({
         themes: themes.map((x) => x.name),
 
         addTheme(theme) {
-          $Themes((prev) => [...prev, theme]);
+          $Themes((prev) => [
+            ...prev,
+            ...(Array.isArray(theme) ? theme : [theme]),
+          ]);
         },
         onThemeChange(callback) {
           subscribers.current.push(callback);

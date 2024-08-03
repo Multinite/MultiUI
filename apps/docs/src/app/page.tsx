@@ -11,12 +11,12 @@ export default function Home() {
   useEffect(() => {
     if (hasCalled.current) return;
     hasCalled.current = true;
-    addTheme(multiUI_defaultTheme);
+    addTheme([multiUI_defaultTheme]);
     onThemeChange((themeName, theme) => {
       console.log(`themeName`, themeName);
       console.log(`theme`, theme);
     });
-  }, [addTheme]);
+  }, [addTheme, onThemeChange]);
 
   return (
     <div className="w-screen h-screen flex justify-center items-center gap-5 text-primary flex-col">
