@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.scss";
 import ClientLayout from "./ClientLayout";
 import { cn, MultiUIProvider } from "@multinite_official/multiui";
-import { themes, default_theme, theme_prefix } from "../../multiui.config.json";
+import { theme_prefix } from "../../multiui.config.json";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,8 +30,6 @@ export default function RootLayout({
         <ClientLayout>
           <MultiUIProvider
             config={{
-              default_theme,
-              themes,
               theme_prefix,
             }}
           >
