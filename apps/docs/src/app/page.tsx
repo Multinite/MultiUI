@@ -7,6 +7,7 @@ export default function Home() {
       </span>
       <button className="focus:outline-focus">Hello, World!</button>
       <button className="">Hello, World!</button>
+      <button className="focus:ring-focus focus:ring-offset-2 focus:ring focus:outline-none">Hello, World!</button>
     </div>
   );
 }

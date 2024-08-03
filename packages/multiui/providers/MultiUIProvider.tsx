@@ -199,7 +199,7 @@ function MultiUIProvider({
       DEFAULT: "240 5.2% 33.92%",
       foreground: "240 4.88% 83.92%",
     },
-    textSize: {
+    [`text-size`]: {
       [`extra-small`]: "0.75rem",
       [`small`]: "0.875rem",
       [`medium`]: "1rem",
@@ -216,6 +216,7 @@ function MultiUIProvider({
 
   const themeStyling = useMemo(() => {
     function colorValues(color: string) {
+      console.log(`color`, color);
       return {
         [`--${theme_prefix}-${color}`]: theme[color].DEFAULT,
         [`--${theme_prefix}-${color}-100`]: theme[color][100],
@@ -230,13 +231,20 @@ function MultiUIProvider({
       };
     }
 
+    function getThemeValue(keys: string[]) {
+      let val = theme;
+      for (let i = 0; i < keys.length; i++) {
+        val = val[keys[i]!];
+      }
+      return val;
+    }
+
     const bg = colorValues("background");
     const fg = colorValues("foreground");
     const primary = colorValues("primary");
     const secondary = colorValues("secondary");
     const default_ = colorValues("default");
     const content = {
-      [`--${theme_prefix}-content1-foreground`]: theme.content1.foreground,
       [`--${theme_prefix}-content1`]: theme.content1.DEFAULT,
       [`--${theme_prefix}-content2-foreground`]: theme.content2.foreground,
       [`--${theme_prefix}-content2`]: theme.content1.DEFAULT,
@@ -245,17 +253,33 @@ function MultiUIProvider({
       [`--${theme_prefix}-content4-foreground`]: theme.content4.foreground,
       [`--${theme_prefix}-content4`]: theme.content4.DEFAULT,
     };
+
     const other = {
-      [`--${theme_prefix}-text-size-extra-small`]:
-        theme.textSize["extra-small"],
-      [`--${theme_prefix}-text-size-small`]: theme.textSize["small"],
-      [`--${theme_prefix}-text-size-medium`]: theme.textSize["medium"],
-      [`--${theme_prefix}-text-size-large`]: theme.textSize["large"],
-      [`--${theme_prefix}-text-size-extra-large`]:
-        theme.textSize["extra-large"],
-      [`--${theme_prefix}-text-size-extra-extra-large`]:
-        theme.textSize["extra-extra-large"],
-      [`--${theme_prefix}-focus`]: theme.focus,
+      [`--${theme_prefix}-text-size-extra-small`]: getThemeValue([
+        "text-size",
+        "extra-small",
+      ]),
+      [`--${theme_prefix}-text-size-small`]: getThemeValue([
+        "text-size",
+        "small",
+      ]),
+      [`--${theme_prefix}-text-size-medium`]: getThemeValue([
+        "text-size",
+        "medium",
+      ]),
+      [`--${theme_prefix}-text-size-large`]: getThemeValue([
+        "text-size",
+        "large",
+      ]),
+      [`--${theme_prefix}-text-size-extra-large`]: getThemeValue([
+        "text-size",
+        "extra-large",
+      ]),
+      [`--${theme_prefix}-text-size-extra-extra-large`]: getThemeValue([
+        "text-size",
+        "extra-extra-large",
+      ]),
+      [`--${theme_prefix}-focus`]: getThemeValue(["focus"]),
     };
 
     const style = {
@@ -282,6 +306,7 @@ function MultiUIProvider({
 
   const isRan = useRef(false);
   useEffect(() => {
+    if (typeof document === "undefined") return;
     if (!isRan.current) {
       isRan.current = true;
       document.documentElement.className = cn(
@@ -294,6 +319,7 @@ function MultiUIProvider({
   }, []);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     document.documentElement.setAttribute("data-theme", currentTheme);
   }, [currentTheme]);
 

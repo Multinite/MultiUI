@@ -43,7 +43,7 @@ export type Theme = {
     md: string;
     lg: string;
   };
-  textSize: {
+  [`text-size`]: {
     [`extra-small`]: string;
     [`small`]: string;
     [`medium`]: string;
