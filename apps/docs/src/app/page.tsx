@@ -19,12 +19,11 @@ export default function Home() {
   }, [addTheme, onThemeChange]);
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center gap-5 text-primary flex-col">
-      <span className="text-lg">Hello and welcome to the MultiUI docs!</span>
+    <div className="w-screen h-screen flex justify-center items-center gap-5 flex-col">
+      <span className="text-lg text-primary">Hello and welcome to the MultiUI docs!</span>
       <span className="text-lg text-secondary">
         Hello and welcome to the MultiUI docs!
       </span>
-      <button className="focus:outline-focus">Hello, World!</button>
       <h1>Theme: {currentTheme}</h1>
       <button className="" onClick={() => setTheme(themes[0]!)}>
         Click to toggle theme (0)

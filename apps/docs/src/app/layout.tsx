@@ -23,7 +23,7 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          "overflow-hidden bg-background text-foreground ring-focus"
+          "overflow-hidden bg-background text-foreground ring-focus transition-all ease-in-out duration-300"
         )}
       >
         <Analytics />
@@ -32,6 +32,7 @@ export default function RootLayout({
             config={{
               theme_prefix,
             }}
+            blurOnThemeChange
           >
             {children}
           </MultiUIProvider>

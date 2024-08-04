@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 import {
   createContext,
   memo,
@@ -209,10 +210,16 @@ const default_theme: Theme = {
 const MultiUIProvider = memo(function ({
   config,
   children,
+  blurOnThemeChange = false,
 }: {
   config: {
     theme_prefix?: MultiUIConfig["theme_prefix"];
   };
+  /**
+   * Apply a blur effect to the page when the theme changes.
+   * @default false
+   */
+  blurOnThemeChange?: boolean;
   children: React.ReactNode;
 }) {
   const [themes, $Themes] = useState<Theme[]>([]);
@@ -220,6 +227,11 @@ const MultiUIProvider = memo(function ({
   const theme_prefix = (config.theme_prefix || "multiui") as "multiui";
   const subscribers = useRef<Parameters<MultiUIProvider["onThemeChange"]>[0][]>(
     []
+  );
+  const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
+  const isDuringThemeChangeTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const [blurOnThemeChange_, setBlurOnThemeChange] = useState<boolean>(
+    blurOnThemeChange ?? false
   );
 
   const themeStyles = useMemo(() => {
@@ -337,6 +349,13 @@ const MultiUIProvider = memo(function ({
     if (typeof document === "undefined") return;
     document.documentElement.setAttribute("data-theme", currentTheme!);
     subscribers.current.forEach((x) => x(currentTheme, themeStyles));
+    $isDuringThemeChange(true);
+    console.log("isDuringThemeChange", isDuringThemeChange);
+    clearTimeout(isDuringThemeChangeTimeout.current);
+    isDuringThemeChangeTimeout.current = setTimeout(() => {
+      $isDuringThemeChange(false);
+      console.log("isDuringThemeChange", isDuringThemeChange);
+    }, 300);
   }, [currentTheme]);
 
   return (
@@ -378,6 +397,32 @@ const MultiUIProvider = memo(function ({
                 "}"}
             </style>,
             document.head
+          )
+        : null}
+      {blurOnThemeChange_
+        ? //TODO: Add darking effect
+          createPortal(
+            <motion.div
+              initial={{
+                backdropFilter: "blur(0px)",
+                backgroundColor: `transparent`,
+              }}
+              animate={
+                isDuringThemeChange
+                  ? {
+                      backdropFilter: "blur(2px)",
+                      backgroundColor: `RGBA(0,0,0,0.2)`,
+                    }
+                  : {
+                      backdropFilter: "blur(0px)",
+                      backgroundColor: `transparent`,
+                    }
+              }
+              // transition={{ duration: 0.2 }}
+              className="absolute w-screen h-screen inset-0 z-50 pointer-events-none select-none"
+              slot="blur"
+            />,
+            document.body
           )
         : null}
     </MultiUIContext.Provider>

@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@planetscale/database": "^1.18.0",
+    "chroma-js": "^2.6.0",
     "drizzle-orm": "^0.32.1",
     "framer-motion": "^11.3.18",
     "markdown-to-jsx": "^7.4.7",
@@ -37,6 +38,7 @@
     "swr": "^2.2.5"
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
