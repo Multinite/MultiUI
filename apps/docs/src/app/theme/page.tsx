@@ -57,6 +57,9 @@ function ThemeGenerationPage() {
   const [hex, setHex] = useState("#6374ae");
   const [testHex, setTestHex] = useState("#f00");
   const [colorPalette, setColorPalette] = useState<Record<string, string>>({});
+  const [colorPalette2, setColorPalette2] = useState<Record<string, string>>(
+    {}
+  );
 
   const lock = findClosestColor(hex, baseColors);
   let ranOnce = useRef(false);
@@ -69,7 +72,7 @@ function ThemeGenerationPage() {
       let effect: "darken" | "brighten" = "brighten";
       Object.entries(cp).forEach(([key, value]) => {
         if (key === lock.key) effect = "darken";
-        const strength_multiplier = 0.55;
+        const strength_multiplier = 0.55; // 0.55;
         const strength =
           ((effect === "brighten"
             ? parseInt(lock.key) - parseInt(key)
@@ -80,6 +83,14 @@ function ThemeGenerationPage() {
       });
       console.log(`cp`, cp);
       setColorPalette(cp);
+      let cp2 = { ...cp };
+      Object.entries(cp2).forEach(([key, value]) => {
+        // console.log(baseColors_2, key, baseColors_2[key]);
+        //@ts-ignore
+        cp2[key] = chroma(hex).mix(baseColors_2[key]).hex();
+      });
+      console.log(`cp2`, cp2);
+      setColorPalette2(cp2);
     }
   }, []);
 
@@ -202,7 +213,6 @@ function findClosestColor(
   for (const [key, value] of Object.entries(compareColors)) {
     const compareColor = chroma(value);
     const distance = chroma.distance(compareColor, inputColor);
-    console.log(key, value, distance);
     if (closest.key === "") {
       closest = { key, color: value, distance };
     } else if (distance < closest.distance) {
