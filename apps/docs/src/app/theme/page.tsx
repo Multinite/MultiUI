@@ -54,45 +54,65 @@ const desired_color_indexs = [
 // formula = base (-/+) index
 
 function ThemeGenerationPage() {
-  const [hex, setHex] = useState("#6374ae");
+  const [hex, setHex] = useState("#6374ae"); //6374ae // f300f3
   const [testHex, setTestHex] = useState("#f00");
   const [colorPalette, setColorPalette] = useState<Record<string, string>>({});
   const [colorPalette2, setColorPalette2] = useState<Record<string, string>>(
     {}
   );
 
-  const lock = findClosestColor(hex, baseColors);
+  const lock = findClosestColor(hex, baseColors_2);
   let ranOnce = useRef(false);
   useEffect(() => {
-    if (!ranOnce.current) {
-      ranOnce.current = true;
-      let cp: typeof colorPalette = desired_color_indexs.reduce((acc, curr) => {
-        return { ...acc, [curr]: curr === lock.key ? lock.color : undefined };
-      }, {});
-      let effect: "darken" | "brighten" = "brighten";
-      Object.entries(cp).forEach(([key, value]) => {
-        if (key === lock.key) effect = "darken";
-        const strength_multiplier = 0.55; // 0.55;
-        const strength =
-          ((effect === "brighten"
-            ? parseInt(lock.key) - parseInt(key)
-            : parseInt(key) - parseInt(lock.key)) /
-            100) *
-          strength_multiplier;
-        cp[key] = chroma(hex)[effect](strength).hex();
-      });
-      console.log(`cp`, cp);
-      setColorPalette(cp);
-      let cp2 = { ...cp };
-      Object.entries(cp2).forEach(([key, value]) => {
-        // console.log(baseColors_2, key, baseColors_2[key]);
-        //@ts-ignore
-        cp2[key] = chroma(hex).mix(baseColors_2[key]).hex();
-      });
-      console.log(`cp2`, cp2);
-      setColorPalette2(cp2);
+    // console.log(`TEST:`, chroma(`#fff`).mix("#fff").hex());
+    const duration = 300;
+    for (let index = 0; index < duration; index++) {
+      console.log(`TEST:`, easeOutExpo(index, 1, 50, duration));
     }
-  }, []);
+
+    ranOnce.current = true;
+    let cp: typeof colorPalette = desired_color_indexs.reduce((acc, curr) => {
+      return { ...acc, [curr]: curr === lock.key ? lock.color : undefined };
+    }, {});
+    let effect: "darken" | "brighten" = "brighten";
+    Object.entries(cp).forEach(([key, value]) => {
+      if (key === lock.key) effect = "darken";
+      const strength_multiplier = 0.55; // 0.55;
+      const strength =
+        ((effect === "brighten"
+          ? parseInt(lock.key) - parseInt(key)
+          : parseInt(key) - parseInt(lock.key)) /
+          100) *
+        strength_multiplier;
+      cp[key] = chroma(hex)[effect](strength).hex();
+    });
+    console.log(`cp`, cp);
+    setColorPalette(cp);
+    let cp2 = { ...cp };
+    Object.entries(cp2).forEach(([key, value], index) => {
+      //@ts-ignore
+      cp2[key] = chroma(value).mix(baseColors_2[key], 0.4).hex();
+      const isLast_or_first =
+        index === 0 || index === desired_color_indexs.length - 1;
+
+      const isSecond_or_SecondLast =
+        index === 1 || index === desired_color_indexs.length - 2;
+
+      // if (!isLast_or_first || isSecond_or_SecondLast) {
+      if (parseInt(lock.key) > 500) {
+        cp2[key] = chroma(cp2[key]).brighten(0.2).hex();
+      } else {
+        cp2[key] = chroma(cp2[key]).darken(0.2).hex();
+      }
+      // } else if (isSecond_or_SecondLast) {
+      //   cp2[key] = chroma(cp2[key]).saturate(0.3).hex();
+      // } else if (isLast_or_first) {
+      //   cp2[key] = chroma(cp2[key]).saturate(0.2).hex();
+      // }
+    });
+    console.log(`cp2`, cp2);
+    setColorPalette2(cp2);
+  }, [hex]);
 
   return (
     <div className="w-screen h-screen text-wrap whitespace-pre-line overflow-auto p-10">
@@ -128,8 +148,8 @@ function ThemeGenerationPage() {
       <ColorPalette colorPalette={colorPalette} lock={lock} />
       <Demo colorPalette={colorPalette} />
       <hr className="my-10" />
-      <ColorPalette colorPalette={colorPalette} lock={lock} />
-      <Demo colorPalette={colorPalette} />
+      <ColorPalette colorPalette={colorPalette2} lock={lock} />
+      <Demo colorPalette={colorPalette2} />
       <hr className="mt-32" />
     </div>
   );
@@ -138,30 +158,69 @@ function ThemeGenerationPage() {
 export default ThemeGenerationPage;
 
 function Demo({ colorPalette }: { colorPalette: Record<string, string> }) {
+  if (Object.keys(colorPalette).length === 0) return null;
+  console.log(chroma(colorPalette["500"]!).css());
   return (
-    <div
-      className="w-72 h-[400px] rounded-2xl mt-5"
-      style={{
-        backgroundColor: colorPalette["200"],
-      }}
-    >
+    <div className="w-full h-fit space-y-8 sm:space-y-0 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-8 mt-4">
       <div
-        className="leading-none p-6 rounded-2xl mb-2 text-4xl font-semibold drop-shadow-sm tracking-tight"
+        className="w-72 h-96 rounded-2xl"
         style={{
-          color: colorPalette["950"],
+          backgroundColor: colorPalette["200"],
         }}
       >
-        {" "}
-        Create
-        <br />{" "}
-        <span
+        <div
+          className="leading-none p-6 rounded-2xl mb-2 text-4xl font-semibold drop-shadow-sm tracking-tight"
           style={{
-            color: colorPalette["600"],
+            color: colorPalette["950"],
           }}
         >
-          color scales
-        </span>{" "}
-        in seconds.{" "}
+          {" "}
+          Create
+          <br />{" "}
+          <span
+            style={{
+              color: colorPalette["600"],
+            }}
+          >
+            color scales
+          </span>{" "}
+          in seconds.{" "}
+        </div>
+      </div>
+      <div
+        className="card-shadow w-72 rounded-2xl p-0 bg-cover bg-center h-96 relative overflow-hidden"
+        style={{
+          backgroundImage: `url(https://images.unsplash.com/photo-1611244419377-b0a760c19719?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGFydGlzdHxlbnwwfHwwfHx8MA%3D%3D)`,
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(transparent 0%, ${chroma(colorPalette["500"]!).css()} 100%)`,
+          }}
+        >
+          <div className="h-full flex">
+            <div
+              className="leading-none p-6 rounded-2xl mt-auto mb-2 text-4xl font-semibold drop-shadow-sm tracking-tight"
+              style={{
+                color: colorPalette["50"],
+              }}
+            >
+              {" "}
+              Create
+              <br />{" "}
+              <span
+                style={{
+                  color: colorPalette["200"],
+                }}
+              >
+                color scales
+                <br />
+              </span>{" "}
+              in seconds.{" "}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -175,7 +234,7 @@ function ColorPalette({
   lock: { key: string; color: string };
 }) {
   return (
-    <div className="w-full h-32 flex flex-wrap gap-2">
+    <div className="w-full min-h-32 h-fit flex flex-wrap gap-2">
       {Object.entries(colorPalette).map(([key, value], index) => {
         const color =
           parseInt(key) < 500 ? colorPalette["900"] : colorPalette["50"];
@@ -220,4 +279,16 @@ function findClosestColor(
     }
   }
   return closest;
+}
+
+/**
+ *
+ * @param t time
+ * @param b beginning value
+ * @param c change in value
+ * @param d duration
+ * @returns {number}
+ */
+function easeOutExpo(t: number, b: number, c: number, d: number) {
+  return t == d ? b + c : c * (-Math.pow(2, (-10 * t) / d) + 1) + b;
 }
