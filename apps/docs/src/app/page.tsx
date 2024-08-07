@@ -24,7 +24,7 @@ export default function Home() {
       <span className="text-lg text-secondary">
         Hello and welcome to the MultiUI docs!
       </span>
-      <h1>Theme: {currentTheme}</h1>
+      <h1>Theme: <b>{currentTheme}</b></h1>
       <button className="" onClick={() => setTheme(themes[0]!)}>
         Click to toggle theme (0)
       </button>
