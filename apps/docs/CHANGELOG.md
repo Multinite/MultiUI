@@ -1,5 +1,16 @@
 # @multinite_official/multiui-docs
 
+## 3.2.0
+
+### Minor Changes
+
+- e94c285: Updated: MultiUI theming system.
+
+### Patch Changes
+
+- 68c0d88: WIP: Theme generator.
+- ff41432: Update: Made `addTheme` accept an array.
+
 ## 3.1.2
 
 ### Patch Changes
