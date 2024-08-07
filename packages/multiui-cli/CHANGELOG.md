@@ -1,5 +1,12 @@
 # multiui-cli
 
+## 2.5.3
+
+### Patch Changes
+
+- f7876b9: FIx: multiui version & export paths
+- 7297e5b: Updated: Further stability for init command, such as support for more args & flags for init command
+
 ## 2.5.2
 
 ### Patch Changes
