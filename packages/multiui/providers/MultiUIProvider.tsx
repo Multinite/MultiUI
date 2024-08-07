@@ -271,6 +271,7 @@ const MultiUIProvider = memo(function ({
       if (theme === undefined) return {};
       let val = theme;
       for (let i = 0; i < keys.length; i++) {
+        //@ts-ignore
         val = val[keys[i]!];
       }
       return val;
