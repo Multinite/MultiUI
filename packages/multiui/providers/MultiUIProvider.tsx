@@ -244,15 +244,25 @@ const MultiUIProvider = memo(function ({
     function colorValues(color: string) {
       if (theme === undefined) return {};
       return {
+        //@ts-ignore
         [`--${theme_prefix}-${color}`]: theme[color].DEFAULT,
+        //@ts-ignore
         [`--${theme_prefix}-${color}-100`]: theme[color][100],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-200`]: theme[color][200],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-300`]: theme[color][300],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-400`]: theme[color][400],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-500`]: theme[color][500],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-600`]: theme[color][600],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-700`]: theme[color][700],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-800`]: theme[color][800],
+        //@ts-ignore
         [`--${theme_prefix}-${color}-900`]: theme[color][900],
       };
     }
