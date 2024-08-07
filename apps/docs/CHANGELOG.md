@@ -1,5 +1,12 @@
 # @multinite_official/multiui-docs
 
+## 3.1.2
+
+### Patch Changes
+
+- 0be783d: Theme init
+- 7297e5b: Updated: Further stability for init command, such as support for more args & flags for init command
+
 ## 3.1.1
 
 ### Patch Changes
