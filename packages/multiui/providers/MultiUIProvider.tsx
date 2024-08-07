@@ -208,11 +208,11 @@ const default_theme: Theme = {
  * @returns
  */
 const MultiUIProvider = memo(function ({
-  config,
+  config={},
   children,
   blurOnThemeChange = false,
 }: {
-  config: {
+  config?: {
     theme_prefix?: MultiUIConfig["theme_prefix"];
   };
   /**
