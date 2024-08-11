@@ -208,7 +208,7 @@ const default_theme: Theme = {
  * @returns
  */
 const MultiUIProvider = memo(function ({
-  config={},
+  config = {},
   children,
   blurOnThemeChange = false,
 }: {
