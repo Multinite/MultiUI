@@ -113,5 +113,3 @@ const MultiUIPlugin = function (
 };
 
 export default MultiUIPlugin;
-
-type toString<T extends number | string | bigint | boolean> = `${T}`;
