@@ -1,5 +1,14 @@
 # @multinite_official/multiui
 
+## 2.5.1
+
+### Patch Changes
+
+- 43b7f2b: Added MultiUI Icons & Fixed MultiUI provider export
+- d9a6d72: Update: index export values
+- 8e871f6: Update: Made config prop optional in MultiUIProvider.tsx
+- 6bce14c: Add: createVariatns
+
 ## 2.5.0
 
 ### Minor Changes
