@@ -2,7 +2,7 @@ import plugin from "tailwindcss/plugin";
 import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
 import type { MultiUIConfig } from "./../types/MultiUIConfig";
 
-const MultiUIPlugin = function (
+export const MultiUIPlugin = function (
   multiUIConfig: MultiUIConfig & { $schema?: string }
 ) {
   const prefix = (multiUIConfig.theme_prefix || "multiui") as "multiui";
@@ -112,4 +112,3 @@ const MultiUIPlugin = function (
   }, {});
 };
 
-export default MultiUIPlugin;
