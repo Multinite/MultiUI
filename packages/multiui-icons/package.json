@@ -1,35 +1,34 @@
 {
-    "name": "multiui-icons",
-    "version": "0.0.0",
-    "description": "Icons for MultiUI.",
-    "publishConfig": {
-      "access": "public"
-    },
-    "displayName": "MultiUI-Icons",
-    "sponsor": {
-      "url": "https://github.com/sponsors/Multinite"
-    },
-    "readme": "README.md",
-    "type": "module",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/Multinite/MultiUI"
-    },
-    "author": "Multinite (https://github.com/Multinite)",
-    "license": "MIT",
-    "bugs": {
-      "url": "https://github.com/Multinite/MultiUI/issues"
-    },
-    "keywords": [
-      "multinite",
-      "multi",
-      "component-library",
-      "component",
-      "component-framework",
-      "framework",
-      "react",
-      "nextjs"
-    ],
-    "homepage": "https://multiui.org"
-  }
-  
+  "name": "multiui-icons",
+  "version": "1.0.0",
+  "description": "Icons for MultiUI.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "displayName": "MultiUI-Icons",
+  "sponsor": {
+    "url": "https://github.com/sponsors/Multinite"
+  },
+  "readme": "README.md",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Multinite/MultiUI"
+  },
+  "author": "Multinite (https://github.com/Multinite)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Multinite/MultiUI/issues"
+  },
+  "keywords": [
+    "multinite",
+    "multi",
+    "component-library",
+    "component",
+    "component-framework",
+    "framework",
+    "react",
+    "nextjs"
+  ],
+  "homepage": "https://multiui.org"
+}
