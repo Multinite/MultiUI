@@ -64,21 +64,6 @@ article {
     border-radius: 2px;
   }
 
-  // table {
-  //   border: 1px solid #4c4c4c;
-
-  //   th {
-  //     background-color: #4c4c4c;
-  //     color: white;
-  //     border: 1px solid #4c4c4c;
-  //   }
-
-  //   td {
-  //     border: 1px solid #4c4c4c;
-  //     padding: 0 10px;
-  //   }
-  // }
-
   table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
