@@ -207,7 +207,7 @@ const default_theme: Theme = {
  * @param props Use the `MultiUIProviderProps` function to pass props to this component.
  * @returns
  */
-const MultiUIProvider = memo(function ({
+export const MultiUIProvider = memo(function ({
   config = {},
   children,
   blurOnThemeChange = false,
@@ -439,7 +439,6 @@ const MultiUIProvider = memo(function ({
     </MultiUIContext.Provider>
   );
 });
-export default MultiUIProvider;
 export { default_theme as multiUI_defaultTheme };
 
 export const useTheme = () => useContext(MultiUIContext);
