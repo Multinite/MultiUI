@@ -6,4 +6,3 @@ declare function Button(props: {
     className?: Parameters<typeof cn>[0];
 }): import("react/jsx-runtime").JSX.Element;
 export default Button;
-//# sourceMappingURL=Input.d.ts.map

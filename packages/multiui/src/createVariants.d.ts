@@ -11,4 +11,3 @@ export declare function createVariants(variants: Record<string, VariantType> | {
     base: VariantType;
 }): void;
 export {};
-//# sourceMappingURL=createVariants.d.ts.map

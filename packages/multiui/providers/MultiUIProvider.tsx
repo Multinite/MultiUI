@@ -9,9 +9,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { MultiUIConfig, Theme } from "../types/MultiUIConfig";
+import { MultiUIConfig, Theme } from "../types/MultiUIConfig.js";
 import { createPortal } from "react-dom";
-import { cn } from "../utils/cn";
+import { cn } from "../utils/cn.js";
 
 type MultiUIProvider = {
   setTheme: (theme_name: string) => void;

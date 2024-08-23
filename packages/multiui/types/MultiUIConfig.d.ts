@@ -78,4 +78,3 @@ export type ColorValues<includeForeground = false> = includeForeground extends f
     900: string;
     foreground: string;
 };
-//# sourceMappingURL=MultiUIConfig.d.ts.map

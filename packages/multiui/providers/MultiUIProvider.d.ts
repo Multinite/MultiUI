@@ -1,4 +1,4 @@
-import { MultiUIConfig, Theme } from "../types/MultiUIConfig";
+import { MultiUIConfig, Theme } from "../types/MultiUIConfig.js";
 type MultiUIProvider = {
     setTheme: (theme_name: string) => void;
     currentTheme: string | undefined;
@@ -34,4 +34,3 @@ export declare const MultiUIProvider: import("react").NamedExoticComponent<{
 }>;
 export { default_theme as multiUI_defaultTheme };
 export declare const useTheme: () => MultiUIProvider;
-//# sourceMappingURL=MultiUIProvider.d.ts.map

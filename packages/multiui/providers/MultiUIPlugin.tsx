@@ -1,6 +1,6 @@
 import plugin from "tailwindcss/plugin";
 import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
-import type { MultiUIConfig } from "./../types/MultiUIConfig";
+import type { MultiUIConfig } from "./../types/MultiUIConfig.js";
 
 export const MultiUIPlugin = function (
   multiUIConfig: MultiUIConfig & { $schema?: string }

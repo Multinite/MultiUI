@@ -3,7 +3,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { motion } from "framer-motion";
 import { createContext, memo, useContext, useEffect, useMemo, useRef, useState, } from "react";
 import { createPortal } from "react-dom";
-import { cn } from "../utils/cn";
+import { cn } from "../utils/cn.js";
 //@ts-ignore
 const MultiUIContext = createContext({
     setTheme(theme_name) { },
