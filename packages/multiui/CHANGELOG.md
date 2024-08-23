@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.5.3
+
+### Patch Changes
+
+- efc0d68: Fix: import errors
+
 ## 2.5.2
 
 ### Patch Changes
