@@ -8,12 +8,23 @@ import path from "path";
 import getMultiUIConfig from "../utils/multiUIConfig.js";
 import { getWorkspaces } from "../utils/getWorkspaces.js";
 
+const isTesting = false;
+const verboseLogging = true;
+
 export default async function add(
   componentNames: string[],
   options: { output: string | undefined; workspace: string | undefined }
 ) {
+  if (isTesting)
+    console.log(
+      `🧪 Testing mode enabled, all will run besides any file-system functions.\n`
+    );
+  if (verboseLogging) console.log(`⁉️  Verbose logging enabled.\n`);
+
   if (!componentNames || componentNames.length === 0)
     return console.log("❌ Please provide a component name.");
+  else if (verboseLogging)
+    console.log(`✅ Component names detected: ${componentNames.join(", ")}`);
   logUpdate.done();
   componentNames = uniqueStringsArray(
     componentNames.map((name) => name.trim().toLowerCase())
@@ -37,6 +48,11 @@ export default async function add(
       process.exit(1);
     }
   }
+  if (verboseLogging) {
+    logUpdate.done();
+    console.log(`⁉️  Workspace Path: ${chalk.blue(workspace_path)}`);
+    console.log();
+  }
 
   logUpdate(`🔎 Checking if component versions are valid...`);
   const findInvalidComponentVersions = componentNames.find(
@@ -50,6 +66,14 @@ export default async function add(
       chalk.red(`❌ Invalid component version: ${findInvalidComponentVersions}`)
     );
     return process.exit(1);
+  } else {
+    if (verboseLogging) {
+      logUpdate.done();
+      console.log(
+        `⁉️  ✅ No invalid component versions detected: ${componentNames.join(", ")}`
+      );
+      console.log();
+    }
   }
   const desired_component_versions = componentNames.map((name) => {
     if (name.includes("@")) {
@@ -72,7 +96,13 @@ export default async function add(
       ? (await getMultiUIConfig(options.workspace)).components_output_dir
       : options.output
   );
-  // logUpdate(`📁 Checking if ${chalk.blue(options.output)} directory exists...`);
+  if (verboseLogging) {
+    logUpdate.done();
+    console.log(
+      `⁉️  📁 Checking if ${chalk.blue(output_dir)} directory exists...`
+    );
+    console.log();
+  }
 
   try {
     if (!fs.lstatSync(output_dir).isDirectory()) {
@@ -99,6 +129,13 @@ export default async function add(
       throw error;
     }
   }
+  if (verboseLogging) {
+    logUpdate.done();
+    console.log(
+      `⁉️  Output directory exists: ${chalk.green("✅")} ${chalk.blue(output_dir)}`
+    );
+    console.log();
+  }
 
   let componentSearchCount = 0;
   const successfullyInstalledComponents: string[] = [];
@@ -108,10 +145,18 @@ export default async function add(
     logUpdate(
       `🔎 Now searching for ${chalk.blue(name)} component... ${chalk.gray(`(${componentSearchCount}/${componentNames.length})`)}`
     );
+    const framework = (await getMultiUIConfig(options.workspace)).framework;
     const fetchUrl = new URL(
-      `/api/v1/components/${[desired_component_versions.find((x) => x.name === name)!].map((x) => `${x.name}@${x.version}`).join(",")}`,
+      `/api/v1/components/${[desired_component_versions.find((x) => x.name === name)!].map((x) => `${x.name}@${x.version}`).join(",")}?framework=${framework}`,
       MULTIUI_URL
     );
+    if (verboseLogging) {
+      logUpdate.done();
+      console.log(
+        `⁉️  📎 Fetching component data from ${chalk.blue(fetchUrl)}...`
+      );
+      console.log();
+    }
     try {
       const startTime = Date.now();
       const res = await fetch(fetchUrl, {
@@ -128,7 +173,8 @@ export default async function add(
           await installComponent(
             data.data,
             desired_component_versions.find((x) => x.name === name)!.version!,
-            startTime
+            startTime,
+            options.workspace
           );
           logUpdate.done();
         } catch (err: any) {
@@ -139,7 +185,7 @@ export default async function add(
           console.log(
             `🔄 It's likely due to Github API rate-limiting. Please try again later.\n`
           );
-          console.log(chalk.grey());
+          console.log();
           console.error(err);
           console.log();
           finishedLog(
@@ -158,7 +204,7 @@ export default async function add(
           console.error(
             `❌ Invalid version ${chalk.red(desired_component_versions.find((x) => x.name === name)!.version)} for ${chalk.blue(name)}`
           );
-        } else console.error(data.error);
+        } else console.error(``, data.error);
         console.log();
         finishedLog(
           componentNames,
@@ -201,16 +247,19 @@ export default async function add(
   function installComponent(
     component: ComponentData,
     version: string,
-    startTime: number
+    startTime: number,
+    workspace: string | undefined
   ) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       logUpdate(
         `🎉 Component found: ${chalk.blue(component.name)} ${chalk.gray(`v${component.version} (${Date.now() - startTime}ms)`)}`
       );
+      const framework = (await getMultiUIConfig(workspace)).framework;
 
       fetchFileNamesInDir({
         owner: component.info.github_repo_owner,
         repo: component.info.github_repo_name,
+        framework: framework,
       })
         .then((fileNames) => {
           if (fileNames) {
@@ -231,9 +280,11 @@ export default async function add(
               },
               cliProgress.Presets.rect
             );
-            fs.mkdirSync(path.join(output_dir, component.name), {
-              recursive: true,
-            });
+            if (!isTesting) {
+              fs.mkdirSync(path.join(output_dir, component.name), {
+                recursive: true,
+              });
+            }
             clearDirectory(path.join(output_dir, component.name));
             fileNames.forEach(async ({ downloadUrl, name, size }, index) => {
               const bar = multibar.create(size, 0);
@@ -314,11 +365,13 @@ type ComponentData = typeof exampleComponentData;
 async function fetchFileNamesInDir({
   owner,
   repo,
+  framework,
 }: {
   repo: string;
   owner: string;
+  framework: string;
 }) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/src`;
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/packages/${framework}`;
 
   try {
     const response = await fetch(url);
@@ -365,20 +418,23 @@ function downloadFile({
         }
 
         // Create a writable stream to save the downloaded file
-        const fileStream = fs.createWriteStream(outputPath);
+        if (!isTesting) {
+          const fileStream = fs.createWriteStream(outputPath);
 
-        // Pipe the response data to the file stream
-        response.pipe(fileStream);
+          // Pipe the response data to the file stream
+          response.pipe(fileStream);
+          fileStream.on("finish", () => {
+            fileStream.close();
+            resolve(1);
+          });
+        } else {
+          return resolve(1);
+        }
 
         let downloadedSize = 0;
         response.on("data", (chunk) => {
           downloadedSize += chunk.length;
           bar.update(downloadedSize, { filename: name });
-        });
-
-        fileStream.on("finish", () => {
-          fileStream.close();
-          resolve(1);
         });
       })
       .on("error", (err) => {
@@ -444,6 +500,7 @@ function uniqueStringsArray(arr: string[]): string[] {
 }
 
 function clearDirectory(directory) {
+  if (isTesting) return;
   try {
     // Read the contents of the directory
     const files = fs.readdirSync(directory);

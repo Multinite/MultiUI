@@ -14,7 +14,7 @@ const pkgJsonPath = path.join(__dirname, "..", "package.json");
 const { version } = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
 const program = new Command();
 
-export const isDev = false;
+export const isDev = true;
 
 isDev &&
   console.log(

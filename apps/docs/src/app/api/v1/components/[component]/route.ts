@@ -7,9 +7,13 @@ export async function GET(
   request: Request,
   { params }: { params: { component: string } }
 ) {
+  const url = new URL(request.url);
   const component_name = params.component.split("@")[0]!;
   const component_version = params.component.split("@")[1]!;
   console.log(`Searching for ${component_name}@${component_version}`);
+
+  const framework = url.searchParams.get("framework") || "react";
+
   try {
     var find_component_ = await db
       .select()
@@ -38,8 +42,8 @@ export async function GET(
 
   const find_component = find_component_[0] as Component;
 
-  const git_url = `https://api.github.com/repos/${find_component.github_repo_owner}/${find_component.github_repo_name}/contents/src/component.json${component_version.toLowerCase() === "latest" ? "" : `?ref=${component_version}`}`;
-
+  const git_url = `https://api.github.com/repos/${find_component.github_repo_owner}/${find_component.github_repo_name}/contents/packages/${framework}/component.json${component_version.toLowerCase() === "latest" ? "" : `?ref=${component_version}`}`;
+  console.log(`Fetching:`, git_url);
   try {
     const res = await fetch(git_url, {
       next: {
