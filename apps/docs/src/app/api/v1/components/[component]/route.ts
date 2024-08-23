@@ -45,14 +45,19 @@ export async function GET(
   const git_url = `https://api.github.com/repos/${find_component.github_repo_owner}/${find_component.github_repo_name}/contents/packages/${framework}/component.json${component_version.toLowerCase() === "latest" ? "" : `?ref=${component_version}`}`;
   console.log(`Fetching:`, git_url);
   try {
-    const res = await fetch(git_url, {
-      next: {
-        revalidate: 60 * 60 * 24,
-        tags: [
-          `${find_component.github_repo_owner}/${find_component.github_repo_name}`,
-        ],
-      },
-    });
+    const res = await fetch(
+      git_url,
+      process.env.NODE_ENV === "production"
+        ? {
+            next: {
+              revalidate: 60 * 60 * 24,
+              tags: [
+                `${find_component.github_repo_owner}/${find_component.github_repo_name}`,
+              ],
+            },
+          }
+        : {}
+    );
     const data = await res.json();
     console.log(data);
 
@@ -71,6 +76,9 @@ export async function GET(
     const component_info = JSON.parse(atob(data.content));
 
     delete component_info["$schema"];
+
+    console.log(component_info);
+
     return Response.json({
       data: { ...component_info, info: find_component },
       success: true,

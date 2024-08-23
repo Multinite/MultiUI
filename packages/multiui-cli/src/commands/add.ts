@@ -371,7 +371,7 @@ async function fetchFileNamesInDir({
   owner: string;
   framework: string;
 }) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/packages/${framework}`;
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/packages/${framework}/src`;
 
   try {
     const response = await fetch(url);
@@ -381,20 +381,46 @@ async function fetchFileNamesInDir({
     }
 
     const data = await response.json();
-    const fileNames: { downloadUrl: string; name: string; size: number }[] =
-      data
-        .filter((item) => item.type === "file")
-        .map((file) => ({
-          name: file.name,
-          downloadUrl: file.download_url,
-          size: file.size,
-        }));
-
-    return fileNames;
+    var fileNames: { downloadUrl: string; name: string; size: number }[] = data
+      .filter((item) => item.type === "file")
+      .map((file) => ({
+        name: file.name,
+        downloadUrl: file.download_url,
+        size: file.size,
+      }));
   } catch (error) {
     console.log(`Error fetching file names in remote dir, url: ${url}`);
     throw error;
   }
+
+  try {
+    const response = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/packages/${framework}`
+    );
+
+    if (!response.ok) {
+      throw response;
+    }
+
+    const data = await response.json();
+    var component_json: { downloadUrl: string; name: string; size: number } =
+      data
+        .filter(
+          (item) => item.type === "file" && item.name === "component.json"
+        )
+        .map((file) => ({
+          name: file.name,
+          downloadUrl: file.download_url,
+          size: file.size,
+        }))[0];
+
+    fileNames.push(component_json);
+  } catch (error) {
+    console.log(`Error fetching file names in remote dir, url: ${url}`);
+    throw error;
+  }
+
+  return fileNames;
 }
 
 function downloadFile({
