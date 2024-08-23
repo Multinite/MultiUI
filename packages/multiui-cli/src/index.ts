@@ -6,6 +6,7 @@ import init from "./commands/init.js";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
+import remove from "./commands/remove.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,7 +19,7 @@ export const isDev = true;
 
 isDev &&
   console.log(
-    "🚀 MultiUI CLI is running in development mode.v" + version + "\n"
+    "🚀 MultiUI CLI is running in development mode. v" + version + "\n"
   );
 
 export const MULTIUI_URL = isDev
@@ -37,6 +38,13 @@ program
   .option("-o --output <dir>", "output directory")
   .option("--workspace <workspace>", "nodejs workspace directory")
   .action(add);
+
+  program
+  .command("remove")
+  .description("Uninstall one or more components to your project.")
+  .argument("<name...>", "name of the component")
+  .option("--workspace <workspace>", "nodejs workspace directory")
+  .action(remove);
 
 program
   .command("config")
