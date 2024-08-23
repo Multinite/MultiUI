@@ -8,7 +8,7 @@
       "description": "The output directory for components."
     },
     "framework": {
-      "type": "string",
+      "enum": ["react", "vue", "svelte", "ts"],
       "description": "The framework to use for components."
     },
     "package_manager": {

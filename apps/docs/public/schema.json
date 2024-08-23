@@ -5,7 +5,8 @@
   "properties": {
     "name": {
       "type": "string",
-      "description": "The name of the component."
+      "description": "The name of the component.",
+      "pattern": "^[a-zA-Z0-9-_]+$"
     },
     "description": {
       "type": "string",
