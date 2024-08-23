@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 2.5.4
+
+### Patch Changes
+
+- 6a1bccb: Added: `remove` cli fn
+
 ## 2.5.3
 
 ### Patch Changes
