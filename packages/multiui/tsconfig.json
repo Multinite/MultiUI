@@ -1,6 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "../typescript-config/react-library.json",
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
