@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.5.2
+
+### Patch Changes
+
+- f81934d: Fix: tsconfig for MultiUI lib
+
 ## 2.5.1
 
 ### Patch Changes
