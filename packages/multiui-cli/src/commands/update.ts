@@ -174,7 +174,13 @@ export default async function update(
                 });
               } else if (update === "diff") {
                 console.log(`🔄 Updating component ${chalk.blue(name)}...\n`);
-                // updateAll();
+                diffAll({
+                  component: db_component_data,
+                  framework: workspace_config.framework,
+                  version: component_version,
+                  output_dir: componentPath,
+                  newVersion: data.version,
+                });
               }
             })
             .catch((error) => {
@@ -269,7 +275,7 @@ function overwriteAll({
           multibar.stop();
           console.log();
           logUpdate(
-            `✅ ${chalk.blue(component.name)} installed ${chalk.green(`successfully`)}! ${chalk.gray(`(${(Date.now() - install_time).toFixed(0)}ms)`)}`
+            `✅ ${chalk.blue(component.name)} updated ${chalk.green(`successfully`)}! ${chalk.gray(`(${(Date.now() - install_time).toFixed(0)}ms)`)}`
           );
           resolve(1);
         }
@@ -363,20 +369,163 @@ function updateAll({
               {
                 showDiff: true,
                 showEndingDiffLine: fileNames.length - 1 === index,
+                returnMeta: false,
+                dontShowDiffIfNoModifications: true,
               }
             );
             try {
-                fs.writeFileSync(
-                  path.join(output_dir, name),
-                  new_file_contents.join("\n"),
-                  "utf-8"
-                );
+              fs.writeFileSync(
+                path.join(output_dir, name),
+                new_file_contents.join("\n"),
+                "utf-8"
+              );
             } catch (error) {
-                console.log(`❌ An error occurred while writing file ${name}`);
-                console.log(error);
-                process.exit(1);
+              console.log(`❌ An error occurred while writing file ${name}`);
+              console.log(error);
+              process.exit(1);
             }
           });
+          logUpdate.done();
+          console.log();
+          logUpdate(
+            `✅ ${chalk.blue(component.name)} updated ${chalk.green(`successfully`)}! ${chalk.gray(`(${(Date.now() - install_time).toFixed(0)}ms)`)}`
+          );
+          resolve(1);
+        }
+      }
+    });
+  });
+}
+function diffAll({
+  version,
+  output_dir,
+  component,
+  framework,
+  newVersion,
+}: {
+  version: string;
+  output_dir: string;
+  component: ComponentData["info"];
+  framework: string;
+  newVersion: string;
+}) {
+  return new Promise(async (resolve, reject) => {
+    fetchFileNamesInDir({
+      owner: component.github_repo_owner,
+      repo: component.github_repo_name,
+      framework: framework,
+    }).then((fileNames) => {
+      if (fileNames) {
+        logUpdate.done();
+        logUpdate(
+          `📄 installing ${chalk.yellow(fileNames.length.toString())} files...`
+        );
+        logUpdate.done();
+        console.log();
+        const install_time = Date.now();
+        let installedIndex = 0;
+
+        const multibar = new cliProgress.MultiBar(
+          {
+            clearOnComplete: false,
+            hideCursor: true,
+            format: formatter,
+          },
+          cliProgress.Presets.rect
+        );
+
+        const tmpDir = path.join(__dirname, "../../tmp");
+
+        fs.mkdirSync(path.join(tmpDir, component.name), {
+          recursive: true,
+        });
+        clearDirectory(path.join(tmpDir, component.name));
+        fileNames.forEach(async ({ downloadUrl, name, size }, index) => {
+          const bar = multibar.create(size, 0);
+          bar.update(0, { filename: name });
+
+          try {
+            const outputPath = path.join(tmpDir, component.name, name);
+            await downloadFile({
+              url:
+                downloadUrl +
+                (version.toLowerCase() === "latest" ? "" : `?ref=${version}`),
+              outputPath: outputPath,
+              bar,
+              name,
+            });
+            installedIndex++;
+            await finished();
+          } catch (err: any) {
+            multibar.stop();
+            logUpdate.done();
+            console.log(
+              `❌ An error occurred while installing ${name} component.`,
+              err
+            );
+            process.exit(1);
+          }
+        });
+
+        async function finished() {
+          if (!fileNames || installedIndex !== fileNames.length) return;
+          multibar.stop();
+          console.log();
+          logUpdate(`👀 Now preparing file diffs...`);
+          let index = -1;
+          for await (const { name } of fileNames) {
+            index++;
+            //@ts-ignore
+            const { content: new_file_contents, hasModifications } = diffFiles(
+              path.join(output_dir, name),
+              path.join(tmpDir, component.name, name),
+              name,
+              version,
+              newVersion,
+              {
+                showDiff: true,
+                showEndingDiffLine: true,
+                returnMeta: true,
+                dontShowDiffIfNoModifications: true,
+              }
+            );
+            if (hasModifications) {
+              try {
+                console.log(``);
+                const { conformation } = await inquirer
+                  //@ts-ignore
+                  .prompt([
+                    {
+                      type: "confirm",
+                      name: "conformation",
+                      message: `${chalk.green(`Confirm`)} diff for ${chalk.blue(name)}?`,
+                      default: true,
+                    },
+                  ]);
+                if (conformation && hasModifications) {
+                  try {
+                    fs.writeFileSync(
+                      path.join(output_dir, name),
+                      new_file_contents.join("\n"),
+                      "utf-8"
+                    );
+                  } catch (error) {
+                    console.log(
+                      `❌ An error occurred while writing file ${name}`
+                    );
+                    console.log(error);
+                    process.exit(1);
+                  }
+                }
+              } catch (error) {
+                console.log(
+                  `❌ An error occurred while prompting conformation for file ${name}`
+                );
+                console.log(error);
+                process.exit(1);
+              }
+            }
+          }
           logUpdate.done();
           console.log();
           logUpdate(
@@ -395,11 +544,23 @@ function diffFiles(
   diffFileName: string = "diff.txt",
   oldVersion: string = "v0.0.0",
   newVersion: string = "v0.0.0",
-  options: { showDiff: boolean; showEndingDiffLine: boolean } = {
+  options: {
+    showDiff: boolean;
+    showEndingDiffLine: boolean;
+    returnMeta: boolean;
+    dontShowDiffIfNoModifications: boolean;
+  } = {
     showDiff: true,
     showEndingDiffLine: true,
+    returnMeta: false,
+    dontShowDiffIfNoModifications: false,
   }
-) {
+): typeof options.returnMeta extends true
+  ? {
+      content: string[];
+      hasModifications: boolean;
+    }
+  : string[] {
   const current = fs.readFileSync(currentFile, "utf-8").split("\n");
   const New = fs.readFileSync(newFile, "utf-8").split("\n");
 
@@ -422,7 +583,14 @@ function diffFiles(
 
   const title_unformatted = `${diffFileName} v${semver.coerce(oldVersion)?.version} → v${semver.coerce(newVersion)?.version}`;
   const title = `${chalk.yellow(diffFileName)} ${chalk.blue("v" + semver.coerce(oldVersion)?.version)} ${chalk.magenta(`→`)} ${chalk.green("v" + semver.coerce(newVersion)?.version)}`;
-  if (options.showDiff) {
+  const hasModifications =
+    originalDiff.filter((x) => x.startsWith("  ")).length !==
+    originalDiff.length;
+  if (
+    options.showDiff &&
+    options.dontShowDiffIfNoModifications &&
+    hasModifications
+  ) {
     console.log(`\n————————————————— ${title} —————————————————\n`);
     console.log(diff.filter((x) => x.trim() !== "").join("\n"));
     if (options.showEndingDiffLine) {
@@ -439,7 +607,13 @@ function diffFiles(
     else return line.replace("  ", "");
   });
   originalDiff = originalDiff.filter((x) => x !== null);
-  return originalDiff;
+  return options.returnMeta === true
+    ? {
+        //@ts-ignore
+        content: originalDiff,
+        hasModifications,
+      }
+    : originalDiff;
 }
 
 async function getWorkspace(optionWorkspace: string | undefined) {
