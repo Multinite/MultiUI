@@ -40,13 +40,15 @@ export default function test() {
     `\n—————————————————${new Array(title_unformatted.length - 2).fill(`—`).join("")}—————————————————————\n`
   );
 
-  // console.log(`\n-----\n`);
-  // originalDiff.forEach((line, index) => {
-  //   if (line.startsWith("-")) return;
-  //   else if (line.startsWith("?")) return;«
-  //   else if (line.startsWith("+")) console.log(line.replace("+ ", ""));
-  //   else console.log(line.replace("  ", ""));
-  // });
+  //@ts-ignore
+  originalDiff = originalDiff.map((line, index) => {
+    if (line.startsWith("-")) return null;
+    else if (line.startsWith("?")) return null;
+    else if (line.startsWith("+")) return line.replace("+ ", "")
+    else return line.replace("  ", "")
+  });
+  originalDiff = originalDiff.filter((x) => x !== null);
+  console.log(originalDiff.join("\n"));
 
   inquirer
     //@ts-ignore

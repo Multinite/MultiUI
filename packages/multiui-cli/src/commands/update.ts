@@ -1,3 +1,4 @@
+import difflib from "difflib";
 import cliProgress from "cli-progress";
 import https from "https";
 import path from "path";
@@ -159,6 +160,7 @@ export default async function update(
                   framework: workspace_config.framework,
                   version: component_version,
                   output_dir: componentPath,
+                  newVersion: data.version,
                 });
               } else if (update === "overwrite") {
                 console.log(
@@ -280,11 +282,13 @@ function updateAll({
   output_dir,
   component,
   framework,
+  newVersion,
 }: {
   version: string;
   output_dir: string;
   component: ComponentData["info"];
   framework: string;
+  newVersion: string;
 }) {
   return new Promise(async (resolve, reject) => {
     fetchFileNamesInDir({
@@ -348,14 +352,94 @@ function updateAll({
           if (!fileNames || installedIndex !== fileNames.length) return;
           multibar.stop();
           console.log();
+          logUpdate(`👀 Now preparing file diffs...`);
+          fileNames.forEach(({ name }, index) => {
+            const new_file_contents = diffFiles(
+              path.join(output_dir, name),
+              path.join(tmpDir, component.name, name),
+              name,
+              version,
+              newVersion,
+              {
+                showDiff: true,
+                showEndingDiffLine: fileNames.length - 1 === index,
+              }
+            );
+            try {
+                fs.writeFileSync(
+                  path.join(output_dir, name),
+                  new_file_contents.join("\n"),
+                  "utf-8"
+                );
+            } catch (error) {
+                console.log(`❌ An error occurred while writing file ${name}`);
+                console.log(error);
+                process.exit(1);
+            }
+          });
+          logUpdate.done();
+          console.log();
           logUpdate(
-            `✅ ${chalk.blue(component.name)} installed ${chalk.green(`successfully`)}! ${chalk.gray(`(${(Date.now() - install_time).toFixed(0)}ms)`)}`
+            `✅ ${chalk.blue(component.name)} updated ${chalk.green(`successfully`)}! ${chalk.gray(`(${(Date.now() - install_time).toFixed(0)}ms)`)}`
           );
           resolve(1);
         }
       }
     });
   });
+}
+
+function diffFiles(
+  currentFile: string,
+  newFile: string,
+  diffFileName: string = "diff.txt",
+  oldVersion: string = "v0.0.0",
+  newVersion: string = "v0.0.0",
+  options: { showDiff: boolean; showEndingDiffLine: boolean } = {
+    showDiff: true,
+    showEndingDiffLine: true,
+  }
+) {
+  const current = fs.readFileSync(currentFile, "utf-8").split("\n");
+  const New = fs.readFileSync(newFile, "utf-8").split("\n");
+
+  let originalDiff = difflib.ndiff(
+    current, // old
+    New // new
+  );
+  const diff = [...originalDiff];
+  diff.forEach((line, index) => {
+    if (line.startsWith("+")) {
+      diff[index] = chalk.green(line);
+    } else if (line.startsWith("-")) {
+      diff[index] = chalk.red(line);
+    } else if (line.startsWith("?")) {
+      diff[index] = "";
+    } else {
+      diff[index] = chalk.gray(line);
+    }
+  });
+
+  const title_unformatted = `${diffFileName} v${semver.coerce(oldVersion)?.version} → v${semver.coerce(newVersion)?.version}`;
+  const title = `${chalk.yellow(diffFileName)} ${chalk.blue("v" + semver.coerce(oldVersion)?.version)} ${chalk.magenta(`→`)} ${chalk.green("v" + semver.coerce(newVersion)?.version)}`;
+  if (options.showDiff) {
+    console.log(`\n————————————————— ${title} —————————————————\n`);
+    console.log(diff.filter((x) => x.trim() !== "").join("\n"));
+    if (options.showEndingDiffLine) {
+      console.log(
+        `\n—————————————————${new Array(title_unformatted.length - 2).fill(`—`).join("")}—————————————————————\n`
+      );
+    }
+  }
+  //@ts-ignore
+  originalDiff = originalDiff.map((line, index) => {
+    if (line.startsWith("-")) return null;
+    else if (line.startsWith("?")) return null;
+    else if (line.startsWith("+")) return line.replace("+ ", "");
+    else return line.replace("  ", "");
+  });
+  originalDiff = originalDiff.filter((x) => x !== null);
+  return originalDiff;
 }
 
 async function getWorkspace(optionWorkspace: string | undefined) {
