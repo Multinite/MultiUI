@@ -7,6 +7,8 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 import remove from "./commands/remove.js";
+import test from "./commands/test.js";
+import update from "./commands/update.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,7 +41,7 @@ program
   .option("--workspace <workspace>", "nodejs workspace directory")
   .action(add);
 
-  program
+program
   .command("remove")
   .description("Uninstall one or more components to your project.")
   .argument("<name...>", "name of the component")
@@ -51,6 +53,10 @@ program
   .description("Show MultiUI CLI config.")
   .option("--workspace <workspace>", "nodejs workspace directory")
   .action(showConfig);
+
+if (isDev) {
+  program.command("test").description("MultiUI CLI Test command").action(test);
+}
 
 program
   .command("init")
@@ -65,5 +71,13 @@ program
   .option("--skip-install-components", "skip installing components")
   .description("Initialize MultiUI CLI config.")
   .action(init);
+
+program
+  .command("upgrade")
+  .alias("update")
+  .argument("<name...>", "name of the component")
+  .option("--workspace <workspace>", "nodejs workspace directory")
+  .description("Upate a specific component")
+  .action(update);
 
 program.parse();
