@@ -6,6 +6,7 @@ import getMultiUIConfig from "../utils/multiUIConfig.js";
 import { isDev } from "../index.js";
 import logUpdate from "log-update";
 import semver from "semver";
+import inquirer from "inquirer";
 
 export default async function update(
   componentNames: string[],
@@ -45,15 +46,15 @@ export default async function update(
         fs.readFileSync(path.join(componentPath, "component.json"), "utf-8")
       );
 
-      const componnet_version = componnet_json.version;
+      let componnet_version = componnet_json.version;
       if (!componnet_version) {
         logUpdate(
           chalk.red(
-            `❌ Component ${chalk.blue(name)} is missing version in component.json file.`
+            `❌ Component ${chalk.blue(name)} is missing "version" field in component.json file.`
           )
         );
         return process.exit(1);
-      } else if (semver.valid(componnet_version)) {
+      } else if (!semver.valid(componnet_version)) {
         logUpdate(
           chalk.red(
             `❌ Component ${chalk.blue(name)} version in component.json file is not valid.`
@@ -61,6 +62,8 @@ export default async function update(
         );
         return process.exit(1);
       }
+
+      componnet_version = semver.coerce(componnet_version);
 
       logUpdate(
         `🔎 Processing ${chalk.blue(name)} ${chalk.green(`v${componnet_version}`)}... ${chalk.gray(`(${i + 1}/${componentNames.length})`)}\n`
@@ -94,7 +97,7 @@ export default async function update(
             console.error(data);
             return process.exit(1);
           }
-          if (semver.satisfies(data.version, componnet_version)) {
+          if (semver.satisfies(componnet_version, `>=${data.version}`)) {
             logUpdate(
               chalk.green(
                 `✅ Component ${chalk.blue(name)} is already up to date. ${chalk.magenta(`(v${data.version})`)}\n`
@@ -103,9 +106,51 @@ export default async function update(
             logUpdate.done();
             return resolve(1);
           }
-          // logUpdate(
-          //   `🔄 Component ${chalk.blue(name)} is outdated. Updating... ${chalk.gray(`(${i + 1}/${componentNames.length})`)}\n`
-          // );
+          logUpdate(
+            `🔄 Component ${chalk.blue(name)} is outdated. (${chalk.red(`v${componnet_version}`)} → ${chalk.green(`v${data.version}`)}). \n`
+          );
+          inquirer
+            //@ts-ignore
+            .prompt([
+              {
+                type: "list",
+                message: `How would you like to update ${chalk.blue(name)}?`,
+                choices: [
+                  {
+                    name: "Update all files automatically.",
+                    value: "update",
+                  },
+                  {
+                    name: "Enable diffing and let me confirm each file change.",
+                    value: "diff",
+                  },
+                  {
+                    name: "Cancel",
+                    value: "cancel",
+                  },
+                ],
+                name: "update",
+                default: true,
+              },
+            ])
+            .then(({ update }) => {
+              console.log(`\n👍 Sure thing!`);
+              if (update === "update") {
+                console.log(
+                  `🔄 Updating component ${chalk.blue(name)}...`
+                );
+              }
+            })
+            .catch((error) => {
+              logUpdate.done();
+              console.log(
+                chalk.red(
+                  `❌ An error occurred while updating component ${chalk.blue(name)}`
+                )
+              );
+              console.error(error);
+              process.exit(1);
+            });
         })
         .catch((error) => {
           console.error("Error:", error);
