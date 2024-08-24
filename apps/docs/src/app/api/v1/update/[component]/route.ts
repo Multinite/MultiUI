@@ -22,7 +22,7 @@ export async function GET(
     const data = yield* (await getGithubData(git_url)).safeUnwrap();
     delete data["$schema"];
 
-    return ok(data);
+    return ok({ data, dbresult });
   });
 
   if (res.isErr()) {
@@ -33,7 +33,10 @@ export async function GET(
   } else {
     return Response.json({
       success: true,
-      data: res.value,
+      data: {
+        component_json: res.value.data,
+        component_data: res.value.dbresult,
+      },
     });
   }
 }

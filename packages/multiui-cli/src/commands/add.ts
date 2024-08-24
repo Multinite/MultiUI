@@ -9,7 +9,7 @@ import getMultiUIConfig from "../utils/multiUIConfig.js";
 import { getWorkspaces } from "../utils/getWorkspaces.js";
 
 const isTesting = false;
-const verboseLogging = true;
+const verboseLogging = false;
 
 export default async function add(
   componentNames: string[],
@@ -360,7 +360,7 @@ const exampleComponentData = {
   },
 };
 
-type ComponentData = typeof exampleComponentData;
+export type ComponentData = typeof exampleComponentData;
 
 async function fetchFileNamesInDir({
   owner,
@@ -469,7 +469,7 @@ function downloadFile({
   });
 }
 
-function formatter(options, params, payload) {
+export function formatter(options, params, payload) {
   // bar grows dynamically by current progress - no whitespaces are added
   const bar = options.barCompleteString.substr(
     0,
@@ -525,7 +525,7 @@ function uniqueStringsArray(arr: string[]): string[] {
   return Array.from(new Set(arr));
 }
 
-function clearDirectory(directory) {
+export function clearDirectory(directory) {
   if (isTesting) return;
   try {
     // Read the contents of the directory
