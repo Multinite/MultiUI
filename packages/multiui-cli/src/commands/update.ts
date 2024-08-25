@@ -663,8 +663,8 @@ async function fetchFileNamesInDir({
 
     const data = await response.json();
     var fileNames: { downloadUrl: string; name: string; size: number }[] = data
-      .filter((item) => item.type === "file")
-      .map((file) => ({
+      .filter((item: any) => item.type === "file")
+      .map((file: any) => ({
         name: file.name,
         downloadUrl: file.download_url,
         size: file.size,
@@ -687,9 +687,9 @@ async function fetchFileNamesInDir({
     var component_json: { downloadUrl: string; name: string; size: number } =
       data
         .filter(
-          (item) => item.type === "file" && item.name === "component.json"
+          (item: any) => item.type === "file" && item.name === "component.json"
         )
-        .map((file) => ({
+        .map((file: any) => ({
           name: file.name,
           downloadUrl: file.download_url,
           size: file.size,
