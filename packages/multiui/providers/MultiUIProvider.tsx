@@ -347,10 +347,7 @@ export const MultiUIProvider = memo(function ({
     if (typeof document === "undefined") return;
     if (!isRan.current) {
       isRan.current = true;
-      document.documentElement.className = cn(
-        "theme",
-        document.documentElement.className
-      );
+      document.documentElement.classList.add("theme");
       document.documentElement.style.colorScheme = `var(--${theme_prefix}-scheme)`;
       return;
     }
