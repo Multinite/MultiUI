@@ -8,6 +8,10 @@ runs:
       uses: actions/setup-node@v4
       with:
         registry-url: "https://registry.npmjs.org"
+        
+    - name: install pnpm
+      shell: bash
+      run: npm i pnpm@latest -g
 
     - name: Cache turbo build setup
       uses: actions/cache@v4
