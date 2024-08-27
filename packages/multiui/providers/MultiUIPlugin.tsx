@@ -81,7 +81,7 @@ export const MultiUIPlugin = function (
         | `-${ColorIndexValues}`}`,
       StyleObj
     >;
-    const utils: Utils = allColorUtils.reduce((zacc, z) => {
+    const colorUtils: Utils = allColorUtils.reduce((zacc, z) => {
       return {
         ...zacc,
         ...allColorTypes.reduce((acc, x) => {
@@ -129,8 +129,8 @@ export const MultiUIPlugin = function (
       };
     }, {});
 
-    addUtilities({
-      ...utils,
+    const utils = {
+      ...colorUtils,
       ...sizeClasses,
       ".outline-focus": {
         outlineColor: `hsl(var(--${prefix}-focus))`,
@@ -139,6 +139,10 @@ export const MultiUIPlugin = function (
         "--tw-ring-opacity": (1).toString(),
         "--tw-ring-color": `hsl(var(--${prefix}-focus) / var(--tw-ring-opacity))`,
       },
-    });
+    };
+
+    console.log(utils);
+
+    addUtilities(utils);
   }, {});
 };
