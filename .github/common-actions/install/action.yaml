@@ -11,6 +11,8 @@ runs:
 
     - name: pnpm-setup
       uses: pnpm/action-setup@v4
+      with:
+        version: 9
 
     - name: setup pnpm config
       shell: bash
