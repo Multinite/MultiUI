@@ -98,9 +98,40 @@ export const MultiUIPlugin = function (
       };
     }, {}) as Utils;
 
-    console.log(utils);
+    const allSizeClasses = [
+      {
+        class: "text",
+        values: {
+          small: cssVar(["text", "small"]),
+          medium: cssVar(["text", "medium"]),
+          large: cssVar(["text", "large"]),
+        },
+      },
+      {
+        class: "rounded",
+        values: {
+          small: cssVar(["rounded", "small"]),
+          medium: cssVar(["rounded", "medium"]),
+          large: cssVar(["rounded", "large"]),
+        },
+      },
+    ] as const;
+
+    const sizeClasses = allSizeClasses.reduce((acc, x) => {
+      const values = Object.entries(x.values).map(([k, v]) => {
+        return {
+          [`.${x.class}-${k}`]: v,
+        };
+      });
+      return {
+        ...acc,
+        ...values,
+      };
+    }, {});
+
     addUtilities({
       ...utils,
+      ...sizeClasses,
       ".outline-focus": {
         outlineColor: `hsl(var(--${prefix}-focus))`,
       },
@@ -111,4 +142,3 @@ export const MultiUIPlugin = function (
     });
   }, {});
 };
-
