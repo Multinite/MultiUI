@@ -9,9 +9,12 @@ runs:
       with:
         registry-url: "https://registry.npmjs.org"
 
-    - name: install pnpm
+    - name: pnpm-setup
+      uses: pnpm/action-setup@v2
+
+    - name: setup pnpm config
       shell: bash
-      run: npm i pnpm@latest -g
+      run: pnpm config set store-dir $PNPM_CACHE_FOLDER
 
     - name: Cache turbo build setup
       uses: actions/cache@v4
