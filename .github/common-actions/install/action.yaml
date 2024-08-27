@@ -10,7 +10,7 @@ runs:
         registry-url: "https://registry.npmjs.org"
 
     - name: pnpm-setup
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
 
     - name: setup pnpm config
       shell: bash
