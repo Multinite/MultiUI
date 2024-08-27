@@ -1,5 +1,16 @@
 # @multinite_official/multiui
 
+## 2.6.0
+
+### Minor Changes
+
+- 78056fb: Updated: MultiUI Plugin to support rounding & text sizes.
+
+### Patch Changes
+
+- 706bb8b: Fix: MultiUI provider adding 'theme' class to doc el every render.
+- ba354ab: Added: logging for MultiUI Plugin
+
 ## 2.5.3
 
 ### Patch Changes
