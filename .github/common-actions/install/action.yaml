@@ -13,10 +13,6 @@ runs:
       shell: bash
       run: npm i pnpm@latest -g
 
-    - name: setup pnpm config
-      shell: bash
-      run: pnpm config set store-dir $PNPM_CACHE_FOLDER
-
     - name: Cache turbo build setup
       uses: actions/cache@v4
       with:
