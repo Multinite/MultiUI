@@ -26,6 +26,7 @@
   "dependencies": {
     "@planetscale/database": "^1.18.0",
     "chroma-js": "^2.6.0",
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.32.1",
     "framer-motion": "^11.3.18",
     "markdown-to-jsx": "^7.4.7",
