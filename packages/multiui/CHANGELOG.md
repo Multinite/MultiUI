@@ -1,5 +1,12 @@
 # @multinite_official/multiui
 
+## 2.6.1
+
+### Patch Changes
+
+- 3b7d65c: Fix: MultiUI plugin to output correct theme obj
+- 32d81da: Updated: GH actions for publish.
+
 ## 2.6.0
 
 ### Minor Changes
