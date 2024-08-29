@@ -1,5 +1,11 @@
 # @multinite_official/multiui-docs
 
+## 3.2.1
+
+### Patch Changes
+
+- 3b7d65c: Fix: MultiUI plugin to output correct theme obj
+
 ## 3.2.0
 
 ### Minor Changes
