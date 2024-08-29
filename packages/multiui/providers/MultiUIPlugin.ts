@@ -1,6 +1,6 @@
 import plugin from "tailwindcss/plugin";
 import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
-import type { MultiUIConfig } from "./../types/MultiUIConfig.js";
+import type { MultiUIConfig } from "../types/MultiUIConfig.js";
 
 export const MultiUIPlugin = function (
   multiUIConfig: MultiUIConfig & { $schema?: string }
@@ -102,27 +102,47 @@ export const MultiUIPlugin = function (
       {
         class: "text",
         values: {
-          small: cssVar(["text", "small"]),
-          medium: cssVar(["text", "medium"]),
-          large: cssVar(["text", "large"]),
+          small: {
+            fontSize: cssVar(["text", "small"]),
+          },
+          medium: {
+            fontSize: cssVar(["text", "medium"]),
+          },
+          large: {
+            fontSize: cssVar(["text", "large"]),
+          },
         },
       },
       {
         class: "rounded",
         values: {
-          small: cssVar(["rounded", "small"]),
-          medium: cssVar(["rounded", "medium"]),
-          large: cssVar(["rounded", "large"]),
+          small: {
+            borderRadius: cssVar(["rounded", "small"]),
+          },
+          medium: {
+            borderRadius: cssVar(["rounded", "medium"]),
+          },
+          large: {
+            borderRadius: cssVar(["rounded", "large"]),
+          },
         },
       },
     ] as const;
 
     const sizeClasses = allSizeClasses.reduce((acc, x) => {
-      const values = Object.entries(x.values).map(([k, v]) => {
-        return {
-          [`.${x.class}-${k}`]: v,
-        };
-      });
+      const values = Object.entries(x.values)
+        .map(([k, v]) => {
+          return {
+            [`.${x.class}-${k}`]: v,
+          };
+        })
+        .reduce((zacc, z) => {
+          return {
+            ...zacc,
+            ...z,
+          };
+        }, {});
+
       return {
         ...acc,
         ...values,

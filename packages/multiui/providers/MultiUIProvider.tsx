@@ -358,11 +358,9 @@ export const MultiUIProvider = memo(function ({
     document.documentElement.setAttribute("data-theme", currentTheme!);
     subscribers.current.forEach((x) => x(currentTheme, themeStyles));
     $isDuringThemeChange(true);
-    console.log("isDuringThemeChange", isDuringThemeChange);
     clearTimeout(isDuringThemeChangeTimeout.current);
     isDuringThemeChangeTimeout.current = setTimeout(() => {
       $isDuringThemeChange(false);
-      console.log("isDuringThemeChange", isDuringThemeChange);
     }, 300);
   }, [currentTheme]);
 

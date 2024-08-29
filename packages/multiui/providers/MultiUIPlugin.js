@@ -32,7 +32,7 @@ export const MultiUIPlugin = function (multiUIConfig) {
                 ]),
             }),
         };
-        const utils = allColorUtils.reduce((zacc, z) => {
+        const colorUtils = allColorUtils.reduce((zacc, z) => {
             return {
                 ...zacc,
                 ...allColorTypes.reduce((acc, x) => {
@@ -45,9 +45,57 @@ export const MultiUIPlugin = function (multiUIConfig) {
                 }, {}),
             };
         }, {});
-        console.log(utils);
-        addUtilities({
-            ...utils,
+        const allSizeClasses = [
+            {
+                class: "text",
+                values: {
+                    small: {
+                        fontSize: cssVar(["text", "small"]),
+                    },
+                    medium: {
+                        fontSize: cssVar(["text", "medium"]),
+                    },
+                    large: {
+                        fontSize: cssVar(["text", "large"]),
+                    },
+                },
+            },
+            {
+                class: "rounded",
+                values: {
+                    small: {
+                        borderRadius: cssVar(["rounded", "small"]),
+                    },
+                    medium: {
+                        borderRadius: cssVar(["rounded", "medium"]),
+                    },
+                    large: {
+                        borderRadius: cssVar(["rounded", "large"]),
+                    },
+                },
+            },
+        ];
+        const sizeClasses = allSizeClasses.reduce((acc, x) => {
+            const values = Object.entries(x.values)
+                .map(([k, v]) => {
+                return {
+                    [`.${x.class}-${k}`]: v,
+                };
+            })
+                .reduce((zacc, z) => {
+                return {
+                    ...zacc,
+                    ...z,
+                };
+            }, {});
+            return {
+                ...acc,
+                ...values,
+            };
+        }, {});
+        const utils = {
+            ...colorUtils,
+            ...sizeClasses,
             ".outline-focus": {
                 outlineColor: `hsl(var(--${prefix}-focus))`,
             },
@@ -55,7 +103,9 @@ export const MultiUIPlugin = function (multiUIConfig) {
                 "--tw-ring-opacity": (1).toString(),
                 "--tw-ring-color": `hsl(var(--${prefix}-focus) / var(--tw-ring-opacity))`,
             },
-        });
+        };
+        console.log(utils);
+        addUtilities(utils);
     }, {});
 };
 //# sourceMappingURL=MultiUIPlugin.js.map

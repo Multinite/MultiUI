@@ -3,7 +3,6 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { motion } from "framer-motion";
 import { createContext, memo, useContext, useEffect, useMemo, useRef, useState, } from "react";
 import { createPortal } from "react-dom";
-import { cn } from "../utils/cn.js";
 //@ts-ignore
 const MultiUIContext = createContext({
     setTheme(theme_name) { },
@@ -300,7 +299,7 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
             return;
         if (!isRan.current) {
             isRan.current = true;
-            document.documentElement.className = cn("theme", document.documentElement.className);
+            document.documentElement.classList.add("theme");
             document.documentElement.style.colorScheme = `var(--${theme_prefix}-scheme)`;
             return;
         }
@@ -311,11 +310,9 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
         document.documentElement.setAttribute("data-theme", currentTheme);
         subscribers.current.forEach((x) => x(currentTheme, themeStyles));
         $isDuringThemeChange(true);
-        console.log("isDuringThemeChange", isDuringThemeChange);
         clearTimeout(isDuringThemeChangeTimeout.current);
         isDuringThemeChangeTimeout.current = setTimeout(() => {
             $isDuringThemeChange(false);
-            console.log("isDuringThemeChange", isDuringThemeChange);
         }, 300);
     }, [currentTheme]);
     return (_jsxs(MultiUIContext.Provider, { value: {

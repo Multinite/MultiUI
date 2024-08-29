@@ -1,4 +1,4 @@
-import type { MultiUIConfig } from "./../types/MultiUIConfig.js";
+import type { MultiUIConfig } from "../types/MultiUIConfig.js";
 export declare const MultiUIPlugin: (multiUIConfig: MultiUIConfig & {
     $schema?: string;
 }) => {

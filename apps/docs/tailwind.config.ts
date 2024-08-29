@@ -13,4 +13,5 @@ const config: Config = {
   theme: {},
   plugins: [MultiUIPlugin(multiUIConfig as unknown as MultiUIConfig)],
 };
+
 export default config;
