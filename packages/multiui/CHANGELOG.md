@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.6.4
+
+### Patch Changes
+
+- 6ee8b2a: Fix: Separator imports
+
 ## 2.6.3
 
 ### Patch Changes
