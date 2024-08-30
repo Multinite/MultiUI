@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.6.3
+
+### Patch Changes
+
+- 2dec2a4: Fix: correct grammar for "separator"
+
 ## 2.6.2
 
 ### Patch Changes
