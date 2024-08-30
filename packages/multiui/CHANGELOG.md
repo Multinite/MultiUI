@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.6.2
+
+### Patch Changes
+
+- eb02839: Updated: cn.tsx, added \_\_cn_seperator fn.
+
 ## 2.6.1
 
 ### Patch Changes
