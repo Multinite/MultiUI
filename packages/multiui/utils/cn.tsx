@@ -48,5 +48,6 @@ export function __cn_separator(
   cb: (cn_: typeof cn) => [beforeSeparator, afterSeparator]
 ) {
   const [before, after] = cb(cn);
+  if (after.trim().length === 0) return before;
   return cn(before, cn_separator, after);
 }
