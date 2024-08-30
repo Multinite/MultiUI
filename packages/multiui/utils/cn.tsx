@@ -24,29 +24,29 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// export const cn_seperator = cn("➜");
-export const cn_seperator = cn("•");
+// export const cn_separator = cn("➜");
+export const cn_separator = cn("•");
 
-type beforeSeperator = string;
-type afterSeperator = string;
+type beforeSeparator = string;
+type afterSeparator = string;
 
 /**
  * ## DO NOT USE, THIS IS FOR INTERNAL USE ONLY!
  *
  * ### Intended use:
- * Anything before the seperator is internal classes, and anything after is user passed classes.
+ * Anything before the separator is internal classes, and anything after is user passed classes.
  *
  * @example
  * ```ts
  * const defaultClasses = "bg-red-500";
  * const userPassedClasses = "bg-blue-500";
  *
- * const classes = __cn_seperator((cn) => [cn(defaultClasses), cn(userPassedClasses)]);
+ * const classes = __cn_separator((cn) => [cn(defaultClasses), cn(userPassedClasses)]);
  * ```
  */
-export function __cn_seperator(
-  cb: (cn_: typeof cn) => [beforeSeperator, afterSeperator]
+export function __cn_separator(
+  cb: (cn_: typeof cn) => [beforeSeparator, afterSeparator]
 ) {
   const [before, after] = cb(cn);
-  return cn(before, cn_seperator, after);
+  return cn(before, cn_separator, after);
 }
