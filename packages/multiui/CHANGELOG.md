@@ -1,5 +1,16 @@
 # @multinite_official/multiui
 
+## 2.7.0
+
+### Minor Changes
+
+- 700385d: Added: createComponent functions and other similar functions to help create Components for MultiUI.
+
+### Patch Changes
+
+- 37b8d01: Fix: fixed exporting createComponent
+- ed09ffa: Fix: If \_\_cn_separator has the `after` value has "", than the separator will not be applied.
+
 ## 2.6.4
 
 ### Patch Changes
