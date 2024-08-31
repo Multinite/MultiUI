@@ -39,16 +39,40 @@ type CreateVariantFn<Slots extends Record<string, Record<string, any>>, Slot ext
  * ```
  *
  * @template ComponentProps - The props for the component.
- * @template Slots - The slots available for the component.
+ * @template Slots
+ * ### ───────────────────────────
+ * # Slots
+ * Define the component's slots using an object structure. Each key represents a slot name,
+ * and its corresponding value is an object containing all the properties that can be
+ * passed to the variants when creating a variant for that slot.
+ *
+ * ```tsx
+ * type MyComponentSlots = {
+ * ㅤㅤbase: { // Defining the slot named `base`
+ * ㅤㅤㅤㅤisDisabled: boolean; // The props that can be passed for the creation of the variant.
+ * ㅤㅤㅤㅤisOpen: boolean;
+ * ㅤㅤㅤㅤisHovering: boolean;
+ * ㅤㅤ},
+ * ㅤㅤ// ... rest of the slots
+ * }
+ *
+ * const createMyComponent = createComponent<MyComponentProps, MyComponentSlots, HTMLButtonElement>(my_component_name, ({ props }) => {
+ * ㅤㅤ// ... rest of the component
+ * })
+ * ```
+ * ### ───────────────────────────
  * @template Element - The HTML element type for the component.
  * @param {string} componentName - The name of the component.
  * @param {Function} create - Function to create the component structure.
  * @returns The created Component.
  */
 export declare const createComponent: <ComponentProps, Slots extends Record<string, Record<string, any>>, Element extends HTMLElement = HTMLElement>(componentName: string, create: (props: {
+    /**
+     * The props passed to the component.
+     */
     props: ComponentProps & {
         ref: ForwardedRef<Element>;
-    };
+    } & HTMLAttributes<Element>;
     /**
      * Slots define the structural components of a UI element.
      * ### ㅤㅤ
