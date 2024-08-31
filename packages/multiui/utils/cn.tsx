@@ -24,11 +24,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// export const cn_separator = cn("➜");
-export const cn_separator = cn("•");
+// export const cn_separator = "➜" as const;
+export const cn_separator = "•" as const;
 
-type beforeSeparator = string;
-type afterSeparator = string;
+type beforeSeparator = string | string[];
+type afterSeparator = string | string[];
 
 /**
  * ## DO NOT USE, THIS IS FOR INTERNAL USE ONLY!
@@ -48,6 +48,15 @@ export function __cn_separator(
   cb: (cn_: typeof cn) => [beforeSeparator, afterSeparator]
 ) {
   const [before, after] = cb(cn);
-  if (after.trim().length === 0) return before;
-  return cn(before, cn_separator, after);
+  if (
+    typeof after === "string"
+      ? after.trim().length === 0
+      : after.join("").trim().length === 0
+  )
+    return before;
+  return cn(
+    typeof before === "string" ? before : cn(before),
+    cn_separator,
+    typeof after === "string" ? after : cn(after)
+  );
 }
