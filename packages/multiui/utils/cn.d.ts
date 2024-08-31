@@ -11,11 +11,15 @@ type afterSeparator = string | string[];
  *
  * @example
  * ```ts
+ * const classes = __cn_separator(defaultClasses, userPassedClasses);
+ * ```
+ * ## OR
+ * ```ts
  * const defaultClasses = "bg-red-500";
  * const userPassedClasses = "bg-blue-500";
  *
  * const classes = __cn_separator((cn) => [cn(defaultClasses), cn(userPassedClasses)]);
  * ```
  */
-export declare function __cn_separator(cb: (cn_: typeof cn) => [beforeSeparator, afterSeparator]): string;
+export declare function __seperateClasses(cb_or_class: ((cn_: typeof cn) => [beforeSeparator, afterSeparator]) | string, afterClasses?: string): string;
 export {};

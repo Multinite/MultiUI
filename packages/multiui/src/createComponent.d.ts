@@ -1,5 +1,5 @@
 import { type ReactNode, type HTMLAttributes, type ForwardedRef } from "react";
-import { __cn_separator, cn as cn_ } from "../utils/cn.js";
+import { __seperateClasses, cn as cn_ } from "../utils/cn.js";
 /**
  * Represents a chain of variants for component slots.
  */
@@ -143,7 +143,7 @@ export declare const createComponent: <ComponentProps, Slots extends Record<stri
      *
      * @returns The classes to be passed to the element.
      */
-    classNameSeperator: typeof __cn_separator;
+    classNameSeperator: typeof __seperateClasses;
 }) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ComponentProps & HTMLAttributes<Element>> & import("react").RefAttributes<Element>> & {
     createVariant: CreateVariantFn<Slots, keyof Slots>;
 };

@@ -5,7 +5,7 @@ import {
   type HTMLAttributes,
   type ForwardedRef,
 } from "react";
-import { __cn_separator, cn as cn_ } from "../utils/cn.js";
+import { __seperateClasses, cn as cn_ } from "../utils/cn.js";
 
 /**
  * Represents a chain of variants for component slots.
@@ -183,7 +183,7 @@ export const createComponent = <
      *
      * @returns The classes to be passed to the element.
      */
-    classNameSeperator: typeof __cn_separator;
+    classNameSeperator: typeof __seperateClasses;
   }) => ReactNode
 ) => {
   let variants: { slot: keyof Slots; create: (...props: any) => string }[] = [];
@@ -201,7 +201,7 @@ export const createComponent = <
         createSlot: function ({ slot, styling_args }) {
           return slot;
         },
-        classNameSeperator: __cn_separator,
+        classNameSeperator: __seperateClasses,
       });
 
       Component = Object.assign(Component, {

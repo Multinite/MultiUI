@@ -1,6 +1,6 @@
 "use client";
 import { forwardRef, } from "react";
-import { __cn_separator } from "../utils/cn.js";
+import { __seperateClasses } from "../utils/cn.js";
 /**
  * # Creates a new MultiUI component
  * Allows you to create a MultiUI component with customizable slots, variants and other features.
@@ -76,7 +76,7 @@ create) => {
             createSlot: function ({ slot, styling_args }) {
                 return slot;
             },
-            classNameSeperator: __cn_separator,
+            classNameSeperator: __seperateClasses,
         });
         Component = Object.assign(Component, {
             variants: variants,

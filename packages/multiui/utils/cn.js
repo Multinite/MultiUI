@@ -29,18 +29,27 @@ export const cn_separator = "•";
  *
  * @example
  * ```ts
+ * const classes = __cn_separator(defaultClasses, userPassedClasses);
+ * ```
+ * ## OR
+ * ```ts
  * const defaultClasses = "bg-red-500";
  * const userPassedClasses = "bg-blue-500";
  *
  * const classes = __cn_separator((cn) => [cn(defaultClasses), cn(userPassedClasses)]);
  * ```
  */
-export function __cn_separator(cb) {
-    const [before, after] = cb(cn);
-    if (typeof after === "string"
-        ? after.trim().length === 0
-        : cn(after).trim().length === 0)
-        return cn(before);
-    return cn(typeof before === "string" ? before : cn(before), cn_separator, typeof after === "string" ? after : cn(after));
+export function __seperateClasses(cb_or_class, afterClasses = "") {
+    if (typeof cb_or_class === "function") {
+        const [before, after] = cb_or_class(cn);
+        if (typeof after === "string"
+            ? after.trim().length === 0
+            : cn(after).trim().length === 0)
+            return cn(before);
+        return cn(typeof before === "string" ? before : cn(before), cn_separator, typeof after === "string" ? after : cn(after));
+    }
+    else {
+        return cn(cb_or_class, cn_separator, afterClasses);
+    }
 }
 //# sourceMappingURL=cn.js.map
