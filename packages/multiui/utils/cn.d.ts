@@ -17,5 +17,5 @@ type afterSeparator = string | string[];
  * const classes = __cn_separator((cn) => [cn(defaultClasses), cn(userPassedClasses)]);
  * ```
  */
-export declare function __cn_separator(cb: (cn_: typeof cn) => [beforeSeparator, afterSeparator]): beforeSeparator;
+export declare function __cn_separator(cb: (cn_: typeof cn) => [beforeSeparator, afterSeparator]): string;
 export {};

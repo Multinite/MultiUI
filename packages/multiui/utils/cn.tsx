@@ -46,14 +46,14 @@ type afterSeparator = string | string[];
  */
 export function __cn_separator(
   cb: (cn_: typeof cn) => [beforeSeparator, afterSeparator]
-) {
+): string {
   const [before, after] = cb(cn);
   if (
     typeof after === "string"
       ? after.trim().length === 0
-      : after.join("").trim().length === 0
+      : cn(after).trim().length === 0
   )
-    return before;
+    return cn(before);
   return cn(
     typeof before === "string" ? before : cn(before),
     cn_separator,

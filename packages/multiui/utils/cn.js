@@ -39,8 +39,8 @@ export function __cn_separator(cb) {
     const [before, after] = cb(cn);
     if (typeof after === "string"
         ? after.trim().length === 0
-        : after.join("").trim().length === 0)
-        return before;
+        : cn(after).trim().length === 0)
+        return cn(before);
     return cn(typeof before === "string" ? before : cn(before), cn_separator, typeof after === "string" ? after : cn(after));
 }
 //# sourceMappingURL=cn.js.map
