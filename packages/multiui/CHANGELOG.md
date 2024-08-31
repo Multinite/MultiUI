@@ -1,5 +1,12 @@
 # @multinite_official/multiui
 
+## 2.7.1
+
+### Patch Changes
+
+- 4b5d605: Updated: createComponent JSDocs
+- fc6095d: Fix: \_\_cn_seperator fn
+
 ## 2.7.0
 
 ### Minor Changes
