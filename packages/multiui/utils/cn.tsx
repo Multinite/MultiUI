@@ -38,14 +38,14 @@ type afterSeparator = string | string[];
  *
  * @example
  * ```ts
- * const classes = __cn_separator(defaultClasses, userPassedClasses);
+ * const classes = __seperateClasses(defaultClasses, userPassedClasses);
  * ```
  * ## OR
  * ```ts
  * const defaultClasses = "bg-red-500";
  * const userPassedClasses = "bg-blue-500";
  *
- * const classes = __cn_separator((cn) => [cn(defaultClasses), cn(userPassedClasses)]);
+ * const classes = __seperateClasses((cn) => [cn(defaultClasses), cn(userPassedClasses)]);
  * ```
  */
 export function __seperateClasses(

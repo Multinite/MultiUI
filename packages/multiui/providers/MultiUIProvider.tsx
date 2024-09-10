@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import {
   createContext,
   memo,
+  ReactNode,
   useContext,
   useEffect,
   useMemo,
@@ -11,6 +12,8 @@ import {
 } from "react";
 import { MultiUIConfig, Theme } from "../types/MultiUIConfig.js";
 import { createPortal } from "react-dom";
+import { useSelectify } from "use-selectify";
+import { isMobile } from "react-device-detect";
 
 type MultiUIProvider = {
   setTheme: (theme_name: string) => void;
@@ -210,6 +213,13 @@ export const MultiUIProvider = memo(function ({
   config = {},
   children,
   blurOnThemeChange = false,
+  enableBoxSelection = false,
+  boxSelectionOptions = {
+    activateOnKey: undefined,
+    activateOnMetaKey: true,
+    disableOnMobile: true,
+    lazyLoad: true,
+  },
 }: {
   config?: {
     theme_prefix?: MultiUIConfig["theme_prefix"];
@@ -219,6 +229,43 @@ export const MultiUIProvider = memo(function ({
    * @default false
    */
   blurOnThemeChange?: boolean;
+  /**
+   * Enable box selection support.
+   * We recommend supporting this feature, as it allows users to have another layer of control over interactions on components.
+   *
+   * @default false
+   * @see {@link https://multiui.org/docs/box-selection}
+   */
+  enableBoxSelection?: boolean;
+  /**
+   * Options for box selection.
+   * @see {@link https://multiui.org/docs/box-selection}
+   */
+  boxSelectionOptions?: {
+    /**
+     * Enable lazy loading of the box selection feature.
+     *
+     * @default true
+     */
+    lazyLoad?: boolean;
+    /**
+     * Disable box selection on mobile devices.
+     *
+     * @deafult true
+     */
+    disableOnMobile?: boolean;
+    /**
+     * Only enables the selection box if the user was pressing a meta key while initiating the drag. Included meta keys are: Shift, Ctrl, Cmd and Alt.
+     * @default true
+     */
+    activateOnMetaKey?: boolean;
+    /**
+     * Only enables the selection box if the user was pressing a specified key while initiating the drag.
+     *
+     * @default undefined
+     */
+    activateOnKey?: string[];
+  };
   children: React.ReactNode;
 }) {
   const [themes, $Themes] = useState<Theme[]>([]);
@@ -232,6 +279,20 @@ export const MultiUIProvider = memo(function ({
   const [blurOnThemeChange_, setBlurOnThemeChange] = useState<boolean>(
     blurOnThemeChange ?? false
   );
+  const selectionContainerRef = useRef<HTMLDivElement>(null);
+  const { SelectBoxOutlet } = useSelectify(selectionContainerRef, {
+    selectCriteria: ".selectable",
+    onSelect: (element) => {
+      element.setAttribute("aria-selected", "true");
+      element.innerHTML = "Foo bar";
+    },
+    onUnselect: (element) => {
+      element.innerHTML = "Select";
+    },
+    lazyLoad: true,
+    activateOnMetaKey: true,
+    disabled: isMobile,
+  });
 
   const themeStyles = useMemo(() => {
     return themes.find((x) => x.name === currentTheme);
@@ -363,32 +424,8 @@ export const MultiUIProvider = memo(function ({
     }, 300);
   }, [currentTheme]);
 
-  return (
-    <MultiUIContext.Provider
-      value={{
-        setTheme: (theme_name) => {
-          $currentTheme(theme_name);
-        },
-        currentTheme: currentTheme,
-        currentThemeValue: themeStyles,
-        themes: themes.map((x) => x.name),
-
-        addTheme(theme) {
-          $Themes((prev) => [
-            ...prev,
-            ...(Array.isArray(theme) ? theme : [theme]),
-          ]);
-        },
-        onThemeChange(callback) {
-          subscribers.current.push(callback);
-          return () => {
-            subscribers.current = subscribers.current.filter(
-              (x) => x !== callback
-            );
-          };
-        },
-      }}
-    >
+  const AllProviderChildren = () => (
+    <>
       {children}
       {Object.keys(themeInCSS).length > 0
         ? createPortal(
@@ -430,7 +467,57 @@ export const MultiUIProvider = memo(function ({
             document.body
           )
         : null}
+    </>
+  );
+
+  const Provider = ({ children }: { children: ReactNode }) => (
+    <MultiUIContext.Provider
+      value={{
+        setTheme: (theme_name) => {
+          $currentTheme(theme_name);
+        },
+        currentTheme: currentTheme,
+        currentThemeValue: themeStyles,
+        themes: themes.map((x) => x.name),
+
+        addTheme(theme) {
+          $Themes((prev) => [
+            ...prev,
+            ...(Array.isArray(theme) ? theme : [theme]),
+          ]);
+        },
+        onThemeChange(callback) {
+          subscribers.current.push(callback);
+          return () => {
+            subscribers.current = subscribers.current.filter(
+              (x) => x !== callback
+            );
+          };
+        },
+      }}
+    >
+      {children}
     </MultiUIContext.Provider>
+  );
+
+  if (enableBoxSelection) {
+    return (
+      <Provider>
+        <div
+          slot="multiui-box-selection-wrapper"
+          ref={selectionContainerRef}
+          style={{ position: "relative" }}
+        >
+          <AllProviderChildren />
+          <SelectBoxOutlet className="box-selection" slot="box-selection" />
+        </div>
+      </Provider>
+    );
+  }
+  return (
+    <Provider>
+      <AllProviderChildren />
+    </Provider>
   );
 });
 export { default_theme as multiUI_defaultTheme };
