@@ -1,11 +1,12 @@
 import { ForwardedRef, HTMLAttributes, ReactNode } from "react";
 import type { cn as cn_, __seperateClasses } from "../utils/cn.js";
+import { createSlot } from "./createComponent.js";
 
 /**
  * Represents a chain of variants for component slots.
  */
 export type VariantChain<Slots extends Record<string, Record<string, any>>> = {
-  createChainedVariant: CreateVariantFromChainedVariant<Slots, keyof Slots>;
+  createChainedVariant: CreateVariantFromChainedVariant<Slots>;
 };
 
 /**
@@ -13,27 +14,29 @@ export type VariantChain<Slots extends Record<string, Record<string, any>>> = {
  */
 export type CreateVariantFromChainedVariant<
   Slots extends Record<string, Record<string, any>>,
-  Slot extends keyof Slots,
 > = (args: {
   name: string;
-  create: (
-    props: Slots[Slot],
-    chainedVariantClasses: string,
-    cn: typeof cn_
-  ) => string;
+  slots: Record<
+    keyof Slots,
+    (
+      props: Slots[keyof Slots],
+      cn: typeof cn_,
+      chainedVariantClasses: string
+    ) => string
+  >;
 }) => VariantChain<Slots>;
 
 /**
  * Type for creating a new variant function.
  */
-export type CreateVariantFn<
-  Slots extends Record<string, Record<string, any>>,
-  Slot extends keyof Slots,
-> = (args: {
-  slot: Slot;
-  name: string;
-  create: (props: Slots[Slot], cn: typeof cn_) => string;
-}) => VariantChain<Slots>;
+export type CreateVariantFn<Slots extends Record<string, Record<string, any>>> =
+  (args: {
+    name: string;
+    slots: Record<
+      keyof Slots,
+      (props: Slots[keyof Slots], cn: typeof cn_) => string
+    >;
+  }) => VariantChain<Slots>;
 
 /**
  * # Creates a new MultiUI component
@@ -41,7 +44,7 @@ export type CreateVariantFn<
  *
  * ```tsx
  * // Make sure to add some JSDoc to your component.
- * const Component = createComponent("component_name", ({ props, createSlot, classNameSeperator }) => {
+ * const createMySpecialComponent = createComponent("component_name", ({ props, createSlot, classNameSeperator }) => {
  *   return (
  *     <div className={classNameSeperator((cn) => [cn("bg-red-500"), cn("bg-blue-500")])} {...props}>
  *       {props.children}
@@ -61,24 +64,19 @@ export type CreateVariantFn<
  * passed to the variants when creating a variant for that slot.
  *
  * ```tsx
- * type MyComponentSlots = {
- * ㅤㅤbase: { // Defining the slot named `base`
- * ㅤㅤㅤㅤisDisabled: boolean; // The props that can be passed for the creation of the variant.
- * ㅤㅤㅤㅤisOpen: boolean;
- * ㅤㅤㅤㅤisHovering: boolean;
- * ㅤㅤ},
- * ㅤㅤ// ... rest of the slots
- * }
+ * const createButton = createComponent<MyComponentProps, HTMLButtonElement>(my_component_name, ({ createSlot }) => {
  *
- * const createMyComponent = createComponent<MyComponentProps, MyComponentSlots, HTMLButtonElement>(my_component_name, ({ props }) => {
- * ㅤㅤ// ... rest of the component
+ *   const {base, getBaseClasses} = createSlot<"base", {}>("base");
+ *   // example: <Button slot={base} className={getBaseClasses()}>Foo</Button>
+ * ㅤ
+ *   // ... rest of the component
  * })
  * ```
- * ### ──────────────���────────────
+ * ### ─────────────────────────────
  * @template Element - The HTML element type for the component.
  * @param {string} componentName - The name of the component.
  * @param {Function} create - Function to create the component structure.
- * @returns The created Component.
+ * @returns The component creator function.
  */
 export type CreateComponentFn = <
   ComponentProps,
@@ -142,13 +140,7 @@ export type CreateComponentFn = <
      * ### ㅤㅤ
      * For more information on slots, see the [slots documentation](https://multiui.org/docs/slots).
      */
-    createSlot: <SlotProperties, SlotName extends string>(
-      slotName: SlotName
-    ) => Record<
-      | SlotName
-      | `get${UppercaseFirstLetter<SlotName extends string ? SlotName : string>}Classes`,
-      SlotName | SlotProperties
-    >;
+    createSlot: typeof createSlot;
     /**
      * ## Use this function before passing classes to any element.
      * **In short:** It seperates internal classes from user passed classes with a symbol which is pre-defined by MultiUI.
@@ -185,66 +177,6 @@ export type CreateComponentFn = <
   ComponentProps & {
     ref: ForwardedRef<Element>;
   } & HTMLAttributes<Element>
->;
-
-type UppercaseFirstLetter<T extends string> =
-  T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
-
-const { test } = (<SlotName extends string>(): {
-  test: <SomethingElse>(name: SlotName) => Record<`lol_${SlotName}`, "d">; // Change here
-} => {
-  return {
-    test: function <SomethingElse>(
-      test: SlotName
-    ): Record<`lol_${SlotName}`, "d"> {
-      // Change here
-      //@ts-ignore
-      return 1;
-    },
-  };
-})();
-const ddddddd = test<{
-  //    ^?
-  a: 1;
-}>("hi");
-
-ddddddd;
-
-/**
- * This allows you to create slots for your component which in-turn supports variants.
- *
- * ```tsx
- * const {base, getBaseClasses} = createSlot<"Base", {}>("Base");
- * <Button slot={base} className={getBaseClasses()}>Foo</Button>
- * ```
- */
-function createSlot<
-  SlotName extends string,
-  SlotProps extends Record<string, any>,
->(
-  slotName: SlotName
-): {
-  [K in SlotName]: SlotName;
-} & {
-  [K in `get${UppercaseFirstLetter<SlotName>}Classes`]: (
-    props: SlotProps
-  ) => string;
-} {
-  return {
-    [slotName]: slotName,
-    [`get${capitalize(slotName)}Classes`]: 1,
-  } as any;
-}
-
-function capitalize<T extends string>(s: T): Capitalize<T> {
-  return (s.charAt(0).toUpperCase() + s.slice(1)) as Capitalize<T>;
-}
-
-const test2 = createSlot<
-  "base",
-  {
-    a: 1;
-  }
->("base");
-
-createSlot<"hi", { 1: 1 }>("hi");
+> & {
+  createVariant: CreateVariantFn<{}>;
+};
