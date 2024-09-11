@@ -219,6 +219,11 @@ export const MultiUIProvider = memo(function ({
     activateOnMetaKey: true,
     disableOnMobile: true,
     lazyLoad: true,
+    autoScroll: true,
+    autoScrollEdgeDistance: 100,
+    autoScrollStep: 30,
+    disableUnselection: false,
+    maxSelections: false,
   },
 }: {
   config?: {
@@ -265,6 +270,32 @@ export const MultiUIProvider = memo(function ({
      * @default undefined
      */
     activateOnKey?: string[];
+    /**
+     * Automatically try to scroll the window when the pointer approaches the viewport edge while dragging.
+     *
+     * @default true
+     */
+    autoScroll?: boolean;
+    /**
+     * Distance in px from the viewport's edges from which the box will try scrolling the window when the pointer approaches the viewport edge while dragging.
+     * @default 100
+     */
+    autoScrollEdgeDistance?: number;
+    /**
+     * Auto scroll speed.
+     * @default 30
+     */
+    autoScrollStep?: number;
+    /**
+     * Will keep every item selected after selection. Can be cleared with clearSelection()
+     * @default false
+     */
+    disableUnselection?: boolean;
+    /**
+     * Maximum number of elements that can be selected. Will stop selecting after reaching that number and keep already selected elements. false = Infinite
+     * @default Infinity
+     */
+    maxSelections?: number | false;
   };
   children: React.ReactNode;
 }) {
@@ -284,14 +315,19 @@ export const MultiUIProvider = memo(function ({
     selectCriteria: ".selectable",
     onSelect: (element) => {
       element.setAttribute("aria-selected", "true");
-      element.innerHTML = "Foo bar";
     },
     onUnselect: (element) => {
-      element.innerHTML = "Select";
+      element.removeAttribute("aria-selected");
     },
-    lazyLoad: true,
-    activateOnMetaKey: true,
-    disabled: isMobile,
+    lazyLoad: boxSelectionOptions.lazyLoad,
+    activateOnMetaKey: boxSelectionOptions.activateOnMetaKey,
+    disabled: boxSelectionOptions.disableOnMobile && isMobile,
+    activateOnKey: boxSelectionOptions.activateOnKey,
+    autoScroll: boxSelectionOptions.autoScroll,
+    autoScrollEdgeDistance: boxSelectionOptions.autoScrollEdgeDistance,
+    autoScrollStep: boxSelectionOptions.autoScrollStep,
+    disableUnselection: boxSelectionOptions.disableUnselection,
+    maxSelections: boxSelectionOptions.maxSelections,
   });
 
   const themeStyles = useMemo(() => {
