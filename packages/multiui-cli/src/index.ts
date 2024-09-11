@@ -9,12 +9,13 @@ import path, { dirname } from "path";
 import remove from "./commands/remove.js";
 import test from "./commands/test.js";
 import update from "./commands/update.js";
+import start from "./commands/start.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const pkgJsonPath = path.join(__dirname, "..", "package.json");
-const { version } = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
+export const { version } = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
 const program = new Command();
 
 export const isDev = true;
@@ -79,5 +80,11 @@ program
   .option("--workspace <workspace>", "nodejs workspace directory")
   .description("Upate a specific component")
   .action(update);
+
+program
+  .command("start")
+  .description("Start MultiUI CLI gen server")
+  .option("--workspace <workspace>", "nodejs workspace directory")
+  .action(start);
 
 program.parse();

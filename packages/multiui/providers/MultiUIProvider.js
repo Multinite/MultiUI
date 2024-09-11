@@ -1,8 +1,10 @@
 "use client";
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
 import { motion } from "framer-motion";
 import { createContext, memo, useContext, useEffect, useMemo, useRef, useState, } from "react";
 import { createPortal } from "react-dom";
+import { useSelectify } from "use-selectify";
+import { isMobile } from "react-device-detect";
 //@ts-ignore
 const MultiUIContext = createContext({
     setTheme(theme_name) { },
@@ -180,7 +182,17 @@ const default_theme = {
  * @param props Use the `MultiUIProviderProps` function to pass props to this component.
  * @returns
  */
-export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThemeChange = false, }) {
+export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThemeChange = false, enableBoxSelection = false, boxSelectionOptions = {
+    activateOnKey: undefined,
+    activateOnMetaKey: true,
+    disableOnMobile: true,
+    lazyLoad: true,
+    autoScroll: true,
+    autoScrollEdgeDistance: 100,
+    autoScrollStep: 30,
+    disableUnselection: false,
+    maxSelections: false,
+}, }) {
     const [themes, $Themes] = useState([]);
     const [currentTheme, $currentTheme] = useState(undefined);
     const theme_prefix = (config.theme_prefix || "multiui");
@@ -188,6 +200,25 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
     const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
     const isDuringThemeChangeTimeout = useRef();
     const [blurOnThemeChange_, setBlurOnThemeChange] = useState(blurOnThemeChange ?? false);
+    const selectionContainerRef = useRef(null);
+    const { SelectBoxOutlet } = useSelectify(selectionContainerRef, {
+        selectCriteria: ".selectable",
+        onSelect: (element) => {
+            element.setAttribute("aria-selected", "true");
+        },
+        onUnselect: (element) => {
+            element.removeAttribute("aria-selected");
+        },
+        lazyLoad: boxSelectionOptions.lazyLoad,
+        activateOnMetaKey: boxSelectionOptions.activateOnMetaKey,
+        disabled: boxSelectionOptions.disableOnMobile && isMobile,
+        activateOnKey: boxSelectionOptions.activateOnKey,
+        autoScroll: boxSelectionOptions.autoScroll,
+        autoScrollEdgeDistance: boxSelectionOptions.autoScrollEdgeDistance,
+        autoScrollStep: boxSelectionOptions.autoScrollStep,
+        disableUnselection: boxSelectionOptions.disableUnselection,
+        maxSelections: boxSelectionOptions.maxSelections,
+    });
     const themeStyles = useMemo(() => {
         return themes.find((x) => x.name === currentTheme);
     }, [currentTheme, themes]);
@@ -315,26 +346,7 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
             $isDuringThemeChange(false);
         }, 300);
     }, [currentTheme]);
-    return (_jsxs(MultiUIContext.Provider, { value: {
-            setTheme: (theme_name) => {
-                $currentTheme(theme_name);
-            },
-            currentTheme: currentTheme,
-            currentThemeValue: themeStyles,
-            themes: themes.map((x) => x.name),
-            addTheme(theme) {
-                $Themes((prev) => [
-                    ...prev,
-                    ...(Array.isArray(theme) ? theme : [theme]),
-                ]);
-            },
-            onThemeChange(callback) {
-                subscribers.current.push(callback);
-                return () => {
-                    subscribers.current = subscribers.current.filter((x) => x !== callback);
-                };
-            },
-        }, children: [children, Object.keys(themeInCSS).length > 0
+    const AllProviderChildren = () => (_jsxs(_Fragment, { children: [children, Object.keys(themeInCSS).length > 0
                 ? createPortal(_jsx("style", { children: `.theme {\n` +
                         Object.entries(themeInCSS)
                             .map(([key, value]) => {
@@ -359,6 +371,30 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
                         // transition={{ duration: 0.2 }}
                         className: "absolute w-screen h-screen inset-0 z-50 pointer-events-none select-none", slot: "blur" }), document.body)
                 : null] }));
+    const Provider = ({ children }) => (_jsx(MultiUIContext.Provider, { value: {
+            setTheme: (theme_name) => {
+                $currentTheme(theme_name);
+            },
+            currentTheme: currentTheme,
+            currentThemeValue: themeStyles,
+            themes: themes.map((x) => x.name),
+            addTheme(theme) {
+                $Themes((prev) => [
+                    ...prev,
+                    ...(Array.isArray(theme) ? theme : [theme]),
+                ]);
+            },
+            onThemeChange(callback) {
+                subscribers.current.push(callback);
+                return () => {
+                    subscribers.current = subscribers.current.filter((x) => x !== callback);
+                };
+            },
+        }, children: children }));
+    if (enableBoxSelection) {
+        return (_jsx(Provider, { children: _jsxs("div", { slot: "multiui-box-selection-wrapper", ref: selectionContainerRef, style: { position: "relative" }, children: [_jsx(AllProviderChildren, {}), _jsx(SelectBoxOutlet, { className: "box-selection", slot: "box-selection" })] }) }));
+    }
+    return (_jsx(Provider, { children: _jsx(AllProviderChildren, {}) }));
 });
 export { default_theme as multiUI_defaultTheme };
 export const useTheme = () => useContext(MultiUIContext);
