@@ -1,5 +1,13 @@
 # @multinite_official/multiui
 
+## 2.7.2
+
+### Patch Changes
+
+- 4609693: Updated: \_\_cn_seperator.
+- c4f4dfa: Added: support for box-selection (WIP)
+- b8d8fc1: FIX: MultiUI Working again.
+
 ## 2.7.1
 
 ### Patch Changes
