@@ -1,3 +1,5 @@
+import puppeteer from "puppeteer";
+import terminalImage from "terminal-image";
 import path, { dirname } from "path";
 import { getWorkspaceName, getWorkspaces } from "../utils/getWorkspaces.js";
 import chalk from "chalk";
@@ -6,6 +8,9 @@ import { version } from "../index.js";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import logUpdate from "log-update";
+import { centerAlign } from "ansi-center-align";
+import { exec, spawn } from "child_process";
+import { viteServerPort } from "../servers/vite.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,13 +40,16 @@ export default async function start(options: { workspace?: string }) {
       process.exit(1);
     }
   }
-  displayStats(workspace);
-
   const logs: string[] = [];
   let status: "waiting" | "running" | "error" = "waiting";
 
+  let counter = 30;
+  let direction = 1;
+
   logUpdate.done();
   log("Starting...", "info");
+  await startViteServer(log);
+  await startBrowser(log);
   readyLog();
   seperate();
 
@@ -63,6 +71,7 @@ export default async function start(options: { workspace?: string }) {
     if (event !== "change") return;
     if (!valid_extensions.some((x) => path.endsWith(x))) return;
     if (excluded_extentions.some((x) => path.endsWith(x))) return;
+    if (path.startsWith("dist")) return;
     const filename = path.split("/").pop()!;
     const endAnalyzingTime = Date.now();
     log(
@@ -71,7 +80,7 @@ export default async function start(options: { workspace?: string }) {
     queueStatus("waiting");
   });
 
-  function log(
+  async function log(
     content: string,
     type: "success" | "error" | "info" = "success"
   ) {
@@ -88,12 +97,12 @@ export default async function start(options: { workspace?: string }) {
         break;
     }
     logs.push(prefix + content);
-    updateLog();
     if (status === "error") {
       queueStatus("error");
     } else {
       queueStatus("waiting");
     }
+    await updateLog();
   }
   function readyLog() {
     const endTime = Date.now();
@@ -116,25 +125,30 @@ export default async function start(options: { workspace?: string }) {
     updateLog();
   }
 
-  function updateLog() {
+  async function updateLog() {
     let statusText = chalk.green("🟢 Waiting");
     if (status === "running") {
       statusText = chalk.yellow("🟡 Running");
     } else if (status === "error") {
       statusText = chalk.red("🔴 Error");
     }
+
     logUpdate(
-      boxen(logs.filter((_, i) => i > logs.length - 17).join("\n"), {
-        title: "[ " + `Status: ${statusText}` + " ]",
-        titleAlignment: "center",
-        padding: 1.5,
-        fullscreen(width, height) {
-          return [width, 20];
-        },
-      })
-      //   logs.join("\n")
+      [
+        getStats(workspace),
+        await getImageBox(counter),
+        boxen(logs.filter((_, i) => i > logs.length - 17).join("\n"), {
+          title: "[ " + `Status: ${statusText}` + " ]",
+          titleAlignment: "center",
+          padding: 1.5,
+          fullscreen(width, height) {
+            return [width, 20];
+          },
+        }),
+      ].join("\n")
     );
   }
+
   let timeout: NodeJS.Timeout | undefined;
   process.stdout.on("resize", () => {
     if (timeout) clearTimeout(timeout);
@@ -143,15 +157,19 @@ export default async function start(options: { workspace?: string }) {
     }, 150);
     logUpdate.done();
     console.log(new Array(100).fill("\n").join(""));
-    displayStats(workspace);
-    logUpdate.done();
     updateLog();
   });
-  setInterval(() => {}, 1000);
+  //   setInterval(async () => {
+  //     counter += direction;
+  //     if (counter >= process.stdout.columns + 42) direction = -1;
+  //     if (counter === 30) direction = 1;
+  //     const box = await getImageBox(counter);
+  //     updateLog();
+  //   }, 10);
 }
 
-function displayStats(workspace: string) {
-  console.log(
+function getStats(workspace: string) {
+  return (
     boxen(
       [
         chalk.yellow(`💼  Workspace:    `) + chalk.blue(workspace),
@@ -169,4 +187,111 @@ function displayStats(workspace: string) {
       }
     ) + "\n"
   );
+}
+
+async function getImageBox(width: number = process.stdout.columns - 2) {
+  const size = 30;
+  const img = await terminalImage.file(
+    path.join(__dirname, "../../assets/logo_500.png"),
+    {
+      width:
+        process.stdout.columns - 2 > size ? size : process.stdout.columns - 2,
+      height: process.stdout.columns - 2 > size ? size : undefined,
+    }
+  );
+  return boxen("\n" + centerAlign(img, width), {
+    title: "[ " + chalk.red(`Live Preview`) + " ]",
+    titleAlignment: "center",
+    width: process.stdout.columns,
+    dimBorder: true,
+  });
+}
+
+function startViteServer(log: any) {
+  return new Promise((res) => {
+    log("Starting Vite server...", "info");
+
+    const server = spawn(`npm`, ["run", "dev"], {
+      cwd: path.join(__dirname, "../start/server"),
+      stdio: "pipe",
+      shell: true,
+    });
+    server.on("error", (err) => {
+      log(err.toString(), "error");
+      logUpdate.done();
+      console.error(err);
+    });
+    let hasResolved = false;
+    server.stdout.on("data", (data) => {
+      data = data.toString().trim();
+      if (data.trim().length === 0) return;
+      data = data.replaceAll("\x1Bc", "");
+      if (data.trim() === "") return;
+
+      if (data.includes("Watching for file changes") && !hasResolved) {
+        hasResolved = true;
+        res(1);
+      }
+      log(`DEBUG: ${[data]}`, "info");
+      //   logUpdate.done();
+      //   console.log([data]);
+    });
+
+    server.stderr.on("data", (data) => {
+      log(`Server Error: ${data}`, "error");
+    });
+
+    server.on("close", (code) => {
+      log(`Vite server process exited with code ${code}`);
+    });
+    server.on("disconnect", () => {
+      log(`Vite server disconnected`);
+    });
+    // const server = exec(
+
+    //   "npm run dev",
+    //   { cwd: path.join(__dirname, "../start/server") },
+    //   (err, stdout, stderr) => {
+    //     if (err) {
+    //       log(`Vite Error: ${JSON.stringify(err, null, 2)}`, "error");
+    //     } else {
+    //       log(`DEBUG: ${stdout.trim()}`);
+    //     }
+    //     res(1);
+    //   }
+    // );
+
+    // server.on("message", (message, sendHandle) => {
+    //   message = message.toString();
+    //   log(message);
+    // });
+    // server.on("error", (err) => {
+    //   log(`Vite Error: ${JSON.stringify(err, null, 2)}`, "error");
+    //   res(1);
+    // });
+  });
+}
+
+function startBrowser(log: any) {
+  return new Promise(async (res) => {
+    log("Starting browser...", "info");
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    try {
+      await page.goto(`http://localhost:${viteServerPort}`);
+    } catch (error) {
+      log(
+        `Error locating sever localhost at port ${viteServerPort}; Err: ${JSON.stringify(error)}`,
+        "error"
+      );
+      process.exit(1);
+    }
+
+    // await page.setViewport({ width: 1080, height: 1024 });
+
+    // await page.screenshot({
+    //   path: "test.png",
+    // });
+    res(1);
+  });
 }

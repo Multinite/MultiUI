@@ -43,20 +43,28 @@
   ],
   "homepage": "https://multiui.org",
   "dependencies": {
+    "ansi-center-align": "^1.0.3",
     "ascii-table3": "^0.9.0",
     "boxen": "^8.0.1",
     "chalk": "^4.1.2",
     "cli-progress": "^3.12.0",
     "commander": "^12.1.0",
     "difflib": "^0.2.4",
+    "express": "^4.21.0",
+    "get-port": "5.1.1",
     "inquirer": "^10.1.2",
     "log-update": "^4.0.0",
+    "puppeteer": "^23.3.0",
     "semver": "^7.6.3",
+    "strip-ansi": "6.0.1",
+    "terminal-image": "^3.0.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/difflib": "^0.2.7",
-    "@types/node": "^20.14.11"
+    "@types/node": "^20.14.11",
+    "vite": "^5.4.4",
+    "vite-plugin-node": "^3.1.0"
   },
   "peerDependencies": {
     "typescript": "^5.5.3"
