@@ -20,7 +20,13 @@
     "noImplicitAny": false,
     "outDir": "dist"
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    // "server/package.json",
+    // "server/node_modules",
+    // "server/node_modules/**/*.js",
+    // "server/node_modules/**/*.js.map"
+  ],
   "exclude": [
     "**/node_modules",
     "**/dist",

@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer, { Page } from "puppeteer";
 import terminalImage from "terminal-image";
 import path, { dirname } from "path";
 import { getWorkspaceName, getWorkspaces } from "../utils/getWorkspaces.js";
@@ -9,8 +9,8 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import logUpdate from "log-update";
 import { centerAlign } from "ansi-center-align";
-import { exec, spawn } from "child_process";
-import { viteServerPort } from "../servers/vite.js";
+import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+// import { viteServerPort } from "../server/port.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,6 +19,7 @@ export default async function start(options: { workspace?: string }) {
   const startTime = Date.now();
   let workspace_path = path.resolve(process.cwd());
   let workspace: string = options.workspace ?? getWorkspaceName();
+  let page: Page | undefined;
 
   if (options.workspace) {
     const workspaces = await getWorkspaces();
@@ -48,8 +49,8 @@ export default async function start(options: { workspace?: string }) {
 
   logUpdate.done();
   log("Starting...", "info");
-  await startViteServer(log);
-  await startBrowser(log);
+  const { server, port } = await startViteServer(log);
+  page = await startBrowser(log, server, port);
   readyLog();
   seperate();
 
@@ -58,7 +59,7 @@ export default async function start(options: { workspace?: string }) {
     encoding: "utf8",
   });
   watcher.on("error", (error) => {
-    log(`Error: ${error.message}`, "error");
+    log(`Error watching: ${error.message}`, "error");
     status = "error";
     process.exit(1);
   });
@@ -67,7 +68,6 @@ export default async function start(options: { workspace?: string }) {
   const excluded_extentions = [".d.ts", ".map", ".json"];
   watcher.on("change", (event, path: string) => {
     const startAnalyzingTime = Date.now();
-    queueStatus("running");
     if (event !== "change") return;
     if (!valid_extensions.some((x) => path.endsWith(x))) return;
     if (excluded_extentions.some((x) => path.endsWith(x))) return;
@@ -77,7 +77,6 @@ export default async function start(options: { workspace?: string }) {
     log(
       `File ${chalk.blue(filename)} changed. ${chalk.gray(`${endAnalyzingTime - startAnalyzingTime}ms`)}`
     );
-    queueStatus("waiting");
   });
 
   async function log(
@@ -97,14 +96,11 @@ export default async function start(options: { workspace?: string }) {
         break;
     }
     logs.push(prefix + content);
-    if (status === "error") {
-      queueStatus("error");
-    } else {
-      queueStatus("waiting");
-    }
+
     await updateLog();
   }
   function readyLog() {
+    status = "waiting";
     const endTime = Date.now();
     log(`Ready in ${endTime - startTime}ms`);
   }
@@ -114,7 +110,10 @@ export default async function start(options: { workspace?: string }) {
     updateLog();
   }
 
-  function queueStatus(status_: "waiting" | "running" | "error") {
+  function queueStatus(
+    status_: "waiting" | "running" | "error",
+    updateLog_: boolean = true
+  ) {
     if (status_ === "running") {
       status = "running";
     } else if (status_ === "error") {
@@ -122,7 +121,9 @@ export default async function start(options: { workspace?: string }) {
     } else if (status_ === "waiting") {
       status = "waiting";
     }
-    updateLog();
+    if (updateLog_) {
+      updateLog();
+    }
   }
 
   async function updateLog() {
@@ -132,21 +133,27 @@ export default async function start(options: { workspace?: string }) {
     } else if (status === "error") {
       statusText = chalk.red("🔴 Error");
     }
-
-    logUpdate(
-      [
-        getStats(workspace),
-        await getImageBox(counter),
-        boxen(logs.filter((_, i) => i > logs.length - 17).join("\n"), {
-          title: "[ " + `Status: ${statusText}` + " ]",
-          titleAlignment: "center",
-          padding: 1.5,
-          fullscreen(width, height) {
-            return [width, 20];
-          },
+    const logsBox = boxen(
+      splitBox(
+        logs.filter((_, i) => i > logs.length - 17).join("\n"),
+        await getImageBox({
+          withoutBox: true,
+          width: process.stdout.columns / 3 - 2,
         }),
-      ].join("\n")
+        process.stdout.columns - 3,
+        18
+      ),
+      {
+        title: "[ " + `Status: ${statusText}` + " ]",
+        titleAlignment: "center",
+        padding: 0,
+        fullscreen(width, height) {
+          return [width, 20];
+        },
+      }
     );
+
+    logUpdate([getStats(workspace), logsBox].join("\n\n"));
   }
 
   let timeout: NodeJS.Timeout | undefined;
@@ -159,62 +166,88 @@ export default async function start(options: { workspace?: string }) {
     console.log(new Array(100).fill("\n").join(""));
     updateLog();
   });
-  //   setInterval(async () => {
-  //     counter += direction;
-  //     if (counter >= process.stdout.columns + 42) direction = -1;
-  //     if (counter === 30) direction = 1;
-  //     const box = await getImageBox(counter);
-  //     updateLog();
-  //   }, 10);
+  // setInterval(async () => {
+  //   counter += direction;
+  //   if (counter >= process.stdout.columns + 42) direction = -1;
+  //   if (counter === 30) direction = 1;
+  //   const box = await getImageBox(counter);
+  //   updateLog();
+  // }, 10);
+
+  async function getImageBox(
+    { width, withoutBox }: { width?: number; withoutBox?: boolean } = {
+      width: process.stdout.columns - 2,
+      withoutBox: false,
+    }
+  ) {
+    const size = 30;
+    queueStatus("running", false);
+    if (page) {
+      await page.screenshot({
+        path: "./server/gen/comp.png",
+        optimizeForSpeed: true,
+        omitBackground: true,
+      });
+    }
+    // const w =
+    //   process.stdout.columns - 2 > size ? size : process.stdout.columns - 2;
+    // const h = process.stdout.columns - 2 > size ? size : undefined;
+    const h = 30;
+    const w = 30;
+
+    if (!fs.existsSync(path.join(__dirname, "../../server/gen/comp.png"))) {
+      return boxen("\n" + centerAlign("🚧 Generating preview...", width), {
+        title: "[ " + chalk.red(`Live Preview`) + " ]",
+        titleAlignment: "center",
+        width: process.stdout.columns,
+        dimBorder: true,
+      });
+    }
+
+    const img = await terminalImage.file(
+      // path.join(__dirname, "../../server/gen/comp.png"),
+      path.join(__dirname, "../../assets/logo_48.png"),
+      {
+        width: w,
+        height: h,
+      }
+    );
+    queueStatus("waiting", false);
+    if (withoutBox) return "\n"+img;
+    return boxen("\n" + centerAlign(img, width), {
+      title: "[ " + chalk.red(`Live Preview`) + " ]",
+      titleAlignment: "center",
+      width: process.stdout.columns,
+      dimBorder: true,
+    });
+  }
 }
 
 function getStats(workspace: string) {
-  return (
-    boxen(
-      [
-        chalk.yellow(`💼  Workspace:    `) + chalk.blue(workspace),
-        chalk.yellow(`💻  MultiUI-cli:  `) + chalk.green(`v${version}`),
-        chalk.yellow(`🎉  MultiUI:      `) + chalk.green(`v${version}`),
-      ].join("\n\n"),
-      {
-        padding: 1,
-        title: "[ " + chalk.magenta(`😎 MultiUI-CLI 👋`) + " ]",
-        titleAlignment: "center",
-        fullscreen(width, height) {
-          return [width, 9];
-        },
-        dimBorder: true,
-      }
-    ) + "\n"
-  );
-}
-
-async function getImageBox(width: number = process.stdout.columns - 2) {
-  const size = 30;
-  const img = await terminalImage.file(
-    path.join(__dirname, "../../assets/logo_500.png"),
+  return boxen(
+    [
+      chalk.yellow(`💼  Workspace:    `) + chalk.blue(workspace),
+      chalk.yellow(`💻  MultiUI-cli:  `) + chalk.green(`v${version}`),
+      chalk.yellow(`🎉  MultiUI:      `) + chalk.green(`v${version}`),
+    ].join("\n\n"),
     {
-      width:
-        process.stdout.columns - 2 > size ? size : process.stdout.columns - 2,
-      height: process.stdout.columns - 2 > size ? size : undefined,
+      padding: 1,
+      title: "[ " + chalk.magenta(`😎 MultiUI-CLI 👋`) + " ]",
+      titleAlignment: "center",
+      fullscreen(width, height) {
+        return [width, 9];
+      },
+      dimBorder: true,
     }
   );
-  return boxen("\n" + centerAlign(img, width), {
-    title: "[ " + chalk.red(`Live Preview`) + " ]",
-    titleAlignment: "center",
-    width: process.stdout.columns,
-    dimBorder: true,
-  });
 }
 
-function startViteServer(log: any) {
+function startViteServer(
+  log: any
+): Promise<{ server: ChildProcessWithoutNullStreams; port: number }> {
   return new Promise((res) => {
-    log("Starting Vite server...", "info");
-
     const server = spawn(`npm`, ["run", "dev"], {
-      cwd: path.join(__dirname, "../start/server"),
-      stdio: "pipe",
-      shell: true,
+      cwd: path.join(__dirname, "../../server"),
     });
     server.on("error", (err) => {
       log(err.toString(), "error");
@@ -222,22 +255,32 @@ function startViteServer(log: any) {
       console.error(err);
     });
     let hasResolved = false;
-    server.stdout.on("data", (data) => {
+    server.stdout.on("data", (data: string) => {
       data = data.toString().trim();
       if (data.trim().length === 0) return;
       data = data.replaceAll("\x1Bc", "");
       if (data.trim() === "") return;
 
-      if (data.includes("Watching for file changes") && !hasResolved) {
+      if (
+        data.startsWith("You can now view server in the browser") &&
+        !hasResolved
+      ) {
         hasResolved = true;
-        res(1);
+        let str = data
+          .replaceAll(" ", "")
+          .split(":")[3]!
+          .split("\n")[0]!
+          .trim();
+        const port = parseInt(str);
+        res({ server, port });
       }
-      log(`DEBUG: ${[data]}`, "info");
-      //   logUpdate.done();
-      //   console.log([data]);
     });
 
     server.stderr.on("data", (data) => {
+      if (data.includes("DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE"))
+        return;
+      if (data.includes("DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE"))
+        return;
       log(`Server Error: ${data}`, "error");
     });
 
@@ -245,53 +288,145 @@ function startViteServer(log: any) {
       log(`Vite server process exited with code ${code}`);
     });
     server.on("disconnect", () => {
-      log(`Vite server disconnected`);
+      log(`Server disconnected`);
     });
-    // const server = exec(
-
-    //   "npm run dev",
-    //   { cwd: path.join(__dirname, "../start/server") },
-    //   (err, stdout, stderr) => {
-    //     if (err) {
-    //       log(`Vite Error: ${JSON.stringify(err, null, 2)}`, "error");
-    //     } else {
-    //       log(`DEBUG: ${stdout.trim()}`);
-    //     }
-    //     res(1);
-    //   }
-    // );
-
-    // server.on("message", (message, sendHandle) => {
-    //   message = message.toString();
-    //   log(message);
-    // });
-    // server.on("error", (err) => {
-    //   log(`Vite Error: ${JSON.stringify(err, null, 2)}`, "error");
-    //   res(1);
-    // });
   });
 }
 
-function startBrowser(log: any) {
+function startBrowser(
+  log: any,
+  server: ChildProcessWithoutNullStreams,
+  port: number
+): Promise<Page> {
   return new Promise(async (res) => {
-    log("Starting browser...", "info");
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
     try {
-      await page.goto(`http://localhost:${viteServerPort}`);
+      log("Starting browser...", "info");
+      try {
+        var browser = await puppeteer.launch({ headless: true, pipe: false });
+      } catch (error) {
+        log(`Error launching browser: ${error}`, "error");
+        setTimeout(() => {
+          server.kill();
+          process.exit(1);
+        }, 1000);
+        return;
+      }
+      try {
+        var page = await browser.newPage();
+      } catch (error) {
+        log(`Error launching page: ${error}`, "error");
+        setTimeout(() => {
+          server.kill();
+          process.exit(1);
+        }, 1000);
+        return;
+      }
+
+      try {
+        await page.goto(`http://localhost:${port}`);
+        log("Success!");
+      } catch (error) {
+        log(
+          `Error locating sever localhost at port ${port}; Err: ${JSON.stringify(error)}`,
+          "error"
+        );
+        setTimeout(() => {
+          server.kill();
+          process.exit(1);
+        }, 1000);
+        return;
+      }
     } catch (error) {
       log(
-        `Error locating sever localhost at port ${viteServerPort}; Err: ${JSON.stringify(error)}`,
+        `Something went wrong while starting or running the browser: ${error}`,
         "error"
       );
-      process.exit(1);
+      setTimeout(() => {
+        server.kill();
+        process.exit(1);
+      }, 1000);
+      return;
+    }
+    try {
+      await page.setViewport({ width: 800, height: 100 });
+    } catch (error) {
+      log(`Error setting viewport: ${error}`, "error");
+      setTimeout(() => {
+        server.kill();
+        process.exit(1);
+      }, 1000);
+      return;
     }
 
-    // await page.setViewport({ width: 1080, height: 1024 });
+    // const component = (await page.$("#main"))!;
 
-    // await page.screenshot({
-    //   path: "test.png",
-    // });
-    res(1);
+    try {
+      await page.screenshot({
+        path: "./server/gen/comp.png",
+        optimizeForSpeed: true,
+        omitBackground: true,
+      });
+      res(page);
+    } catch (error) {
+      log(`Error screenshotting component: ${error}`, "error");
+      setTimeout(() => {
+        server.kill();
+        process.exit(1);
+      }, 1000);
+      return;
+    }
   });
+}
+
+function splitBox(
+  leftStr: string,
+  rightStr: string,
+  width: number,
+  maxHeight: number
+) {
+  width = Math.floor(width / 2);
+  // const highest = [
+  //   Math.max(leftStr.split("\n").length, rightStr.split("\n").length),
+  // ].map((x) => (x > maxHeight ? maxHeight : x))[0]! + 3;
+
+  const highest = 20;
+
+  const left = boxen(leftStr, {
+    width: width,
+    height: highest,
+  });
+
+  const right = boxen(centerAlign(rightStr, width), {
+    width: width,
+    height: highest,
+  });
+
+  const result: string[] = [];
+
+  for (let index = 0; index < highest; index++) {
+    const l = left.split("\n")[index] ?? " ".repeat(width - 2);
+    const r = right.split("\n")[index] ?? " ".repeat(width - 2);
+
+    result.push(l + "" + r);
+  }
+
+  // const result: string[][] = left.split("\n").map((x) => [x]);
+  // right.split("\n").forEach((line, i) => {
+  //   const r =
+  //     (result[i] ? result[i][0] : " ".repeat(width - 2)) ??
+  //     " ".repeat(width - 2);
+  //   result[i] = [r, line];
+  // });
+
+  let resultStr = result.join("\n");
+
+  resultStr = resultStr.replaceAll("┌", " ");
+  resultStr = resultStr.replaceAll("─", " ");
+  resultStr = resultStr.replaceAll("┐", " ");
+  resultStr = resultStr.replaceAll("└", " ");
+  resultStr = resultStr.replaceAll("┘", " ");
+  resultStr = resultStr.replaceAll("│", " ");
+
+  return resultStr;
+  // return result.join("\n");
 }

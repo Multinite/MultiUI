@@ -51,7 +51,7 @@
     "commander": "^12.1.0",
     "difflib": "^0.2.4",
     "express": "^4.21.0",
-    "get-port": "5.1.1",
+    "get-port-sync": "^1.0.1",
     "inquirer": "^10.1.2",
     "log-update": "^4.0.0",
     "puppeteer": "^23.3.0",
