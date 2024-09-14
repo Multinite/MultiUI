@@ -1,13 +1,12 @@
 "use client";
-import {
-  forwardRef,
-  type ReactNode,
-  type HTMLAttributes,
-  type ForwardedRef,
-  ForwardRefExoticComponent,
-} from "react";
+import { forwardRef } from "react";
 import { __seperateClasses } from "../utils/cn.js";
-import { CreateComponentFn, CreateVariantFn } from "./createComponentTypes.js";
+import {
+  CreateComponentCreateFnprops,
+  CreateComponentFn,
+  CreateComponentProps,
+  CreateComponentReturn,
+} from "./createComponentTypes.js";
 
 export const createComponent: CreateComponentFn = <
   ComponentProps,
@@ -15,59 +14,31 @@ export const createComponent: CreateComponentFn = <
 >({
   componentName,
   create,
-}: {
-  componentName: string;
-  create: (props: {
-    props: ComponentProps & { ref: ForwardedRef<Element> };
-    createSlot: typeof createSlot;
-    classNameSeperator: typeof __seperateClasses;
-  }) => ReactNode;
-}): ((
-  cb: (props: {
-    props: ComponentProps & {
-      ref: ForwardedRef<Element>;
-    } & HTMLAttributes<Element>;
-    helperFunctions: {};
-  }) => ReactNode
-) => ForwardRefExoticComponent<
-  ComponentProps & { ref: ForwardedRef<Element> } & HTMLAttributes<Element>
-> & {
-  createVariant: CreateVariantFn<{}>;
-}) => {
-  // let variants: { slot: keyof Slots; create: (...props: any) => sring }[] = [];
-
-  let Component = forwardRef<Element, ComponentProps>((props, ref) => {
-    return create({
+}: CreateComponentProps<ComponentProps, Element>): CreateComponentReturn<
+  ComponentProps,
+  Element
+> => {
+  const Component = forwardRef<
+    Element,
+    CreateComponentCreateFnprops<ComponentProps, Element>
+  >((props, ref) => {
+    let Component = create({
       props: { ...props, ref },
       createSlot: createSlot,
       classNameSeperator: __seperateClasses,
     });
-  });
 
+    return Component;
+  });
   Component.displayName = `MultiUI.${componentName}`;
 
-  type R = ReturnType<typeof createComponent<ComponentProps, Element>>;
-  const createComponentCb: R = (cb) => {
-    const createVariant = () => {};
-
-    const Component = forwardRef<
-      Element, // was Element
-      ComponentProps & HTMLAttributes<Element>
-    >((props, ref) => {
-      return cb({ props: { ...props, ref }, helperFunctions: {} });
-    });
-
-    return Object.assign(Component, {
-      createVariant,
-    }) as any;
-  };
-
-  return createComponentCb;
+  return Object.assign(Component, {
+    createVariant: () => {},
+  });
 };
 
 type UppercaseFirstLetter<T extends string> =
   T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
-
 
 export function createSlot<
   SlotName extends string,

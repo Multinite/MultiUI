@@ -1,4 +1,11 @@
-import { ForwardedRef, HTMLAttributes, ReactNode } from "react";
+import type {
+  FC,
+  ForwardedRef,
+  ForwardRefExoticComponent,
+  HTMLAttributes,
+  ReactNode,
+  RefAttributes,
+} from "react";
 import type { cn as cn_, __seperateClasses } from "../utils/cn.js";
 import { createSlot } from "./createComponent.js";
 
@@ -81,7 +88,45 @@ export type CreateVariantFn<Slots extends Record<string, Record<string, any>>> =
 export type CreateComponentFn = <
   ComponentProps,
   Element extends HTMLElement = HTMLElement,
->(args: {
+>(
+  args: CreateComponentProps<ComponentProps, Element>
+) => CreateComponentReturn<ComponentProps, Element>;
+
+export type CreateComponentReturn<ComponentProps, Element> =
+  ForwardRefExoticComponent<
+    React.PropsWithoutRef<
+      CreateComponentCreateFnprops<ComponentProps, Element>
+    > &
+      React.RefAttributes<Element>
+  > & {
+    //TODO: fix v
+    createVariant: () => void;
+  };
+
+export type CreateComponentReturnChildren<ComponentProps, Element> = {
+  children?:
+    | ReactNode
+    | ((
+        cb: (props: {
+          props: CreateComponentCreateFnprops<ComponentProps, Element>;
+          helperFunctions: {};
+        }) => ReactNode
+      ) => ForwardRefExoticComponent<
+        ComponentProps & {
+          ref: ForwardedRef<Element>;
+        } & HTMLAttributes<Element>
+      >);
+};
+
+export type CreateComponentCreateFnprops<ComponentProps, Element> =
+  ComponentProps &
+    React.PropsWithoutRef<
+      ComponentProps & CreateComponentReturnChildren<ComponentProps, Element>
+    > &
+    React.RefAttributes<Element> &
+    HTMLAttributes<Element>;
+
+export type CreateComponentProps<ComponentProps, Element> = {
   /**
    * The name of the component.
    */
@@ -101,9 +146,7 @@ export type CreateComponentFn = <
     /**
      * The props passed to the component.
      */
-    props: ComponentProps & {
-      ref: ForwardedRef<Element>;
-    } & HTMLAttributes<Element>;
+    props: CreateComponentCreateFnprops<ComponentProps, Element>;
     /**
      * Slots define the structural components of a UI element.
      * ### ㅤㅤ
@@ -166,17 +209,4 @@ export type CreateComponentFn = <
      */
     classNameSeperator: typeof __seperateClasses;
   }) => ReactNode;
-}) => (
-  cb: (props: {
-    props: ComponentProps & {
-      ref: ForwardedRef<Element>;
-    } & HTMLAttributes<Element>;
-    helperFunctions: {};
-  }) => ReactNode
-) => React.ForwardRefExoticComponent<
-  ComponentProps & {
-    ref: ForwardedRef<Element>;
-  } & HTMLAttributes<Element>
-> & {
-  createVariant: CreateVariantFn<{}>;
 };

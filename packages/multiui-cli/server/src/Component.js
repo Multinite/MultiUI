@@ -1,7 +1,9 @@
 function Component() {
   return (
     <>
-      <h1 className="font-bold tracking-widest text-red-500 text-8xl">Hello World!</h1>
+      <h1 className="font-bold tracking-widest text-red-500 text-8xl">
+        Hello World!
+      </h1>
       {/* <p className="text-xl text-gray-500">
         This is a multi-page application built with MultiUI.
       </p>
