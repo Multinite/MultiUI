@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 3.0.0
+
+### Major Changes
+
+- ab97552: Added: start command - WIP
+
 ## 2.5.4
 
 ### Patch Changes
