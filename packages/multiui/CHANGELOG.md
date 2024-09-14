@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.8.0
+
+### Minor Changes
+
+- ab97552: Updated: CreateComponent fn should now work.
+
 ## 2.7.2
 
 ### Patch Changes
