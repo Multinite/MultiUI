@@ -1,7 +1,6 @@
 "use client";
 import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
-import { motion } from "framer-motion";
-import { createContext, memo, useContext, useEffect, useMemo, useRef, useState, } from "react";
+import { createContext, memo, useContext, useEffect, useMemo, useRef, } from "react";
 import { createPortal } from "react-dom";
 import { useSelectify } from "use-selectify";
 import { isMobile } from "react-device-detect";
@@ -182,7 +181,7 @@ const default_theme = {
  * @param props Use the `MultiUIProviderProps` function to pass props to this component.
  * @returns
  */
-export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThemeChange = false, enableBoxSelection = false, boxSelectionOptions = {
+export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThemeChange = false, enableBoxSelection = false, themes = [], boxSelectionOptions = {
     activateOnKey: undefined,
     activateOnMetaKey: true,
     disableOnMobile: true,
@@ -193,13 +192,22 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
     disableUnselection: false,
     maxSelections: false,
 }, }) {
-    const [themes, $Themes] = useState([]);
-    const [currentTheme, $currentTheme] = useState(undefined);
+    const themes_ = useRef(themes);
+    const currentTheme = useRef(themes.length > 0 ? themes[0].name : undefined);
     const theme_prefix = (config.theme_prefix || "multiui");
     const subscribers = useRef([]);
-    const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
+    const isMounted = useRef(false);
+    useEffect(() => {
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+    // const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
     const isDuringThemeChangeTimeout = useRef();
-    const [blurOnThemeChange_, setBlurOnThemeChange] = useState(blurOnThemeChange ?? false);
+    // const [blurOnThemeChange_, setBlurOnThemeChange] = useState<boolean>(
+    //   blurOnThemeChange ?? false
+    // );
     const selectionContainerRef = useRef(null);
     const { SelectBoxOutlet } = useSelectify(selectionContainerRef, {
         selectCriteria: ".selectable",
@@ -220,8 +228,8 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
         maxSelections: boxSelectionOptions.maxSelections,
     });
     const themeStyles = useMemo(() => {
-        return themes.find((x) => x.name === currentTheme);
-    }, [currentTheme, themes]);
+        return themes_.current.find((x) => x.name === currentTheme.current);
+    }, [currentTheme.current, themes_.current]);
     const themeInCSS = useMemo(() => {
         const theme = themeStyles;
         if (theme === undefined)
@@ -338,15 +346,15 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
     useEffect(() => {
         if (typeof document === "undefined")
             return;
-        document.documentElement.setAttribute("data-theme", currentTheme);
-        subscribers.current.forEach((x) => x(currentTheme, themeStyles));
-        $isDuringThemeChange(true);
-        clearTimeout(isDuringThemeChangeTimeout.current);
-        isDuringThemeChangeTimeout.current = setTimeout(() => {
-            $isDuringThemeChange(false);
-        }, 300);
-    }, [currentTheme]);
-    const AllProviderChildren = () => (_jsxs(_Fragment, { children: [children, Object.keys(themeInCSS).length > 0
+        document.documentElement.setAttribute("data-theme", currentTheme.current);
+        subscribers.current.forEach((x) => x(currentTheme.current, themeStyles));
+        // $isDuringThemeChange(true);
+        // clearTimeout(isDuringThemeChangeTimeout.current);
+        // isDuringThemeChangeTimeout.current = setTimeout(() => {
+        // $isDuringThemeChange(false);
+        // }, 300);
+    }, [currentTheme.current]);
+    const AllProviderChildren = () => (_jsxs(_Fragment, { children: [children, isMounted && Object.keys(themeInCSS).length > 0
                 ? createPortal(_jsx("style", { children: `.theme {\n` +
                         Object.entries(themeInCSS)
                             .map(([key, value]) => {
@@ -354,35 +362,20 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
                         })
                             .join("") +
                         "}" }), document.head)
-                : null, blurOnThemeChange_
-                ? //TODO: Add darking effect
-                    createPortal(_jsx(motion.div, { initial: {
-                            backdropFilter: "blur(0px)",
-                            backgroundColor: `transparent`,
-                        }, animate: isDuringThemeChange
-                            ? {
-                                backdropFilter: "blur(2px)",
-                                backgroundColor: `RGBA(0,0,0,0.2)`,
-                            }
-                            : {
-                                backdropFilter: "blur(0px)",
-                                backgroundColor: `transparent`,
-                            }, 
-                        // transition={{ duration: 0.2 }}
-                        className: "absolute w-screen h-screen inset-0 z-50 pointer-events-none select-none", slot: "blur" }), document.body)
                 : null] }));
     const Provider = ({ children }) => (_jsx(MultiUIContext.Provider, { value: {
             setTheme: (theme_name) => {
-                $currentTheme(theme_name);
+                currentTheme.current = theme_name;
             },
-            currentTheme: currentTheme,
+            currentTheme: currentTheme.current,
             currentThemeValue: themeStyles,
-            themes: themes.map((x) => x.name),
+            themes: themes_.current.map((x) => x.name),
             addTheme(theme) {
-                $Themes((prev) => [
-                    ...prev,
+                themes_.current = [
+                    ...themes_.current,
                     ...(Array.isArray(theme) ? theme : [theme]),
-                ]);
+                ];
+                console.log(`Adding theme:`, theme);
             },
             onThemeChange(callback) {
                 subscribers.current.push(callback);

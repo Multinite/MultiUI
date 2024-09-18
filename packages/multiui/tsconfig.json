@@ -18,6 +18,13 @@
     "downlevelIteration": true,
     "noImplicitAny": false
   },
-  "include": ["providers", "utils", "components", "src", "index.ts"],
+  "include": [
+    "providers",
+    "utils",
+    "components",
+    "src",
+    "createComponent",
+    "index.ts"
+  ],
   "exclude": ["**/node_modules", "tailwind.config.ts"]
 }

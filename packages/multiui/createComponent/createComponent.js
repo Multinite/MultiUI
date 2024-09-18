@@ -9,7 +9,10 @@ export function createComponent(args) {
     };
     const LowestComponent = forwardRef((props, ref) => {
         const { Component, hooks: h2 } = args.createFn({
-            props: { ...props, ref: ref },
+            props: {
+                ...props,
+                ref: ref,
+            },
             createSlot,
             classNameSeperator: __seperateClasses,
         });
@@ -22,18 +25,8 @@ export function createComponent(args) {
     function createSpecificComponent(createFn) {
         // ========== Component Function Stage ===========
         const ComponentFn = forwardRef((props, ref) => {
-            if (typeof props.children === "function") {
-                const { children, ...rest } = props;
-                const Component = children({
-                    Component: LowestComponent,
-                    //@ts-expect-error - we're passing the correct props.
-                    props: { ...rest, ref: ref },
-                }, hooks);
-                return Component;
-            }
             const Component = createFn({
                 Component: LowestComponent,
-                //@ts-expect-error - we're passing the correct props.
                 props: { ...props, ref: ref },
             }, hooks);
             return Component;
@@ -45,8 +38,8 @@ export function createComponent(args) {
 //================================ createSlot ==================================
 export function createSlot(slotName) {
     return {
-        [slotName]: slotName,
-        [`get${capitalize(slotName)}Classes`]: 1,
+        [slotName]: slotName, //TODO: Fix vvv
+        [`get${capitalize(slotName)}Classes`]: (props) => "placeholder_class",
     };
 }
 function capitalize(s) {

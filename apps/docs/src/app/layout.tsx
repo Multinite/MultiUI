@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
-import { cn, MultiUIProvider } from "@multinite_official/multiui";
+import { cn, multiUI_defaultTheme, MultiUIProvider } from "@multinite_official/multiui";
 // import { theme_prefix } from "../../multiui.config.json";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,6 +32,7 @@ export default function RootLayout({
             config={{
               // theme_prefix,
             }}
+            themes={[multiUI_defaultTheme]}
             // blurOnThemeChange
           >
             {children}

@@ -22,6 +22,7 @@ declare const default_theme: Theme;
  * @returns
  */
 export declare const MultiUIProvider: import("react").NamedExoticComponent<{
+    themes?: Theme[];
     config?: {
         theme_prefix?: MultiUIConfig["theme_prefix"];
     };

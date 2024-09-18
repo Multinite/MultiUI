@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import {
   createContext,
   memo,
@@ -8,7 +7,6 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from "react";
 import { MultiUIConfig, Theme } from "../types/MultiUIConfig.js";
 import { createPortal } from "react-dom";
@@ -214,6 +212,7 @@ export const MultiUIProvider = memo(function ({
   children,
   blurOnThemeChange = false,
   enableBoxSelection = false,
+  themes = [],
   boxSelectionOptions = {
     activateOnKey: undefined,
     activateOnMetaKey: true,
@@ -226,6 +225,10 @@ export const MultiUIProvider = memo(function ({
     maxSelections: false,
   },
 }: {
+  /*
+   * The default themes to use.
+   */
+  themes?: Theme[];
   config?: {
     theme_prefix?: MultiUIConfig["theme_prefix"];
   };
@@ -299,17 +302,28 @@ export const MultiUIProvider = memo(function ({
   };
   children: React.ReactNode;
 }) {
-  const [themes, $Themes] = useState<Theme[]>([]);
-  const [currentTheme, $currentTheme] = useState<string | undefined>(undefined);
+  const themes_ = useRef<Theme[]>(themes);
+  const currentTheme = useRef<string | undefined>(
+    themes.length > 0 ? themes[0].name : undefined
+  );
   const theme_prefix = (config.theme_prefix || "multiui") as "multiui";
   const subscribers = useRef<Parameters<MultiUIProvider["onThemeChange"]>[0][]>(
     []
   );
-  const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  // const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
   const isDuringThemeChangeTimeout = useRef<ReturnType<typeof setTimeout>>();
-  const [blurOnThemeChange_, setBlurOnThemeChange] = useState<boolean>(
-    blurOnThemeChange ?? false
-  );
+  // const [blurOnThemeChange_, setBlurOnThemeChange] = useState<boolean>(
+  //   blurOnThemeChange ?? false
+  // );
   const selectionContainerRef = useRef<HTMLDivElement>(null);
   const { SelectBoxOutlet } = useSelectify(selectionContainerRef, {
     selectCriteria: ".selectable",
@@ -331,8 +345,8 @@ export const MultiUIProvider = memo(function ({
   });
 
   const themeStyles = useMemo(() => {
-    return themes.find((x) => x.name === currentTheme);
-  }, [currentTheme, themes]);
+    return themes_.current.find((x) => x.name === currentTheme.current);
+  }, [currentTheme.current, themes_.current]);
 
   const themeInCSS = useMemo(() => {
     const theme = themeStyles;
@@ -451,19 +465,19 @@ export const MultiUIProvider = memo(function ({
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    document.documentElement.setAttribute("data-theme", currentTheme!);
-    subscribers.current.forEach((x) => x(currentTheme, themeStyles));
-    $isDuringThemeChange(true);
-    clearTimeout(isDuringThemeChangeTimeout.current);
-    isDuringThemeChangeTimeout.current = setTimeout(() => {
-      $isDuringThemeChange(false);
-    }, 300);
-  }, [currentTheme]);
+    document.documentElement.setAttribute("data-theme", currentTheme.current!);
+    subscribers.current.forEach((x) => x(currentTheme.current, themeStyles));
+    // $isDuringThemeChange(true);
+    // clearTimeout(isDuringThemeChangeTimeout.current);
+    // isDuringThemeChangeTimeout.current = setTimeout(() => {
+    // $isDuringThemeChange(false);
+    // }, 300);
+  }, [currentTheme.current]);
 
   const AllProviderChildren = () => (
     <>
       {children}
-      {Object.keys(themeInCSS).length > 0
+      {isMounted && Object.keys(themeInCSS).length > 0
         ? createPortal(
             <style>
               {`.theme {\n` +
@@ -477,7 +491,7 @@ export const MultiUIProvider = memo(function ({
             document.head
           )
         : null}
-      {blurOnThemeChange_
+      {/* {blurOnThemeChange_
         ? //TODO: Add darking effect
           createPortal(
             <motion.div
@@ -497,12 +511,12 @@ export const MultiUIProvider = memo(function ({
                     }
               }
               // transition={{ duration: 0.2 }}
-              className="absolute w-screen h-screen inset-0 z-50 pointer-events-none select-none"
+              className="absolute inset-0 z-50 w-screen h-screen pointer-events-none select-none"
               slot="blur"
             />,
             document.body
           )
-        : null}
+        : null} */}
     </>
   );
 
@@ -510,17 +524,18 @@ export const MultiUIProvider = memo(function ({
     <MultiUIContext.Provider
       value={{
         setTheme: (theme_name) => {
-          $currentTheme(theme_name);
+          currentTheme.current = theme_name;
         },
-        currentTheme: currentTheme,
+        currentTheme: currentTheme.current,
         currentThemeValue: themeStyles,
-        themes: themes.map((x) => x.name),
+        themes: themes_.current.map((x) => x.name),
 
         addTheme(theme) {
-          $Themes((prev) => [
-            ...prev,
+          themes_.current = [
+            ...themes_.current,
             ...(Array.isArray(theme) ? theme : [theme]),
-          ]);
+          ];
+          console.log(`Adding theme:`, theme);
         },
         onThemeChange(callback) {
           subscribers.current.push(callback);
