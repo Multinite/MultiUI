@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.8.1
+
+### Patch Changes
+
+- 341725a: Updated: Rewrote the entire API
+
 ## 2.8.0
 
 ### Minor Changes
