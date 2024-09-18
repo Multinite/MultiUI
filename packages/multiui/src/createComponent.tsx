@@ -17,12 +17,17 @@ type ConvertToValidProps<CustomProperties extends Record<string, unknown>> = {
       `$${K}`]: CustomProperties[K];
 };
 
-// type ConvertToHookNames<Hooks extends Record<string, Function>> = {
-//   [K in keyof Hooks as K extends `use${string}`
-//     ? K
-//     : // @ts-expect-error - This works.
-//       `use${UppercaseFirstLetter<K>}`]: Hooks[K];
-// };
+type ClassNameHook = {
+  className: (
+    cb: ({
+      defaultCn,
+      passedCn,
+    }: {
+      passedCn: string;
+      defaultCn: string;
+    }) => string
+  ) => string;
+};
 
 type UppercaseFirstLetter<T extends string> =
   T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
@@ -41,7 +46,7 @@ type CustomComponentFn<
         React.RefAttributes<Element>
     >;
   },
-  hooks: Hooks
+  hooks: Hooks & ClassNameHook
 ) => ReactNode;
 
 //================================ CODE ==================================
@@ -49,17 +54,23 @@ type CustomComponentFn<
 export function createComponent<
   CustomProperties extends Record<`$${string}`, unknown>,
   Element extends HTMLElement,
-  Hooks extends Record<`use${string}`, Function>,
+  Hooks extends Record<`use${string}`, Function> = {},
 >(args: {
   name: string;
   createFn: (args: {
     props: ComponentProperties<CustomProperties, Element>;
     classNameSeperator: typeof __seperateClasses;
     createSlot: typeof createSlot;
-  }) => { Component: ReactNode; hooks: Hooks };
+  }) => {
+    Component: ReactNode;
+    hooks: Hooks & ClassNameHook;
+  };
 }) {
   //======================== createComponent Stage ==========================
-  let hooks: Hooks;
+  //@ts-expect-error - We will add the hooks soon.
+  let hooks: Hooks & ClassNameHook = {
+    className: (cb) => cb({ defaultCn: "", passedCn: "" }),
+  };
   const LowestComponent = forwardRef<
     Element,
     ConvertToValidProps<CustomProperties> & HTMLAttributes<Element>
@@ -69,7 +80,7 @@ export function createComponent<
       createSlot,
       classNameSeperator: __seperateClasses,
     });
-    hooks = h2;
+    hooks = { ...hooks, ...h2 };
     return Component;
   });
   LowestComponent.displayName = `MultiUI.${args.name}.Lowest`;

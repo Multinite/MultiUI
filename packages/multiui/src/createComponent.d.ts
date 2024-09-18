@@ -5,12 +5,18 @@ type ComponentProperties<CustomProperties extends Record<string, unknown>, Eleme
 type ConvertToValidProps<CustomProperties extends Record<string, unknown>> = {
     [K in keyof CustomProperties as K extends `$${string}` ? K : `$${K}`]: CustomProperties[K];
 };
+type ClassNameHook = {
+    className: (cb: ({ defaultCn, passedCn, }: {
+        passedCn: string;
+        defaultCn: string;
+    }) => string) => string;
+};
 type UppercaseFirstLetter<T extends string> = T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
 type CustomComponentFn<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Hooks extends Record<string, Function>> = (args: {
     props: Omit<ComponentProperties<CustomProperties, Element>, "children">;
     Component: React.ForwardRefExoticComponent<React.PropsWithoutRef<ConvertToValidProps<CustomProperties> & React.HTMLAttributes<Element>> & React.RefAttributes<Element>>;
-}, hooks: Hooks) => ReactNode;
-export declare function createComponent<CustomProperties extends Record<`$${string}`, unknown>, Element extends HTMLElement, Hooks extends Record<`use${string}`, Function>>(args: {
+}, hooks: Hooks & ClassNameHook) => ReactNode;
+export declare function createComponent<CustomProperties extends Record<`$${string}`, unknown>, Element extends HTMLElement, Hooks extends Record<`use${string}`, Function> = {}>(args: {
     name: string;
     createFn: (args: {
         props: ComponentProperties<CustomProperties, Element>;
@@ -18,7 +24,7 @@ export declare function createComponent<CustomProperties extends Record<`$${stri
         createSlot: typeof createSlot;
     }) => {
         Component: ReactNode;
-        hooks: Hooks;
+        hooks: Hooks & ClassNameHook;
     };
 }): (createFn: (args: {
     props: ComponentProperties<CustomProperties, Element>;

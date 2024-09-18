@@ -3,14 +3,17 @@ import { __seperateClasses } from "../utils/cn";
 //================================ CODE ==================================
 export function createComponent(args) {
     //======================== createComponent Stage ==========================
-    let hooks;
+    //@ts-expect-error - We will add the hooks soon.
+    let hooks = {
+        className: (cb) => cb({ defaultCn: "", passedCn: "" }),
+    };
     const LowestComponent = forwardRef((props, ref) => {
         const { Component, hooks: h2 } = args.createFn({
             props: { ...props, ref: ref },
             createSlot,
             classNameSeperator: __seperateClasses,
         });
-        hooks = h2;
+        hooks = { ...hooks, ...h2 };
         return Component;
     });
     LowestComponent.displayName = `MultiUI.${args.name}.Lowest`;
