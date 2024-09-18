@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.8.5
+
+### Patch Changes
+
+- a297735: Fix: className hook
+
 ## 2.8.4
 
 ### Patch Changes
