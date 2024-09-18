@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.8.3
+
+### Patch Changes
+
+- 094de3f: Added default hook className
+
 ## 2.8.2
 
 ### Patch Changes
