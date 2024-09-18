@@ -24,12 +24,12 @@ export declare function createComponent<CustomProperties extends Record<`$${stri
         createSlot: typeof createSlot;
     }) => {
         Component: ReactNode;
-        hooks: Hooks & ClassNameHook;
+        hooks: Hooks;
     };
 }): (createFn: (args: {
     props: ComponentProperties<CustomProperties, Element>;
     Component: import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ConvertToValidProps<CustomProperties> & HTMLAttributes<Element>> & import("react").RefAttributes<Element>>;
-}, hooks: Hooks) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ConvertToValidProps<CustomProperties> & Omit<HTMLAttributes<Element>, "children"> & {
+}, hooks: Hooks & ClassNameHook) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ConvertToValidProps<CustomProperties> & Omit<HTMLAttributes<Element>, "children"> & {
     children?: ReactNode | CustomComponentFn<CustomProperties, Element, Hooks>;
 }> & import("react").RefAttributes<Element>>;
 export declare function createSlot<SlotName extends string, SlotProps extends Record<string, any>>(slotName: SlotName): {

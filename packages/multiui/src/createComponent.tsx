@@ -63,7 +63,7 @@ export function createComponent<
     createSlot: typeof createSlot;
   }) => {
     Component: ReactNode;
-    hooks: Hooks & ClassNameHook;
+    hooks: Hooks;
   };
 }) {
   //======================== createComponent Stage ==========================
@@ -95,7 +95,7 @@ export function createComponent<
         props: ComponentProperties<CustomProperties, Element>;
         Component: typeof LowestComponent;
       },
-      hooks: Hooks
+      hooks: Hooks & ClassNameHook
     ) => ReactNode
   ) {
     // ========== Component Function Stage ===========
