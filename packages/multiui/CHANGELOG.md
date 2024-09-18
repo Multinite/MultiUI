@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 2.8.2
+
+### Patch Changes
+
+- 233b7b0: Updated: createComponent, added more helperFunctions
+
 ## 2.8.1
 
 ### Patch Changes
