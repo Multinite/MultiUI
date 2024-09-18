@@ -5,7 +5,7 @@ export function createComponent(args) {
     //======================== createComponent Stage ==========================
     //@ts-expect-error - We will add the hooks soon.
     let hooks = {
-        className: (cb) => cb({ defaultCn: "", passedCn: "" }),
+        className: (cb) => ({ className: cb({ defaultCn: "", passedCn: "" }) }),
     };
     const LowestComponent = forwardRef((props, ref) => {
         const { Component, hooks: h2 } = args.createFn({

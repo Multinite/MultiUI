@@ -9,7 +9,9 @@ type ClassNameHook = {
     className: (cb: ({ defaultCn, passedCn, }: {
         passedCn: string;
         defaultCn: string;
-    }) => string) => string;
+    }) => string) => {
+        className: string;
+    };
 };
 type UppercaseFirstLetter<T extends string> = T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
 type CustomComponentFn<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Hooks extends Record<string, Function>> = (args: {

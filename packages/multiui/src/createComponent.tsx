@@ -26,7 +26,9 @@ type ClassNameHook = {
       passedCn: string;
       defaultCn: string;
     }) => string
-  ) => string;
+  ) => {
+    className: string;
+  };
 };
 
 type UppercaseFirstLetter<T extends string> =
@@ -69,7 +71,7 @@ export function createComponent<
   //======================== createComponent Stage ==========================
   //@ts-expect-error - We will add the hooks soon.
   let hooks: Hooks & ClassNameHook = {
-    className: (cb) => cb({ defaultCn: "", passedCn: "" }),
+    className: (cb) => ({ className: cb({ defaultCn: "", passedCn: "" }) }),
   };
   const LowestComponent = forwardRef<
     Element,
