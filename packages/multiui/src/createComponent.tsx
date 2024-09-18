@@ -1,4 +1,5 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import { __seperateClasses } from "../utils/cn";
 
 // =========================== TYPES ==================================
 
@@ -53,6 +54,8 @@ export function createComponent<
   name: string;
   createFn: (args: {
     props: ComponentProperties<CustomProperties, Element>;
+    classNameSeperator: typeof __seperateClasses;
+    createSlot: typeof createSlot;
   }) => { Component: ReactNode; hooks: Hooks };
 }) {
   //======================== createComponent Stage ==========================
@@ -63,6 +66,8 @@ export function createComponent<
   >((props, ref) => {
     const { Component, hooks: h2 } = args.createFn({
       props: { ...props, ref: ref },
+      createSlot,
+      classNameSeperator: __seperateClasses,
     });
     hooks = h2;
     return Component;
@@ -119,6 +124,30 @@ export function createComponent<
 
     return ComponentFn;
   }
+}
+
+//================================ createSlot ==================================
+
+export function createSlot<
+  SlotName extends string,
+  SlotProps extends Record<string, any>,
+>(
+  slotName: SlotName
+): {
+  [K in SlotName]: SlotName;
+} & {
+  [K in `get${UppercaseFirstLetter<SlotName>}Classes`]: (
+    props: SlotProps
+  ) => string;
+} {
+  return {
+    [slotName]: slotName,
+    [`get${capitalize(slotName)}Classes`]: 1,
+  } as any;
+}
+
+function capitalize<T extends string>(s: T): Capitalize<T> {
+  return (s.charAt(0).toUpperCase() + s.slice(1)) as Capitalize<T>;
 }
 
 //============================================================================= TESTING API:

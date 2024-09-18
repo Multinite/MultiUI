@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { __seperateClasses } from "../utils/cn";
 //================================ CODE ==================================
 export function createComponent(args) {
     //======================== createComponent Stage ==========================
@@ -6,6 +7,8 @@ export function createComponent(args) {
     const LowestComponent = forwardRef((props, ref) => {
         const { Component, hooks: h2 } = args.createFn({
             props: { ...props, ref: ref },
+            createSlot,
+            classNameSeperator: __seperateClasses,
         });
         hooks = h2;
         return Component;
@@ -35,6 +38,16 @@ export function createComponent(args) {
         ComponentFn.displayName = `MultiUI.${args.name}`;
         return ComponentFn;
     }
+}
+//================================ createSlot ==================================
+export function createSlot(slotName) {
+    return {
+        [slotName]: slotName,
+        [`get${capitalize(slotName)}Classes`]: 1,
+    };
+}
+function capitalize(s) {
+    return (s.charAt(0).toUpperCase() + s.slice(1));
 }
 //============================================================================= TESTING API:
 // const createButton = createComponent<
