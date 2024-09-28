@@ -15,14 +15,6 @@ export const getButtonHelperFunctions: (props: {
   disabledProps,
 }) => {
   return {
-    className: (arg) => {
-      return {
-        className: arg({
-          passedCn: "",
-          defaultCn: base_classes,
-        }),
-      };
-    },
     aria: ({
       ariaLabel,
       tabIndex = 0,

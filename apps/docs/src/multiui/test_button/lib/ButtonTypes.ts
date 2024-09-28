@@ -65,16 +65,6 @@ export type HelperFunctions = {
      */
     ripple: <T extends { disableRipple?: boolean }>(arg: T) => {};
     /**
-     * Allows you to assemble the classname of the button.
-     * @param cb - The callback function to pass the classes to.
-     * @returns The assembled classname.
-     */
-    className: <ClassName extends string>(
-      cb: (props: { passedCn: string; defaultCn: string }) => ClassName
-    ) => {
-      className: ClassName;
-    };
-    /**
      * Allows you to correctly disable the button.
      * @default false
      */

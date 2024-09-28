@@ -10,19 +10,10 @@ import { ButtonProps, HelperFunctions } from "./ButtonTypes";
 export const createButton = createComponent<
   ButtonProps,
   HTMLButtonElement,
-  {
-    loading: HelperFunctions["loading"];
-    hover: HelperFunctions["hover"];
-    press: HelperFunctions["press"];
-    focus: HelperFunctions["focus"];
-    disable: HelperFunctions["disable"];
-    className: HelperFunctions["className"];
-    aria: HelperFunctions["aria"];
-    ripple: HelperFunctions["ripple"];
-  }
+  HelperFunctions
 >({
   name: "Button",
-  createFn: ({ props, classNameSeperator, createSlot }) => {
+  createFn: ({ props, classNameSeperator, createSlot, createHooks }) => {
     const { children, ref, $className, ...rest } = props;
     type ButtonProps = typeof props;
 
@@ -53,7 +44,7 @@ export const createButton = createComponent<
         : $className
       : base_classes;
 
-// TODO: RETHINK THIS CLASSNAME STUFF< Its bad DX rn
+    // TODO: RETHINK THIS CLASSNAME STUFF< Its bad DX rn
 
     const helperFunctions = getButtonHelperFunctions({
       base_classes,
@@ -71,42 +62,43 @@ export const createButton = createComponent<
     >("base");
 
     const Base: FC<ButtonProps & { children?: ReactNode }> = (args) => {
+      args.$className;
       return (
-        <button
-          {...{ ...rest, ...args }}
-          slot={base}
-          ref={ref}
-          className={classNameSeperator(() => [
+        <button ref={ref} {...args} slot={base}>
+          {args.children}
+        </button>
+      );
+    };
+
+    const hooks = helperFunctions;
+
+    if (typeof children === "function") {
+      const Component = children(
+        { Component: Base, props: props },
+        createHooks(hooks)
+      );
+
+      return {
+        Component: Component,
+        hooks,
+      };
+    }
+
+    return {
+      Component: (
+        <Base
+          $className={classNameSeperator(() => [
             cn(
               getBaseClasses({ $isDisabled: props.$isDisabled }),
               base_classes
             ),
             className,
           ])}
+          {...rest}
         >
-          {args.children}
-        </button>
-      );
-    };
-    const hooks = {
-      loading: helperFunctions.loading,
-      hover: helperFunctions.hover,
-      press: helperFunctions.press,
-      focus: helperFunctions.focus,
-      disable: helperFunctions.disable,
-      className: helperFunctions.className,
-      aria: helperFunctions.aria,
-      ripple: helperFunctions.ripple,
-    };
-
-    if (typeof children === "function") {
-      const Component = children({ Component: Base, props: props }, hooks);
-
-      return Component;
-    }
-
-    return {
-      Component: <Base>{children}</Base>,
+          {children}
+        </Base>
+      ),
       hooks,
     };
   },

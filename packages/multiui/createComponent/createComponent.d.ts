@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type ReactNode } from "react";
+import { FC, type HTMLAttributes, type ReactNode } from "react";
 import { __seperateClasses, cn } from "../utils/cn";
 type GetElementAttributes<Element> = React.RefAttributes<Element> & HTMLAttributes<Element>;
 type ComponentProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Hooks extends Record<string, Function>> = ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & AppendDefaultProperties<CustomProperties, Element, Hooks>;
@@ -9,12 +9,7 @@ type ConvertToValidProps<CustomProperties extends Record<string, unknown>> = Omi
 }, Prefix$onTuples<UnwantedAttributes>>;
 type Prefix$onTuples<T extends string> = T extends `${infer U}` ? `${`$${U}`}` : T;
 type DefaultHooks = {
-    className: (cb: ({ defaultCn, passedCn, }: {
-        passedCn: string;
-        defaultCn: string;
-    }) => string) => {
-        className: string;
-    };
+    className: typeof getClassname;
 };
 type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Hooks extends Record<string, Function>> = CustomProperties & {
     /**
@@ -85,19 +80,14 @@ type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, E
      * ### ───────────────────────────
      *
      */
-    $z_____________________?: never;
+    _______________________?: never;
 };
-type ClassNameFn = ((props: {
-    /**
-     * The default classes that intend to be passed to the button.
-     */
-    classes: string;
-    cn: typeof cn;
-}) => string) | string;
 type UppercaseFirstLetter<T extends string> = T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
 type CustomComponentFn<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Hooks extends Record<string, Function>> = (args: {
     props: Omit<ComponentProperties<CustomProperties, Element, Hooks>, "children">;
-    Component: React.ForwardRefExoticComponent<Omit<ComponentProperties<CustomProperties, Element, Hooks>, "children">>;
+    Component: FC<ComponentProperties<CustomProperties, Element, Hooks> & {
+        children?: ReactNode;
+    }>;
 }, hooks: Hooks & DefaultHooks) => ReactNode;
 export declare function createComponent<CustomProperties extends Record<`$${string}`, unknown>, Element extends HTMLElement, Hooks extends Record<`use${string}`, Function> = {}>(args: {
     name: string;
@@ -105,6 +95,7 @@ export declare function createComponent<CustomProperties extends Record<`$${stri
         props: ComponentProperties<CustomProperties, Element, Hooks>;
         classNameSeperator: typeof __seperateClasses;
         createSlot: typeof createSlot;
+        createHooks: (hooks: Hooks) => Hooks & DefaultHooks;
     }) => {
         Component: ReactNode;
         hooks: Hooks;
@@ -118,4 +109,17 @@ export declare function createSlot<SlotName extends string, SlotProps extends Re
 } & {
     [K in `get${UppercaseFirstLetter<SlotName>}Classes`]: (props: SlotProps) => string;
 };
+export declare function getClassname({ $className, default_className, }: {
+    $className: ClassNameFn;
+    default_className: string;
+}): {
+    className: string;
+};
+type ClassNameFn = ((props: {
+    /**
+     * The default classes that intend to be passed to the button.
+     */
+    classes: string;
+    cn: typeof cn;
+}) => string) | string;
 export {};

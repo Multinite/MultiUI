@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import { FC, forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { __seperateClasses, cn } from "../utils/cn";
 
 // =========================== TYPES ==================================
@@ -55,17 +55,7 @@ type Prefix$onTuples<T extends string> = T extends `${infer U}`
 type DefaultHooks = {
   // Allow the dev to call it with a callback within and gain access to
   // the classNames that were initially made by `createComponent`, as well as all the classNames provded as props to the component.
-  className: (
-    cb: ({
-      defaultCn,
-      passedCn,
-    }: {
-      passedCn: string;
-      defaultCn: string;
-    }) => string
-  ) => {
-    className: string;
-  };
+  className: typeof getClassname;
 };
 
 // As the name suggests, this is an object containing all the properties that are also valid for the component and is of course developed by us.
@@ -148,24 +138,32 @@ type AppendDefaultProperties<
    * ### ───────────────────────────
    *
    */
-  $z_____________________?: never;
+  _______________________?: never;
 };
-
-// This type is used on the `className` prop to allow the dev to either pass a callback to it and do some magic,
-// or just pass a string, like the traditional way.
-type ClassNameFn =
-  | ((props: {
-      /**
-       * The default classes that intend to be passed to the button.
-       */
-      classes: string;
-      cn: typeof cn;
-    }) => string)
-  | string;
 
 // A Type function which returns a string with the first letter to be uppercase.
 type UppercaseFirstLetter<T extends string> =
   T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
+
+type DevCustomComponentFn<
+  CustomProperties extends Record<string, unknown>,
+  Element extends HTMLElement,
+  Hooks extends Record<string, Function>,
+> = (
+  args: {
+    props: Omit<
+      ComponentProperties<CustomProperties, Element, Hooks>,
+      "children"
+    >;
+    //// We omit children since the definiton of the "children" would be in process "now" considering the children is being defined in THIS function
+    Component: FC<
+      ComponentProperties<CustomProperties, Element, Hooks> & {
+        children?: ReactNode;
+      }
+    >;
+  },
+  hooks: Hooks
+) => ReactNode;
 
 // This is a function that is used as the children's component creator function.
 // EG, this function:
@@ -184,9 +182,11 @@ type CustomComponentFn<
       ComponentProperties<CustomProperties, Element, Hooks>,
       "children"
     >;
-    Component: React.ForwardRefExoticComponent<
-      // We omit children since the definiton of the "children" would be in process "now" considering the children is being defined in THIS function
-      Omit<ComponentProperties<CustomProperties, Element, Hooks>, "children">
+    //// We omit children since the definiton of the "children" would be in process "now" considering the children is being defined in THIS function
+    Component: FC<
+      ComponentProperties<CustomProperties, Element, Hooks> & {
+        children?: ReactNode;
+      }
     >;
   },
   hooks: Hooks & DefaultHooks
@@ -204,6 +204,7 @@ export function createComponent<
     props: ComponentProperties<CustomProperties, Element, Hooks>;
     classNameSeperator: typeof __seperateClasses;
     createSlot: typeof createSlot;
+    createHooks: (hooks: Hooks) => Hooks & DefaultHooks;
   }) => {
     Component: ReactNode;
     hooks: Hooks;
@@ -212,8 +213,16 @@ export function createComponent<
   //======================== createComponent Stage ==========================
   //@ts-expect-error - We will add the hooks soon.
   let hooks: Hooks & DefaultHooks = {
-    className: (cb) => ({ className: cb({ defaultCn: "", passedCn: "" }) }),
+    className: getClassname,
   };
+
+  function createHooks(hooks: Hooks): Hooks & DefaultHooks {
+    return {
+      ...hooks,
+      className: getClassname,
+    };
+  }
+
   const LowestComponent = forwardRef<
     Element,
     ComponentProperties<CustomProperties, Element, Hooks>
@@ -225,6 +234,7 @@ export function createComponent<
       },
       createSlot,
       classNameSeperator: __seperateClasses,
+      createHooks,
     });
     hooks = { ...hooks, ...h2 };
     return Component;
@@ -287,6 +297,35 @@ export function createSlot<
 function capitalize<T extends string>(s: T): Capitalize<T> {
   return (s.charAt(0).toUpperCase() + s.slice(1)) as Capitalize<T>;
 }
+//================================ getClassname ==================================
+
+// this function is use in the `createFn` function to get the classes passed by props from the dev,
+// as well as the classes provided by default of the component.
+export function getClassname({
+  $className,
+  default_className,
+}: {
+  $className: ClassNameFn;
+  default_className: string;
+}): { className: string } {
+  if (typeof $className === "function") {
+    return { className: $className({ cn, classes: default_className }) };
+  } else {
+    return { className: cn(default_className, $className) };
+  }
+}
+
+// This type is used on the `className` prop to allow the dev to either pass a callback to it and do some magic,
+// or just pass a string, like the traditional way.
+type ClassNameFn =
+  | ((props: {
+      /**
+       * The default classes that intend to be passed to the button.
+       */
+      classes: string;
+      cn: typeof cn;
+    }) => string)
+  | string;
 
 //============================================================================= TESTING API:
 

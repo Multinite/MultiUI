@@ -1,12 +1,18 @@
 import { forwardRef } from "react";
-import { __seperateClasses } from "../utils/cn";
+import { __seperateClasses, cn } from "../utils/cn";
 //================================ CODE ==================================
 export function createComponent(args) {
     //======================== createComponent Stage ==========================
     //@ts-expect-error - We will add the hooks soon.
     let hooks = {
-        className: (cb) => ({ className: cb({ defaultCn: "", passedCn: "" }) }),
+        className: getClassname,
     };
+    function createHooks(hooks) {
+        return {
+            ...hooks,
+            className: getClassname,
+        };
+    }
     const LowestComponent = forwardRef((props, ref) => {
         const { Component, hooks: h2 } = args.createFn({
             props: {
@@ -15,6 +21,7 @@ export function createComponent(args) {
             },
             createSlot,
             classNameSeperator: __seperateClasses,
+            createHooks,
         });
         hooks = { ...hooks, ...h2 };
         return Component;
@@ -44,6 +51,17 @@ export function createSlot(slotName) {
 }
 function capitalize(s) {
     return (s.charAt(0).toUpperCase() + s.slice(1));
+}
+//================================ getClassname ==================================
+// this function is use in the `createFn` function to get the classes passed by props from the dev,
+// as well as the classes provided by default of the component.
+export function getClassname({ $className, default_className, }) {
+    if (typeof $className === "function") {
+        return { className: $className({ cn, classes: default_className }) };
+    }
+    else {
+        return { className: cn(default_className, $className) };
+    }
 }
 //============================================================================= TESTING API:
 // const createButton = createComponent<

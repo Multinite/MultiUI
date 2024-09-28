@@ -1,7 +1,6 @@
 "use client";
 
 import { useTheme } from "@multinite_official/multiui";
-import { multiUI_defaultTheme } from "@multinite_official/multiui/providers/MultiUIProvider";
 import { useEffect, useRef } from "react";
 import Button from "../multiui/test_button";
 
@@ -16,6 +15,7 @@ export default function Home() {
     if (hasCalled.current) return;
     hasCalled.current = true;
     onThemeChange((themeName, theme) => {
+      console.log(`theme changed:`, themeName);
     });
   }, [addTheme, onThemeChange]);
 
@@ -24,7 +24,7 @@ export default function Home() {
       <span className="text-lg text-primary">
         Hello and welcome to the MultiUI docs!
       </span>
-      <span className="text-lg text-secondary">
+      <span className="text-lg text-secondary bg-primary">
         Hello and welcome to the MultiUI docs!
       </span>
       <h1>
@@ -37,7 +37,28 @@ export default function Home() {
         Click to toggle theme (1)
       </button>
       <hr className="my-5" />
-      <Button $className="Hello World!" slot="hi" className="hi" >Hi</Button>
+      <Button>
+        {(
+          { Component, props },
+          { aria, className, disable, focus, hover, loading, press, ripple }
+        ) => {
+          const ariaProps = aria({ ariaLabel: "Hello World" });
+          const cnProps = className({ $className: "", default_className: "" });
+
+          return (
+            <Component {...{ ...props, ...ariaProps, ...cnProps }}>
+              Hello World
+            </Component>
+          );
+        }}
+      </Button>
+
+      <Button>
+        {({ Component, props }, { disable }) => {
+          const disable_ = disable({ isDisabled: true });
+          return <Component {...disable_}>Sup</Component>;
+        }}
+      </Button>
     </div>
   );
 }

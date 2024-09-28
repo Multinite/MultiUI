@@ -1,7 +1,6 @@
 "use client";
 import { createButton } from "./lib/createButton";
 
-
 /**
  * ### ───────────────────────────
  * ## [Button](https://multiui.org/components/button)
@@ -26,25 +25,26 @@ const Button = createButton(
       $color,
       $radius,
       $size,
-      $slot,
       $as,
       $className,
       ...attributes
     } = props;
+
+    
 
     // console.log(disable({isDisabled: true}))
 
     // Comment out any helper function you don't want to use.
     // You can always hover over the helper function to see more information about it.
     const componentProps = {
-    //   ...disable({ isDisabled: $isDisabled }), // Allows the button to have proper disabled functionality.
-    //   ...ripple({ disableRipple: $disableRipple }), // Allows the button to ripple.
-    //   ...className(({ passedCn, defaultCn }) => cn(passedCn, defaultCn)), // Allows the button to have custom classes.
-    //   ...aria({ ariaLabel: "This is my button" }), // Allows the button to have custom aria attributes.
-    //   ...loading({ isLoading: $isLoading }), // Allows the button to have loading functionality.
-    //   ...focus(), // Allows the button to have better accessibility for focus functionality.
-    //   ...hover(), // Allows the button to have better accessibility for hover functionality.
-    //   ...press(), // Allows the button to have better accessibility for press functionality.
+      //   ...disable({ isDisabled: $isDisabled }), // Allows the button to have proper disabled functionality.
+      //   ...ripple({ disableRipple: $disableRipple }), // Allows the button to ripple.
+      //   ...className(({ passedCn, defaultCn }) => cn(passedCn, defaultCn)), // Allows the button to have custom classes.
+      //   ...aria({ ariaLabel: "This is my button" }), // Allows the button to have custom aria attributes.
+      //   ...loading({ isLoading: $isLoading }), // Allows the button to have loading functionality.
+      //   ...focus(), // Allows the button to have better accessibility for focus functionality.
+      //   ...hover(), // Allows the button to have better accessibility for hover functionality.
+      //   ...press(), // Allows the button to have better accessibility for press functionality.
       ...attributes,
     };
 
