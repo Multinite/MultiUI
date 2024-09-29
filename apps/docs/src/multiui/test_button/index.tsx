@@ -1,5 +1,6 @@
 "use client";
 import { createButton } from "./lib/createButton";
+import { useFocus } from "./lib/hooks";
 
 /**
  * ### ───────────────────────────
@@ -17,6 +18,7 @@ const Button = createButton(
     { props, Component },
     { className, aria, disable, focus, hover, press, loading, ripple }
   ) => {
+
     const {
       $disableRipple,
       $isDisabled,

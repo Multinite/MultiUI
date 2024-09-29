@@ -1,5 +1,5 @@
 import { FC, type HTMLAttributes, type ReactNode } from "react";
-import { __seperateClasses, cn } from "../utils/cn";
+import { cn } from "../utils/cn";
 type GetElementAttributes<Element> = React.RefAttributes<Element> & HTMLAttributes<Element>;
 type ComponentProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Hooks extends Record<string, Function>> = ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & AppendDefaultProperties<CustomProperties, Element, Hooks>;
 type OmitUnwantedElementAttributes<Attributes extends {}> = Omit<Attributes, UnwantedAttributes>;
@@ -71,7 +71,7 @@ type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, E
      * @see {@link https://multiui.org/docs/custom-components}
      *
      */
-    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element, Hooks>, Element, Hooks>;
+    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element, Hooks>, Element>;
     /**
      * # Don't use.
      * This is a prop made for the sake of DX, it makes it easier to see the seperation between custom properties that are defined with `$` and the normal properties.
@@ -83,31 +83,28 @@ type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, E
     _______________________?: never;
 };
 type UppercaseFirstLetter<T extends string> = T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
-type CustomComponentFn<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Hooks extends Record<string, Function>> = (args: {
-    props: Omit<ComponentProperties<CustomProperties, Element, Hooks>, "children">;
-    Component: FC<ComponentProperties<CustomProperties, Element, Hooks> & {
+type CustomComponentFn<CustomProperties extends Record<string, unknown>, Element extends HTMLElement> = (args: {
+    props: Omit<ComponentProperties<CustomProperties, Element, DefaultHooks>, "children">;
+    Component: FC<ComponentProperties<CustomProperties, Element, DefaultHooks> & {
         children?: ReactNode;
     }>;
-}, hooks: Hooks & DefaultHooks) => ReactNode;
+}) => ReactNode;
 export declare function createComponent<CustomProperties extends Record<`$${string}`, unknown>, Element extends HTMLElement, Hooks extends Record<`use${string}`, Function> = {}>(args: {
     name: string;
-    createFn: (args: {
-        props: ComponentProperties<CustomProperties, Element, Hooks>;
-        classNameSeperator: typeof __seperateClasses;
+    createFn: (componentProps: ComponentProperties<CustomProperties, Element, Hooks>, args: {
         createSlot: typeof createSlot;
-        createHooks: (hooks: Hooks) => Hooks & DefaultHooks;
-    }) => {
-        Component: ReactNode;
-        hooks: Hooks;
-    };
+        assembleClassname: (default_classes: string) => string;
+    }) => ReactNode;
 }): (createFn: (args: {
     props: ComponentProperties<CustomProperties, Element, Hooks>;
     Component: import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ComponentProperties<CustomProperties, Element, Hooks>> & import("react").RefAttributes<Element>>;
 }, hooks: Hooks & DefaultHooks) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ComponentProperties<CustomProperties, Element, Hooks>> & import("react").RefAttributes<Element>>;
-export declare function createSlot<SlotName extends string, SlotProps extends Record<string, any>>(slotName: SlotName): {
-    [K in SlotName]: SlotName;
+export declare function createSlot<SlotElement extends HTMLElement, const ComponentName extends string, const Component extends (props: HTMLAttributes<SlotElement> & {
+    children?: ReactNode;
+}, variantsPropertiesType: any) => ReactNode>(name: ComponentName, component: Component): {
+    [K in UppercaseFirstLetter<ComponentName>]: (props: Parameters<Component>[0]) => ReturnType<Component>;
 } & {
-    [K in `get${UppercaseFirstLetter<SlotName>}Classes`]: (props: SlotProps) => string;
+    [K in `get${UppercaseFirstLetter<ComponentName>}Props`]: (props: Parameters<Component>[1]) => string;
 };
 export declare function getClassname({ $className, default_className, }: {
     $className: ClassNameFn;

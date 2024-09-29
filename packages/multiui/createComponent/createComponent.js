@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { __seperateClasses, cn } from "../utils/cn";
+import { cn } from "../utils/cn";
 //================================ CODE ==================================
 export function createComponent(args) {
     //======================== createComponent Stage ==========================
@@ -7,23 +7,22 @@ export function createComponent(args) {
     let hooks = {
         className: getClassname,
     };
-    function createHooks(hooks) {
-        return {
-            ...hooks,
-            className: getClassname,
-        };
-    }
     const LowestComponent = forwardRef((props, ref) => {
-        const { Component, hooks: h2 } = args.createFn({
-            props: {
-                ...props,
-                ref: ref,
-            },
+        // this assembles the className based on all the className related info passed along the way.
+        function assembleClassname(default_classes) {
+            return props.$className
+                ? typeof props.$className === "function"
+                    ? props.$className({ cn, classes: default_classes })
+                    : cn(default_classes, props.$className)
+                : cn(default_classes, props.className);
+        }
+        const Component = args.createFn({
+            ...props,
+            ref: ref,
+        }, {
             createSlot,
-            classNameSeperator: __seperateClasses,
-            createHooks,
+            assembleClassname,
         });
-        hooks = { ...hooks, ...h2 };
         return Component;
     });
     LowestComponent.displayName = `MultiUI.${args.name}.Lowest`;
@@ -43,10 +42,11 @@ export function createComponent(args) {
     }
 }
 //================================ createSlot ==================================
-export function createSlot(slotName) {
+export function createSlot(name, component) {
+    //@ts-expect-error - This is a hack to make the type checker happy.
     return {
-        [slotName]: slotName, //TODO: Fix vvv
-        [`get${capitalize(slotName)}Classes`]: (props) => "placeholder_class",
+        [name]: (props) => component({ ...props, slot: name }, {}), //TODO: Fix vvv
+        [`get${capitalize(name)}Props`]: () => "placeholder_class",
     };
 }
 function capitalize(s) {

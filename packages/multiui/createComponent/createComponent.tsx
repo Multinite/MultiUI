@@ -127,8 +127,7 @@ type AppendDefaultProperties<
     | ReactNode
     | CustomComponentFn<
         AppendDefaultProperties<CustomProperties, Element, Hooks>,
-        Element,
-        Hooks
+        Element
       >;
   /**
    * # Don't use.
@@ -175,22 +174,18 @@ type DevCustomComponentFn<
 type CustomComponentFn<
   CustomProperties extends Record<string, unknown>,
   Element extends HTMLElement,
-  Hooks extends Record<string, Function>,
-> = (
-  args: {
-    props: Omit<
-      ComponentProperties<CustomProperties, Element, Hooks>,
-      "children"
-    >;
-    //// We omit children since the definiton of the "children" would be in process "now" considering the children is being defined in THIS function
-    Component: FC<
-      ComponentProperties<CustomProperties, Element, Hooks> & {
-        children?: ReactNode;
-      }
-    >;
-  },
-  hooks: Hooks & DefaultHooks
-) => ReactNode;
+> = (args: {
+  props: Omit<
+    ComponentProperties<CustomProperties, Element, DefaultHooks>,
+    "children"
+  >;
+  //// We omit children since the definiton of the "children" would be in process "now" considering the children is being defined in THIS function
+  Component: FC<
+    ComponentProperties<CustomProperties, Element, DefaultHooks> & {
+      children?: ReactNode;
+    }
+  >;
+}) => ReactNode;
 
 //================================ CODE ==================================
 
@@ -200,15 +195,13 @@ export function createComponent<
   Hooks extends Record<`use${string}`, Function> = {},
 >(args: {
   name: string;
-  createFn: (args: {
-    props: ComponentProperties<CustomProperties, Element, Hooks>;
-    classNameSeperator: typeof __seperateClasses;
-    createSlot: typeof createSlot;
-    createHooks: (hooks: Hooks) => Hooks & DefaultHooks;
-  }) => {
-    Component: ReactNode;
-    hooks: Hooks;
-  };
+  createFn: (
+    componentProps: ComponentProperties<CustomProperties, Element, Hooks>,
+    args: {
+      createSlot: typeof createSlot;
+      assembleClassname: (default_classes: string) => string;
+    }
+  ) => ReactNode;
 }) {
   //======================== createComponent Stage ==========================
   //@ts-expect-error - We will add the hooks soon.
@@ -216,27 +209,30 @@ export function createComponent<
     className: getClassname,
   };
 
-  function createHooks(hooks: Hooks): Hooks & DefaultHooks {
-    return {
-      ...hooks,
-      className: getClassname,
-    };
-  }
-
   const LowestComponent = forwardRef<
     Element,
     ComponentProperties<CustomProperties, Element, Hooks>
   >((props, ref) => {
-    const { Component, hooks: h2 } = args.createFn({
-      props: {
+
+    // this assembles the className based on all the className related info passed along the way.
+    function assembleClassname(default_classes: string) {
+      return props.$className
+        ? typeof props.$className === "function"
+          ? props.$className({ cn, classes: default_classes })
+          : cn(default_classes, props.$className)
+        : cn(default_classes, props.className);
+    }
+
+    const Component = args.createFn(
+      {
         ...props,
         ref: ref,
       },
-      createSlot,
-      classNameSeperator: __seperateClasses,
-      createHooks,
-    });
-    hooks = { ...hooks, ...h2 };
+      {
+        createSlot,
+        assembleClassname,
+      }
+    );
     return Component;
   });
   LowestComponent.displayName = `MultiUI.${args.name}.Lowest`;
@@ -277,21 +273,29 @@ export function createComponent<
 //================================ createSlot ==================================
 
 export function createSlot<
-  SlotName extends string,
-  SlotProps extends Record<string, any>,
+  SlotElement extends HTMLElement,
+  const ComponentName extends string,
+  const Component extends (
+    props: HTMLAttributes<SlotElement> & { children?: ReactNode },
+    variantsPropertiesType: any
+  ) => ReactNode,
 >(
-  slotName: SlotName
+  name: ComponentName,
+  component: Component
 ): {
-  [K in SlotName]: SlotName;
+  [K in UppercaseFirstLetter<ComponentName>]: (
+    props: Parameters<Component>[0]
+  ) => ReturnType<Component>;
 } & {
-  [K in `get${UppercaseFirstLetter<SlotName>}Classes`]: (
-    props: SlotProps
+  [K in `get${UppercaseFirstLetter<ComponentName>}Props`]: (
+    props: Parameters<Component>[1]
   ) => string;
 } {
+  //@ts-expect-error - This is a hack to make the type checker happy.
   return {
-    [slotName]: slotName, //TODO: Fix vvv
-    [`get${capitalize(slotName)}Classes`]: (props) => "placeholder_class",
-  } as any;
+    [name]: (props) => component({ ...props, slot: name }, {}), //TODO: Fix vvv
+    [`get${capitalize(name)}Props`]: () => "placeholder_class",
+  };
 }
 
 function capitalize<T extends string>(s: T): Capitalize<T> {

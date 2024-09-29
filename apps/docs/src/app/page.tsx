@@ -1,8 +1,9 @@
 "use client";
 
 import { useTheme } from "@multinite_official/multiui";
-import { useEffect, useRef } from "react";
+import { RefAttributes, useEffect, useRef } from "react";
 import Button from "../multiui/test_button";
+import { useFocus, usePress } from "../multiui/test_button/lib/hooks";
 
 export default function Home() {
   const { setTheme, currentTheme, themes, addTheme, onThemeChange } =
@@ -11,6 +12,7 @@ export default function Home() {
   const rerenders = useRef(0);
   rerenders.current++;
   console.log("Rerender:", rerenders.current);
+
   useEffect(() => {
     if (hasCalled.current) return;
     hasCalled.current = true;
@@ -19,12 +21,25 @@ export default function Home() {
     });
   }, [addTheme, onThemeChange]);
 
+  const { pressProps } = usePress({
+    isDisabled: false,
+    onPress: () => {
+      console.log("press");
+    },
+    onPressStart: () => {
+      console.log("press start");
+    },
+    onPressEnd: () => {
+      console.log("press end");
+    },
+  });
+
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen gap-5">
       <span className="text-lg text-primary">
         Hello and welcome to the MultiUI docs!
       </span>
-      <span className="text-lg text-secondary bg-primary">
+      <span className="text-lg bg-primary">
         Hello and welcome to the MultiUI docs!
       </span>
       <h1>
@@ -38,15 +53,24 @@ export default function Home() {
       </button>
       <hr className="my-5" />
       <Button>
-        {(
-          { Component, props },
-          { aria, className, disable, focus, hover, loading, press, ripple }
-        ) => {
+        {({ Component, props }) => {
           const ariaProps = aria({ ariaLabel: "Hello World" });
-          const cnProps = className({ $className: "", default_className: "" });
+          // const cnProps = className({ $className: "", default_className: "" });
+
+          // console.log(focusProps);
+
+          // const x = { ...props, ...ariaProps, ...cnProps, ...focusProps };
+          // const { focusProps } = useFocus({
+          //   isDisabled: true,
+          //   onFocus: () => {
+          //     console.log("focus");
+          //   },
+          // });
+
+          // console.log(pressProps);
 
           return (
-            <Component {...{ ...props, ...ariaProps, ...cnProps }}>
+            <Component {...ariaProps} {...pressProps}>
               Hello World
             </Component>
           );
@@ -54,11 +78,13 @@ export default function Home() {
       </Button>
 
       <Button>
-        {({ Component, props }, { disable }) => {
-          const disable_ = disable({ isDisabled: true });
-          return <Component {...disable_}>Sup</Component>;
+        {({ Component, props }) => {
+          // const disable_ = disable({ isDisabled: true });
+          return <Component>Sup</Component>;
         }}
       </Button>
     </div>
   );
 }
+
+const d: RefAttributes<HTMLButtonElement> = {};
