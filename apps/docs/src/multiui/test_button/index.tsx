@@ -1,6 +1,5 @@
 "use client";
 import { createButton } from "./lib/createButton";
-import { useFocus } from "./lib/hooks";
 
 /**
  * ### ───────────────────────────

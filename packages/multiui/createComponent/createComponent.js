@@ -16,14 +16,32 @@ export function createComponent(args) {
                     : cn(default_classes, props.$className)
                 : cn(default_classes, props.className);
         }
-        const Component = args.createFn({
-            ...props,
-            ref: ref,
-        }, {
-            createSlot,
-            assembleClassname,
-        });
-        return Component;
+        if (typeof props.children === "function") {
+            const Component = props.children({
+                Component: LowestComponent,
+                props,
+                assembleClassname,
+            });
+            return Component;
+        }
+        else {
+            const Component = args.createFn({
+                ...props,
+                children: props.children,
+                ref: ref,
+            }, {
+                createSlot: (name, component) => {
+                    const cmp = (props) => component({ ...props, slot: name }, {});
+                    cmp.name = `MultiUI.${name}`;
+                    return {
+                        [name]: cmp,
+                        [`get${capitalize(name)}VariantClasses`]: () => "placeholder_class", //TODO: Fix
+                    };
+                },
+                assembleClassname,
+            });
+            return Component;
+        }
     });
     LowestComponent.displayName = `MultiUI.${args.name}.Lowest`;
     return createSpecificComponent;
@@ -42,11 +60,13 @@ export function createComponent(args) {
     }
 }
 //================================ createSlot ==================================
-export function createSlot(name, component) {
+function createSlot(name, component) {
+    const cmp = (props) => component({ ...props, slot: name }, {});
+    cmp.name = `MultiUI.${name}`;
     //@ts-expect-error - This is a hack to make the type checker happy.
     return {
-        [name]: (props) => component({ ...props, slot: name }, {}), //TODO: Fix vvv
-        [`get${capitalize(name)}Props`]: () => "placeholder_class",
+        [name]: cmp,
+        [`get${capitalize(name)}VariantClasses`]: () => "placeholder_class", //TODO: Fix
     };
 }
 function capitalize(s) {

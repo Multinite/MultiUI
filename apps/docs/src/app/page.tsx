@@ -3,7 +3,7 @@
 import { useTheme } from "@multinite_official/multiui";
 import { RefAttributes, useEffect, useRef } from "react";
 import Button from "../multiui/test_button";
-import { useFocus, usePress } from "../multiui/test_button/lib/hooks";
+import { useAria, useFocus, usePress } from "../multiui/test_button/lib/hooks";
 
 export default function Home() {
   const { setTheme, currentTheme, themes, addTheme, onThemeChange } =
@@ -54,7 +54,7 @@ export default function Home() {
       <hr className="my-5" />
       <Button>
         {({ Component, props }) => {
-          const ariaProps = aria({ ariaLabel: "Hello World" });
+          const ariaProps = useAria({ ariaLabel: "Hello World" });
           // const cnProps = className({ $className: "", default_className: "" });
 
           // console.log(focusProps);

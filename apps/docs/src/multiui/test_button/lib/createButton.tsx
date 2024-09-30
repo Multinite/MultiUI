@@ -1,12 +1,16 @@
 "use client";
 import { createComponent } from "@multinite_official/multiui/createComponent";
 import { useBaseClasses } from "./styling";
-import { ButtonProps, HelperFunctions } from "./ButtonTypes";
+import { ButtonProps } from "./ButtonTypes";
+
+type Slots = {
+  base: HTMLButtonElement;
+};
 
 export const createButton = createComponent<
   ButtonProps,
   HTMLButtonElement,
-  HelperFunctions
+  Slots
 >({
   name: "Button",
   createFn: ({ children, ref, ...rest }, { createSlot, assembleClassname }) => {
@@ -17,7 +21,7 @@ export const createButton = createComponent<
       rest.$isIconOnly
     );
 
-    const { Base, getBaseProps } = createSlot(
+    const { Base, getBaseVariantClasses } = createSlot(
       "base",
       (props, x: { $isDisabled: boolean }) => (
         <button ref={ref} {...props}></button>
@@ -31,3 +35,20 @@ export const createButton = createComponent<
     );
   },
 });
+
+/*
+
+# There are four sources for classNames:
+* className str or undefined
+* $className (fn or str or undefined)
+* default_className (str)
+* variants_defined_classNames (str)
+
+
+# Order of operation:
+1. base classes
+2. variants classes
+3. $className
+4. className
+
+*/
