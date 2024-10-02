@@ -214,8 +214,6 @@ export function createComponent<
     Element,
     ComponentProperties<CustomProperties, Element>
   >((props, ref) => {
-
-    
     // this assembles the className based on all the className related info passed along the way.
     function assembleClassname(default_classes: string) {
       return props.$className
@@ -233,6 +231,39 @@ export function createComponent<
       });
       return Component;
     } else {
+      function createSlot<
+        const ComponentName extends keyof Slots,
+        const Component extends (
+          props: HTMLAttributes<Slots[ComponentName]> & {
+            children?: ReactNode;
+          },
+          variantsPropertiesType: any
+        ) => ReactNode,
+      >(
+        name: ComponentName,
+        component: Component
+      ): {
+        //@ts-expect-error - it works
+        [K in UppercaseFirstLetter<ComponentName>]: ((
+          props: Parameters<Component>[0]
+        ) => ReturnType<Component>) & { name: ComponentName };
+      } & {
+        //@ts-expect-error - it works
+        [K in `get${UppercaseFirstLetter<ComponentName>}VariantClasses`]: (
+          props: Parameters<Component>[1]
+        ) => string;
+      } {
+        const cmp = (props) => component({ ...props, slot: name }, {});
+        cmp.name = `MultiUI.${name as string}`;
+
+        //@ts-expect-error - This is a hack to make the type checker happy.
+        return {
+          [name]: cmp,
+          [`get${capitalize(name as string)}VariantClasses`]: () =>
+            "placeholder_class", //TODO: Fix
+        };
+      }
+
       const Component = args.createFn(
         {
           ...props,
@@ -240,15 +271,7 @@ export function createComponent<
           ref: ref,
         },
         {
-          createSlot: (name, component) => {
-            const cmp = (props) => component({ ...props, slot: name }, {});
-            cmp.name = `MultiUI.${name}`;
-          
-            return {
-              [name]: cmp,
-              [`get${capitalize(name)}VariantClasses`]: () => "placeholder_class", //TODO: Fix
-            };
-          },
+          createSlot: createSlot,
           assembleClassname,
         }
       );
@@ -290,39 +313,6 @@ export function createComponent<
   }
 }
 
-//================================ createSlot ==================================
-function createSlot<
-  SlotElement extends HTMLElement,
-  const ComponentName extends string,
-  const Component extends (
-    props: HTMLAttributes<SlotElement> & { children?: ReactNode },
-    variantsPropertiesType: any
-  ) => ReactNode,
->(
-  name: ComponentName,
-  component: Component
-): {
-  [K in UppercaseFirstLetter<ComponentName>]: ((
-    props: Parameters<Component>[0]
-  ) => ReturnType<Component>) & { name: ComponentName };
-} & {
-  [K in `get${UppercaseFirstLetter<ComponentName>}VariantClasses`]: (
-    props: Parameters<Component>[1]
-  ) => string;
-} {
-  const cmp = (props) => component({ ...props, slot: name }, {});
-  cmp.name = `MultiUI.${name}`;
-
-  //@ts-expect-error - This is a hack to make the type checker happy.
-  return {
-    [name]: cmp,
-    [`get${capitalize(name)}VariantClasses`]: () => "placeholder_class", //TODO: Fix
-  };
-}
-
-function capitalize<T extends string>(s: T): Capitalize<T> {
-  return (s.charAt(0).toUpperCase() + s.slice(1)) as Capitalize<T>;
-}
 //================================ getClassname ==================================
 
 // this function is use in the `createFn` function to get the classes passed by props from the dev,
@@ -352,6 +342,12 @@ type ClassNameFn =
       cn: typeof cn;
     }) => string)
   | string;
+
+//================================ utilities ==================================
+
+function capitalize<T extends string>(s: T): Capitalize<T> {
+  return (s.charAt(0).toUpperCase() + s.slice(1)) as Capitalize<T>;
+}
 
 //============================================================================= TESTING API:
 
