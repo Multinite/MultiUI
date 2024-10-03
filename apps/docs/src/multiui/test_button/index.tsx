@@ -13,24 +13,26 @@ import { createButton } from "./lib/createButton";
  * @author MultiUI
  */
 const Button = createButton(({ props, Base, Video }, { className }) => {
-  const {
-    $disableRipple,
-    $isDisabled,
-    $isLoading,
-    $isIconOnly,
-    $color,
-    $radius,
-    $size,
-    $as,
-    $className,
-    ...attributes
-  } = props;
+  console.log(Base)
+  return <button>hi from index.tsx</button>
+  // const {
+  //   $disableRipple,
+  //   $isDisabled,
+  //   $isLoading,
+  //   $isIconOnly,
+  //   $color,
+  //   $radius,
+  //   $size,
+  //   $as,
+  //   $className,
+  //   ...attributes
+  // } = props;
 
-  const componentProps = {
-    ...attributes,
-  };
+  // const componentProps = {
+  //   ...attributes,
+  // };
 
-  return <Base {...componentProps}>{attributes.children}</Base>;
+  // return <Base {...componentProps}>{attributes.children}</Base>;
 });
 
 export default Button;

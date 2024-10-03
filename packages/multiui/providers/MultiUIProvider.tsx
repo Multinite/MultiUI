@@ -3,13 +3,14 @@ import {
   createContext,
   memo,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
 } from "react";
 import { MultiUIConfig, Theme } from "../types/MultiUIConfig.js";
-import { createPortal } from "react-dom";
+import { createPortal, hydrate } from "react-dom";
 import { useSelectify } from "use-selectify";
 import { isMobile } from "react-device-detect";
 
@@ -310,14 +311,6 @@ export const MultiUIProvider = memo(function ({
   const subscribers = useRef<Parameters<MultiUIProvider["onThemeChange"]>[0][]>(
     []
   );
-  const isMounted = useRef(false);
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
 
   // const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
   const isDuringThemeChangeTimeout = useRef<ReturnType<typeof setTimeout>>();
@@ -432,7 +425,7 @@ export const MultiUIProvider = memo(function ({
 
     const style = {
       [`/* MultiUI Theme`]: "*/",
-      [`--${theme_prefix}-theme`]: `"${currentTheme}"`,
+      [`--${theme_prefix}-theme`]: `"${currentTheme.current}"`,
       [`--${theme_prefix}-scheme`]: `${theme.scheme}`,
       [`/* Background Values`]: "*/",
       ...bg,
@@ -474,23 +467,28 @@ export const MultiUIProvider = memo(function ({
     // }, 300);
   }, [currentTheme.current]);
 
+  useEffect(() => {
+    if (typeof window === "object" && Object.keys(themeInCSS).length > 0) {
+      const existing_style_el = document.getElementById("multiui-theme");
+      if (!existing_style_el) {
+        const style = document.createElement("style");
+        style.id = "multiui-theme";
+        style.innerHTML =
+          `.theme {\n` +
+          Object.entries(themeInCSS)
+            .map(([key, value]) => {
+              return `  ${key}: ${value};\n`;
+            })
+            .join("") +
+          "}";
+        document.head.appendChild(style);
+      }
+    }
+  }, [themeInCSS]);
+
   const AllProviderChildren = () => (
     <>
       {children}
-      {isMounted && Object.keys(themeInCSS).length > 0
-        ? createPortal(
-            <style>
-              {`.theme {\n` +
-                Object.entries(themeInCSS)
-                  .map(([key, value]) => {
-                    return `  ${key}: ${value};\n`;
-                  })
-                  .join("") +
-                "}"}
-            </style>,
-            document.head
-          )
-        : null}
       {/* {blurOnThemeChange_
         ? //TODO: Add darking effect
           createPortal(

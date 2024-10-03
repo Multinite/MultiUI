@@ -17,7 +17,7 @@ export default function Home() {
     if (hasCalled.current) return;
     hasCalled.current = true;
     onThemeChange((themeName, theme) => {
-      console.log(`theme changed:`, themeName);
+      // console.log(`theme changed:`, themeName);
     });
   }, [addTheme, onThemeChange]);
 
@@ -52,7 +52,7 @@ export default function Home() {
         Click to toggle theme (1)
       </button>
       <hr className="my-5" />
-      <Button>
+      {/* <Button>
         {({ Base, props, Video }) => {
           <Base {...props}>hey</Base>;
 
@@ -79,7 +79,8 @@ export default function Home() {
             </Base>
           );
         }}
-      </Button>
+      </Button> */}
+      <Button>Test</Button>
     </div>
   );
 }

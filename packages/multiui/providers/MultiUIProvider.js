@@ -1,7 +1,6 @@
 "use client";
-import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
+import { Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { createContext, memo, useContext, useEffect, useMemo, useRef, } from "react";
-import { createPortal } from "react-dom";
 import { useSelectify } from "use-selectify";
 import { isMobile } from "react-device-detect";
 //@ts-ignore
@@ -196,13 +195,6 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
     const currentTheme = useRef(themes.length > 0 ? themes[0].name : undefined);
     const theme_prefix = (config.theme_prefix || "multiui");
     const subscribers = useRef([]);
-    const isMounted = useRef(false);
-    useEffect(() => {
-        isMounted.current = true;
-        return () => {
-            isMounted.current = false;
-        };
-    }, []);
     // const [isDuringThemeChange, $isDuringThemeChange] = useState(false);
     const isDuringThemeChangeTimeout = useRef();
     // const [blurOnThemeChange_, setBlurOnThemeChange] = useState<boolean>(
@@ -313,7 +305,7 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
         };
         const style = {
             [`/* MultiUI Theme`]: "*/",
-            [`--${theme_prefix}-theme`]: `"${currentTheme}"`,
+            [`--${theme_prefix}-theme`]: `"${currentTheme.current}"`,
             [`--${theme_prefix}-scheme`]: `${theme.scheme}`,
             [`/* Background Values`]: "*/",
             ...bg,
@@ -354,15 +346,25 @@ export const MultiUIProvider = memo(function ({ config = {}, children, blurOnThe
         // $isDuringThemeChange(false);
         // }, 300);
     }, [currentTheme.current]);
-    const AllProviderChildren = () => (_jsxs(_Fragment, { children: [children, isMounted && Object.keys(themeInCSS).length > 0
-                ? createPortal(_jsx("style", { children: `.theme {\n` +
+    useEffect(() => {
+        if (typeof window === "object" && Object.keys(themeInCSS).length > 0) {
+            const existing_style_el = document.getElementById("multiui-theme");
+            if (!existing_style_el) {
+                const style = document.createElement("style");
+                style.id = "multiui-theme";
+                style.innerHTML =
+                    `.theme {\n` +
                         Object.entries(themeInCSS)
                             .map(([key, value]) => {
                             return `  ${key}: ${value};\n`;
                         })
                             .join("") +
-                        "}" }), document.head)
-                : null] }));
+                        "}";
+                document.head.appendChild(style);
+            }
+        }
+    }, [themeInCSS]);
+    const AllProviderChildren = () => (_jsx(_Fragment, { children: children }));
     const Provider = ({ children }) => (_jsx(MultiUIContext.Provider, { value: {
             setTheme: (theme_name) => {
                 currentTheme.current = theme_name;

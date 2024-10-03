@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{colorScheme: "dark"}}>
       <body
         className={cn(
           inter.className,
@@ -28,15 +28,15 @@ export default function RootLayout({
       >
         <Analytics />
         <ClientLayout>
-          <MultiUIProvider
+          {/* <MultiUIProvider
             config={{
               // theme_prefix,
             }}
             themes={[multiUI_defaultTheme]}
             // blurOnThemeChange
-          >
+          > */}
             {children}
-          </MultiUIProvider>
+          {/* </MultiUIProvider> */}
         </ClientLayout>
       </body>
     </html>

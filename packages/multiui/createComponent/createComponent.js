@@ -3,10 +3,24 @@ import { cn } from "../utils/cn";
 //================================ CODE ==================================
 export function createComponent(args) {
     //======================== createComponent Stage ==========================
-    //@ts-expect-error - We will add the hooks soon.
     let hooks = {
         className: getClassname,
     };
+    let slots = {};
+    function createSpecificComponent(createFn) {
+        // ========== Component Function Stage ===========
+        const ComponentFn = forwardRef((props, ref) => {
+            console.log(123, slots);
+            const Component = createFn({
+                props: { ...props, ref: ref },
+                ...slots,
+            }, hooks);
+            return Component;
+        });
+        ComponentFn.displayName = `MultiUI.${args.name}`;
+        return ComponentFn;
+    }
+    // the lowest component in theory should be the one made in `createButton.tsx`
     const LowestComponent = forwardRef((props, ref) => {
         // this assembles the className based on all the className related info passed along the way.
         function assembleClassname(default_classes) {
@@ -17,27 +31,32 @@ export function createComponent(args) {
                 : cn(default_classes, props.className);
         }
         if (typeof props.children === "function") {
+            //@ts-expect-error - it works
             const Component = props.children({
-                Component: LowestComponent,
                 props,
                 assembleClassname,
+                ...slots,
             });
             return Component;
         }
         else {
-            const Component = args.createFn({
+            function createSlot(name, component) {
+                const cmp = (props) => component({ ...props, slot: name }, {});
+                cmp.name = `MultiUI.${args.name}.${name.toString()}`;
+                console.log(121222, cmp.name);
+                slots[name.toString()] = cmp;
+                //@ts-expect-error - This is a hack to make the type checker happy.
+                return {
+                    [name]: cmp,
+                    [`get${capitalize(name)}VariantClasses`]: () => "placeholder_class", //TODO: Fix
+                };
+            }
+            const Component = args.createComponnetFn({
                 ...props,
                 children: props.children,
                 ref: ref,
             }, {
-                createSlot: (name, component) => {
-                    const cmp = (props) => component({ ...props, slot: name }, {});
-                    cmp.name = `MultiUI.${name}`;
-                    return {
-                        [name]: cmp,
-                        [`get${capitalize(name)}VariantClasses`]: () => "placeholder_class", //TODO: Fix
-                    };
-                },
+                createSlot: createSlot,
                 assembleClassname,
             });
             return Component;
@@ -45,33 +64,8 @@ export function createComponent(args) {
     });
     LowestComponent.displayName = `MultiUI.${args.name}.Lowest`;
     return createSpecificComponent;
-    //======================== createButton Stage ==========================
-    function createSpecificComponent(createFn) {
-        // ========== Component Function Stage ===========
-        const ComponentFn = forwardRef((props, ref) => {
-            const Component = createFn({
-                Component: LowestComponent,
-                props: { ...props, ref: ref },
-            }, hooks);
-            return Component;
-        });
-        ComponentFn.displayName = `MultiUI.${args.name}`;
-        return ComponentFn;
-    }
 }
-//================================ createSlot ==================================
-function createSlot(name, component) {
-    const cmp = (props) => component({ ...props, slot: name }, {});
-    cmp.name = `MultiUI.${name}`;
-    //@ts-expect-error - This is a hack to make the type checker happy.
-    return {
-        [name]: cmp,
-        [`get${capitalize(name)}VariantClasses`]: () => "placeholder_class", //TODO: Fix
-    };
-}
-function capitalize(s) {
-    return (s.charAt(0).toUpperCase() + s.slice(1));
-}
+//======================== createButton Stage ==========================
 //================================ getClassname ==================================
 // this function is use in the `createFn` function to get the classes passed by props from the dev,
 // as well as the classes provided by default of the component.
@@ -82,6 +76,10 @@ export function getClassname({ $className, default_className, }) {
     else {
         return { className: cn(default_className, $className) };
     }
+}
+//================================ utilities ==================================
+function capitalize(s) {
+    return (s.charAt(0).toUpperCase() + s.slice(1));
 }
 //============================================================================= TESTING API:
 // const createButton = createComponent<

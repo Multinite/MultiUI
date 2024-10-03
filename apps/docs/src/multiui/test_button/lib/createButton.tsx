@@ -6,18 +6,19 @@ import {
 import { useBaseClasses } from "./styling";
 import { ButtonProps } from "./ButtonTypes";
 
-type Slots = CreateSlotsType<{
+type Slots = {
   base: HTMLButtonElement;
   video: HTMLVideoElement;
-}>;
+};
 
 export const createButton = createComponent<
   ButtonProps,
   HTMLButtonElement,
-  Slots
+  CreateSlotsType<Slots>
 >({
   name: "Button",
   createFn: ({ children, ref, ...rest }, { createSlot, assembleClassname }) => {
+    console.log('test')
     const base_classes = useBaseClasses(
       rest.$size,
       rest.$color,
@@ -34,16 +35,15 @@ export const createButton = createComponent<
 
     const { Video, getVideoVariantClasses } = createSlot(
       "Video",
-      (props, x: { $isDisabled: boolean }) => (
-        <video {...props}></video>
-      )
+      (props, x: { $isDisabled: boolean }) => <video {...props}></video>
     );
+    return <button>hi</button>
 
-    return (
-      <Base className={assembleClassname(base_classes)} {...rest}>
-        {children}
-      </Base>
-    );
+    // return (
+    //   <Base className={assembleClassname(base_classes)} {...rest}>
+    //     {children}
+    //   </Base>
+    // );
   },
 });
 

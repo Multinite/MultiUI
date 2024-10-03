@@ -1,7 +1,9 @@
 import { FC, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../utils/cn";
 type GetElementAttributes<Element> = React.RefAttributes<Element> & HTMLAttributes<Element>;
-type ComponentProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement> = ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & AppendDefaultProperties<CustomProperties, Element>;
+type ComponentProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Slots extends {
+    [K in string]: HTMLElement;
+}> = ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & AppendDefaultProperties<CustomProperties, Element, Slots>;
 type OmitUnwantedElementAttributes<Attributes extends {}> = Omit<Attributes, UnwantedAttributes>;
 type UnwantedAttributes = "children" | "className" | "slot";
 type ConvertToValidProps<CustomProperties extends Record<string, unknown>> = Omit<{
@@ -11,7 +13,9 @@ type Prefix$onTuples<T extends string> = T extends `${infer U}` ? `${`$${U}`}` :
 type DefaultHooks = {
     className: typeof getClassname;
 };
-type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement> = CustomProperties & {
+type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Slots extends {
+    [K in string]: HTMLElement;
+}> = CustomProperties & {
     /**
      * ### ───────────────────────────
      * ![Image of demo-code](https://multiui.org/assets/code/classname.png|width=569.6|height=68)
@@ -71,7 +75,7 @@ type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, E
      * @see {@link https://multiui.org/docs/custom-components}
      *
      */
-    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element>, Element>;
+    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element, Slots>, Element, Slots>;
     /**
      * # Don't use.
      * This is a prop made for the sake of DX, it makes it easier to see the seperation between custom properties that are defined with `$` and the normal properties.
@@ -83,9 +87,12 @@ type AppendDefaultProperties<CustomProperties extends Record<string, unknown>, E
     _______________________?: never;
 };
 type UppercaseFirstLetter<T extends string> = T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
-type CustomComponentFn<CustomProperties extends Record<string, unknown>, Element extends HTMLElement> = (args: {
-    props: Omit<ComponentProperties<CustomProperties, Element>, "children">;
-    Component: FC<ComponentProperties<CustomProperties, Element> & {
+type CustomComponentFn<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Slots extends {
+    [K: string]: HTMLElement;
+}> = (args: {
+    props: Omit<ComponentProperties<CustomProperties, Element, Slots>, "children">;
+} & {
+    [K in keyof Slots as K extends string ? UppercaseFirstLetter<K> : never]: FC<ComponentProperties<CustomProperties, Slots[K], Slots> & {
         children?: ReactNode;
     }>;
 }) => ReactNode;
@@ -93,7 +100,7 @@ export declare function createComponent<CustomProperties extends Record<`$${stri
     [K: string]: HTMLElement;
 }>(args: {
     name: string;
-    createFn: (componentProps: Omit<ComponentProperties<CustomProperties, Element>, "children"> & {
+    createComponnetFn: (componentProps: Omit<ComponentProperties<CustomProperties, Element, Slots>, "children"> & {
         children?: ReactNode;
     }, args: {
         createSlot: <ComponentName extends keyof Slots, Component extends (props: HTMLAttributes<Slots[ComponentName]> & {
@@ -108,9 +115,12 @@ export declare function createComponent<CustomProperties extends Record<`$${stri
         assembleClassname: (default_classes: string) => string;
     }) => ReactNode;
 }): (createFn: (args: {
-    props: ComponentProperties<CustomProperties, Element>;
-    Component: import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ComponentProperties<CustomProperties, Element>> & import("react").RefAttributes<Element>>;
-}, hooks: DefaultHooks) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ComponentProperties<CustomProperties, Element>> & import("react").RefAttributes<Element>>;
+    props: Omit<ComponentProperties<CustomProperties, Element, Slots>, "children"> & {
+        children: ReactNode;
+    };
+} & { [K in keyof Slots as K extends string ? UppercaseFirstLetter<K> : never]: FC<ComponentProperties<CustomProperties, Slots[K], Slots> & {
+    children?: ReactNode;
+}>; }, hooks: DefaultHooks) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ComponentProperties<CustomProperties, Element, Slots>> & import("react").RefAttributes<Element>>;
 export declare function getClassname({ $className, default_className, }: {
     $className: ClassNameFn;
     default_className: string;
@@ -124,4 +134,7 @@ type ClassNameFn = ((props: {
     classes: string;
     cn: typeof cn;
 }) => string) | string;
-export {};
+type CapitalizeKeys<T> = {
+    [K in keyof T as Capitalize<string & K>]: T[K];
+};
+export type { CapitalizeKeys as CreateSlotsType };

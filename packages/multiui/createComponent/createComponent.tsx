@@ -189,7 +189,7 @@ export function createComponent<
   },
 >(args: {
   name: string;
-  createFn: (
+  createComponnetFn: (
     componentProps: Omit<
       ComponentProperties<CustomProperties, Element, Slots>,
       "children"
@@ -222,12 +222,11 @@ export function createComponent<
   ) => ReactNode;
 }) {
   //======================== createComponent Stage ==========================
-  //@ts-expect-error - We will add the hooks soon.
-  let hooks: Hooks & DefaultHooks = {
+  let hooks: DefaultHooks = {
     className: getClassname,
   };
-
   let slots = {};
+
   function createSpecificComponent(
     createFn: (
       args: {
@@ -252,11 +251,11 @@ export function createComponent<
       Element,
       ComponentProperties<CustomProperties, Element, Slots>
     >((props, ref) => {
+      console.log(123, slots);
       const Component = createFn(
-        //@ts-expect-error - it works
         {
           props: { ...props, ref: ref },
-          ...slots,
+          ...slots, 
         },
         hooks
       );
@@ -266,6 +265,7 @@ export function createComponent<
 
     return ComponentFn;
   }
+  // the lowest component in theory should be the one made in `createButton.tsx`
   const LowestComponent = forwardRef<
     Element,
     ComponentProperties<CustomProperties, Element, Slots>
@@ -311,7 +311,9 @@ export function createComponent<
         ) => string;
       } {
         const cmp = (props) => component({ ...props, slot: name }, {});
-        cmp.name = `MultiUI.${name as string}`;
+        cmp.name = `MultiUI.${args.name}.${name.toString()}`;
+        console.log(121222, cmp.name)
+        slots[name.toString()] = cmp
 
         //@ts-expect-error - This is a hack to make the type checker happy.
         return {
@@ -321,7 +323,7 @@ export function createComponent<
         };
       }
 
-      const Component = args.createFn(
+      const Component = args.createComponnetFn(
         {
           ...props,
           children: props.children,
