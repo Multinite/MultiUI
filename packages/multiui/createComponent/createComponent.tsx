@@ -15,9 +15,12 @@ type GetElementAttributes<Element> = React.RefAttributes<Element> &
 type ComponentProperties<
   CustomProperties extends Record<string, unknown>,
   Element extends HTMLElement,
+  Slots extends {
+    [K in string]: HTMLElement;
+  },
 > = ConvertToValidProps<CustomProperties> &
   OmitUnwantedElementAttributes<GetElementAttributes<Element>> &
-  AppendDefaultProperties<CustomProperties, Element>;
+  AppendDefaultProperties<CustomProperties, Element, Slots>;
 
 // A Type function which removes all the attributes that are provided by an element, but are not wanted.
 // This is because we provide custom attributes that overwrite the default behavour of it.
@@ -61,6 +64,9 @@ type DefaultHooks = {
 type AppendDefaultProperties<
   CustomProperties extends Record<string, unknown>,
   Element extends HTMLElement,
+  Slots extends {
+    [K in string]: HTMLElement;
+  },
 > = CustomProperties & {
   /**
    * ### ───────────────────────────
@@ -124,8 +130,9 @@ type AppendDefaultProperties<
   children?:
     | ReactNode
     | CustomComponentFn<
-        AppendDefaultProperties<CustomProperties, Element>,
-        Element
+        AppendDefaultProperties<CustomProperties, Element, Slots>,
+        Element,
+        Slots
       >;
   /**
    * # Don't use.
@@ -152,15 +159,25 @@ type UppercaseFirstLetter<T extends string> =
 type CustomComponentFn<
   CustomProperties extends Record<string, unknown>,
   Element extends HTMLElement,
-> = (args: {
-  props: Omit<ComponentProperties<CustomProperties, Element>, "children">;
-  //// We omit children since the definiton of the "children" would be in process "now" considering the children is being defined in THIS function
-  Component: FC<
-    ComponentProperties<CustomProperties, Element> & {
-      children?: ReactNode;
-    }
-  >;
-}) => ReactNode;
+  Slots extends {
+    [K: string]: HTMLElement;
+  },
+> = (
+  args: {
+    props: Omit<
+      ComponentProperties<CustomProperties, Element, Slots>,
+      "children"
+    >;
+  } & {
+    [K in keyof Slots as K extends string
+      ? UppercaseFirstLetter<K>
+      : never]: FC<
+      ComponentProperties<CustomProperties, Slots[K], Slots> & {
+        children?: ReactNode;
+      }
+    >;
+  }
+) => ReactNode;
 
 //================================ CODE ==================================
 
@@ -174,7 +191,7 @@ export function createComponent<
   name: string;
   createFn: (
     componentProps: Omit<
-      ComponentProperties<CustomProperties, Element>,
+      ComponentProperties<CustomProperties, Element, Slots>,
       "children"
     > & { children?: ReactNode },
     args: {
@@ -210,9 +227,48 @@ export function createComponent<
     className: getClassname,
   };
 
+  let slots = {};
+  function createSpecificComponent(
+    createFn: (
+      args: {
+        props: Omit<
+          ComponentProperties<CustomProperties, Element, Slots>,
+          "children"
+        > & { children: ReactNode };
+      } & {
+        [K in keyof Slots as K extends string
+          ? UppercaseFirstLetter<K>
+          : never]: FC<
+          ComponentProperties<CustomProperties, Slots[K], Slots> & {
+            children?: ReactNode;
+          }
+        >;
+      },
+      hooks: DefaultHooks
+    ) => ReactNode
+  ) {
+    // ========== Component Function Stage ===========
+    const ComponentFn = forwardRef<
+      Element,
+      ComponentProperties<CustomProperties, Element, Slots>
+    >((props, ref) => {
+      const Component = createFn(
+        //@ts-expect-error - it works
+        {
+          props: { ...props, ref: ref },
+          ...slots,
+        },
+        hooks
+      );
+      return Component;
+    });
+    ComponentFn.displayName = `MultiUI.${args.name}`;
+
+    return ComponentFn;
+  }
   const LowestComponent = forwardRef<
     Element,
-    ComponentProperties<CustomProperties, Element>
+    ComponentProperties<CustomProperties, Element, Slots>
   >((props, ref) => {
     // this assembles the className based on all the className related info passed along the way.
     function assembleClassname(default_classes: string) {
@@ -224,10 +280,11 @@ export function createComponent<
     }
 
     if (typeof props.children === "function") {
+      //@ts-expect-error - it works
       const Component = props.children({
-        Component: LowestComponent,
         props,
         assembleClassname,
+        ...slots,
       });
       return Component;
     } else {
@@ -281,37 +338,9 @@ export function createComponent<
   LowestComponent.displayName = `MultiUI.${args.name}.Lowest`;
 
   return createSpecificComponent;
-
-  //======================== createButton Stage ==========================
-
-  function createSpecificComponent(
-    createFn: (
-      args: {
-        props: ComponentProperties<CustomProperties, Element>;
-        Component: typeof LowestComponent;
-      },
-      hooks: DefaultHooks
-    ) => ReactNode
-  ) {
-    // ========== Component Function Stage ===========
-    const ComponentFn = forwardRef<
-      Element,
-      ComponentProperties<CustomProperties, Element>
-    >((props, ref) => {
-      const Component = createFn(
-        {
-          Component: LowestComponent,
-          props: { ...props, ref: ref },
-        },
-        hooks
-      );
-      return Component;
-    });
-    ComponentFn.displayName = `MultiUI.${args.name}`;
-
-    return ComponentFn;
-  }
 }
+
+//======================== createButton Stage ==========================
 
 //================================ getClassname ==================================
 
@@ -348,6 +377,12 @@ type ClassNameFn =
 function capitalize<T extends string>(s: T): Capitalize<T> {
   return (s.charAt(0).toUpperCase() + s.slice(1)) as Capitalize<T>;
 }
+
+type CapitalizeKeys<T> = {
+  [K in keyof T as Capitalize<string & K>]: T[K];
+};
+
+export type { CapitalizeKeys as CreateSlotsType };
 
 //============================================================================= TESTING API:
 

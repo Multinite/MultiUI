@@ -53,7 +53,11 @@ export default function Home() {
       </button>
       <hr className="my-5" />
       <Button>
-        {({ Component, props }) => {
+        {({ Base, props, Video }) => {
+          <Base {...props}>hey</Base>;
+
+          <Video></Video>
+
           const ariaProps = useAria({ ariaLabel: "Hello World" });
           // const cnProps = className({ $className: "", default_className: "" });
 
@@ -70,17 +74,10 @@ export default function Home() {
           // console.log(pressProps);
 
           return (
-            <Component {...ariaProps} {...pressProps}>
+            <Base {...ariaProps} {...pressProps}>
               Hello World
-            </Component>
+            </Base>
           );
-        }}
-      </Button>
-
-      <Button>
-        {({ Component, props }) => {
-          // const disable_ = disable({ isDisabled: true });
-          return <Component>Sup</Component>;
         }}
       </Button>
     </div>

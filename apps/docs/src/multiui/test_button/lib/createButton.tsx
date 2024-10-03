@@ -1,11 +1,15 @@
 "use client";
-import { createComponent } from "@multinite_official/multiui/createComponent";
+import {
+  createComponent,
+  CreateSlotsType,
+} from "@multinite_official/multiui/createComponent";
 import { useBaseClasses } from "./styling";
 import { ButtonProps } from "./ButtonTypes";
 
-type Slots = {
+type Slots = CreateSlotsType<{
   base: HTMLButtonElement;
-};
+  video: HTMLVideoElement;
+}>;
 
 export const createButton = createComponent<
   ButtonProps,
@@ -22,9 +26,16 @@ export const createButton = createComponent<
     );
 
     const { Base, getBaseVariantClasses } = createSlot(
-      "base",
+      "Base",
       (props, x: { $isDisabled: boolean }) => (
         <button ref={ref} {...props}></button>
+      )
+    );
+
+    const { Video, getVideoVariantClasses } = createSlot(
+      "Video",
+      (props, x: { $isDisabled: boolean }) => (
+        <video {...props}></video>
       )
     );
 
