@@ -180,7 +180,7 @@ function Page() {
   return (
     <div className="flex w-screen h-screen gap-10">
       <ThemeProvider>
-        <Theme theme={default_theme} themeId={'default'}>
+        <Theme theme={default_theme} themeId={"default"}>
           <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary">
             with provider
           </div>
@@ -189,7 +189,10 @@ function Page() {
           without provider
         </div>
         <Theme
-          theme={test_theme}
+          theme={{
+            ...test_theme,
+            primary: { ...test_theme.primary, DEFAULT: "0, 0%, 0%" },
+          }}
           defineThemeStylesInline={false}
           themeId="test-theme"
         >

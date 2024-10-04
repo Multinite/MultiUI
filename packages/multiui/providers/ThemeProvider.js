@@ -48,16 +48,27 @@ export default function ThemeProvider({ children }) {
                 if (defineThemeStylesInline) {
                     const wrapperEl = document.querySelector(`[data-theme-id="${themeId}"]`);
                     if (!wrapperEl)
-                        return;
+                        throw new Error(`Failed to setTheme, no <div> element found representing the "${themeId}" themeId.`);
                     removeCSSVariables(wrapperEl);
                     console.log(`el`, wrapperEl);
                     const styleObj = getThemeFormatted({
                         theme,
                         outputType: "inline-style-object",
                     });
-                    wrapperEl.style.cssText = Object.entries(styleObj).map(([key, value]) => {
+                    wrapperEl.style.cssText = Object.entries(styleObj)
+                        .map(([key, value]) => {
                         return `${key}: ${value};`;
-                    }).join("");
+                    })
+                        .join("");
+                }
+                else {
+                    const styleEl = document.querySelector(`[data-style-theme-id="${themeId}"]`);
+                    if (!styleEl)
+                        throw new Error(`Failed to setTheme, no <style> element found representing the "${themeId}" themeId.`);
+                    styleEl.innerHTML = getThemeFormatted({
+                        theme,
+                        outputType: "style-element",
+                    });
                 }
             },
             subscribe: (themeId, callback) => {

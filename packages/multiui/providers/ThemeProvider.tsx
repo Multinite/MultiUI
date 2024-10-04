@@ -83,16 +83,33 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
             const wrapperEl = document.querySelector<HTMLDivElement>(
               `[data-theme-id="${themeId}"]`
             );
-            if (!wrapperEl) return;
+            if (!wrapperEl)
+              throw new Error(
+                `Failed to setTheme, no <div> element found representing the "${themeId}" themeId.`
+              );
             removeCSSVariables(wrapperEl);
             console.log(`el`, wrapperEl);
             const styleObj = getThemeFormatted({
               theme,
               outputType: "inline-style-object",
-            })
-            wrapperEl.style.cssText = Object.entries(styleObj).map(([key, value]) => {
-              return `${key}: ${value};`
-            }).join("");
+            });
+            wrapperEl.style.cssText = Object.entries(styleObj)
+              .map(([key, value]) => {
+                return `${key}: ${value};`;
+              })
+              .join("");
+          } else {
+            const styleEl = document.querySelector<HTMLStyleElement>(
+              `[data-style-theme-id="${themeId}"]`
+            );
+            if (!styleEl)
+              throw new Error(
+                `Failed to setTheme, no <style> element found representing the "${themeId}" themeId.`
+              );
+            styleEl.innerHTML = getThemeFormatted({
+              theme,
+              outputType: "style-element",
+            });
           }
         },
         subscribe: (themeId, callback) => {
@@ -149,7 +166,7 @@ function removeCSSVariables(element: HTMLElement) {
     const prop = style[i];
     if (prop.startsWith("--")) {
       style.removeProperty(prop);
-      console.log(`removing: `, prop)
+      console.log(`removing: `, prop);
     }
   }
 }

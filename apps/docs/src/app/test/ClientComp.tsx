@@ -3,7 +3,7 @@ import { useTheme } from "@multinite_official/multiui";
 import { useEffect, useRef } from "react";
 
 function ClientComp(props: any) {
-  const { getTheme, setTheme, subscribe } = useTheme("default");
+  const { getTheme, setTheme, subscribe } = useTheme("test-theme");
   const ranOnce = useRef(false);
 
   useEffect(() => {
