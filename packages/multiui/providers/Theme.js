@@ -1,22 +1,34 @@
 import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
+import { forwardRef, } from "react";
 import { cn } from "../utils/cn";
-function MultiUITheme({ theme, style, defineThemeStylesInline = true, ...attr }) {
+import GlobalThemeSet from "./GlobalThemeSet";
+const Theme = forwardRef(({ theme, themeId, style, defineThemeStylesInline = true, ...attr }, ref) => {
+    // const theme_ref = useRef<ThemeT>(theme);
+    // const subs = useRef<((theme: ThemeT) => void)[]>([]);
+    // const wrapperEl = useRef<HTMLDivElement>(null);
+    // const styleEl = useRef<HTMLStyleElement>(null);
+    console.log("server only log");
     if (defineThemeStylesInline) {
-        return (_jsx(_Fragment, { children: _jsx("div", { ...attr, slot: "multiui-theme-wrapper", "data-theme": theme.name, style: {
-                    ...style,
-                    ...getThemeFormatted({ theme, outputType: "style-element" }),
-                } }) }));
+        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: theme, themeId: themeId, defineThemeStylesInline: defineThemeStylesInline }), _jsx("div", { ...attr, slot: "multiui-theme-wrapper", "data-theme": theme.name, ...(!themeId ? {} : { "data-theme-id": themeId }), style: {
+                        ...style,
+                        ...getThemeFormatted({ theme, outputType: "inline-style-object" }),
+                    }, ref: ref })] }));
     }
     const { className, ...rest } = attr;
-    return (_jsxs(_Fragment, { children: [_jsx("style", { slot: "multiui-theme-style", "data-theme": theme.name, dangerouslySetInnerHTML: {
-                    __html: getThemeFormatted({ theme, outputType: "inline-style" }),
-                } }), _jsx("div", { slot: "multiui-theme-wrapper", "data-theme": theme.name, className: cn(`${theme.name}_theme`, className), ...rest })] }));
-}
-export default MultiUITheme;
+    return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: theme, themeId: themeId, defineThemeStylesInline: defineThemeStylesInline }), _jsx("style", { slot: "multiui-theme-style", "data-theme": theme.name, dangerouslySetInnerHTML: {
+                    __html: getThemeFormatted({
+                        theme,
+                        outputType: "style-element",
+                    }),
+                }, ...(!themeId ? {} : { "data-style-theme-id": themeId }) }), _jsx("div", { ...rest, slot: "multiui-theme-wrapper", "data-theme": theme.name, className: cn(`${theme.name}_theme`, className), ...(!themeId ? {} : { "data-theme-id": themeId }), ref: ref })] }));
+});
+export default Theme;
 //@ts-ignore
-const getThemeFormatted = function ({ theme, outputType = "inline-style", theme_prefix = "multiui", custom_className, }) {
+export const getThemeFormatted = function ({ theme, outputType = "inline-style", theme_prefix = "multiui", custom_className, }) {
     if (theme === undefined)
-        return outputType == "inline-style" ? "" : {};
+        return outputType == "inline-style-string" || outputType === "style-element"
+            ? ""
+            : {};
     function colorValues(color) {
         return {
             //@ts-ignore
@@ -111,7 +123,7 @@ const getThemeFormatted = function ({ theme, outputType = "inline-style", theme_
         [`/* Other Values`]: "*/",
         ...other,
     };
-    if (outputType === "inline-style") {
+    if (outputType === "style-element") {
         return (`.${custom_className || `${theme.name}_theme`} {\n` +
             Object.entries(style)
                 .map(([key, value]) => {
@@ -120,8 +132,36 @@ const getThemeFormatted = function ({ theme, outputType = "inline-style", theme_
                 .join("") +
             "}");
     }
-    else {
+    else if (outputType === "inline-style-string") {
+        return Object.entries(style)
+            .map(([key, value]) => {
+            return `  ${key}: ${value};\n`;
+        })
+            .join("");
+    }
+    else if (outputType === "inline-style-object") {
         return style;
     }
 };
-//# sourceMappingURL=MultiUIThemeProvider.js.map
+function reactCSSToString(styles) {
+    return Object.entries(styles)
+        .map(([key, value]) => {
+        // Convert camelCase to kebab-case
+        const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+        // Handle numbers by adding 'px' for numerical values except for unitless properties
+        const cssValue = typeof value === "number" &&
+            ![
+                "zIndex",
+                "opacity",
+                "fontWeight",
+                "lineHeight",
+                "flexGrow",
+                "flexShrink",
+            ].includes(key)
+            ? `${value}px`
+            : value;
+        return `${cssKey}: ${cssValue};`;
+    })
+        .join(" ");
+}
+//# sourceMappingURL=Theme.js.map

@@ -1,6 +1,10 @@
-import MultiUITheme from "@multinite_official/multiui/providers/MultiUIThemeProvider";
-import { Theme } from "@multinite_official/multiui/types/MultiUIConfig";
-const default_theme: Theme = {
+import { useTheme } from "@multinite_official/multiui";
+import Theme from "@multinite_official/multiui/providers/Theme";
+import ThemeProvider from "@multinite_official/multiui/providers/ThemeProvider";
+import type { Theme as ThemeT } from "@multinite_official/multiui/types/MultiUIConfig";
+import { useRef } from "react";
+import ClientComp from "./ClientComp";
+const default_theme: ThemeT = {
   name: "multiui_default",
   primary: {
     50: "272, 93%, 95%",
@@ -155,7 +159,7 @@ const default_theme: Theme = {
   },
   focus: `212.01999999999998 100% 46.67%`,
 };
-const test_theme: Theme = {
+const test_theme: ThemeT = {
   ...default_theme,
   name: "test_theme",
   primary: {
@@ -169,23 +173,33 @@ const test_theme: Theme = {
 // const theme4 = default_theme;
 function Page() {
   const theme = ".theme {\n  --foreground: red;\n}";
+
+  // console.log("page lvl")
   // console.log("theme:", default_theme);
 
   return (
     <div className="flex w-screen h-screen gap-10">
-      <MultiUITheme theme={default_theme}>
+      <ThemeProvider>
+        <Theme theme={default_theme} themeId={'default'}>
+          <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary">
+            with provider
+          </div>
+        </Theme>
         <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary">
-          with provider
+          without provider
         </div>
-      </MultiUITheme>
-      <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary">
-        without provider
-      </div>
-      <MultiUITheme theme={test_theme} defineThemeStylesInline={false}>
-        <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary">
-          with another provider
-        </div>
-      </MultiUITheme>
+        <Theme
+          theme={test_theme}
+          defineThemeStylesInline={false}
+          themeId="test-theme"
+        >
+          <ClientComp>
+            <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary">
+              with another provider
+            </div>
+          </ClientComp>
+        </Theme>
+      </ThemeProvider>
     </div>
   );
 }
