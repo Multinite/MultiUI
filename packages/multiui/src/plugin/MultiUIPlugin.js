@@ -7,7 +7,7 @@ export const MultiUIPlugin = function (multiUIConfig) {
             .filter((x) => x)
             .join("-")}))`;
     }
-    return plugin(function ({ theme, addUtilities, addComponents, addBase, e, config, }) {
+    return plugin(function ({ theme, addUtilities, addComponents, addBase, e, config, addVariant, matchVariant, }) {
         const allColorIndexs = [
             -1, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900,
         ];
@@ -104,8 +104,16 @@ export const MultiUIPlugin = function (multiUIConfig) {
                 "--tw-ring-color": `hsl(var(--${prefix}-focus) / var(--tw-ring-opacity))`,
             },
         };
-        console.log(utils);
+        // console.log(utils);
         addUtilities(utils);
-    }, {});
+        for (let index = 0; index < multiUIConfig.theme_names.length; index++) { }
+        multiUIConfig.theme_names.forEach((themeName) => {
+            console.log("adding variant", themeName);
+            addVariant(`theme-${themeName}`, `[data-theme="${themeName}"] &`);
+        });
+        matchVariant("theme", (value) => {
+            return `[data-theme="${value}"] &`;
+        });
+    });
 };
 //# sourceMappingURL=MultiUIPlugin.js.map

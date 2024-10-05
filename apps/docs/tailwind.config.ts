@@ -1,7 +1,6 @@
 import { MultiUIPlugin } from "@multinite_official/multiui";
 import type { Config } from "tailwindcss";
-import multiUIConfig from "./multiui.config.json";
-import { MultiUIConfig } from "@multinite_official/multiui/src/types/MultiUIConfig";
+import { multiUIConfig } from "./multiui.config";
 
 const config: Config = {
   content: [
@@ -9,7 +8,7 @@ const config: Config = {
     "../../packages/multiui/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {},
-  plugins: [MultiUIPlugin(multiUIConfig as unknown as MultiUIConfig)],
+  plugins: [MultiUIPlugin(multiUIConfig)],
 };
 
 export default config;

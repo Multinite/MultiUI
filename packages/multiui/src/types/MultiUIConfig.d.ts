@@ -1,9 +1,27 @@
 export type MultiUIConfig = {
+    /**
+     * The output directory for components.
+     *
+     * @default "/src/components/multiui"
+     **/
     components_output_dir: string;
+    /**
+     * The framework you are using.
+     **/
     framework: string;
+    /**
+     * The package manager to use for components.
+     **/
     package_manager: string;
-    themes: ThemeT[];
-    default_theme: string;
+    /**
+     * The name of every theme you want to use.
+     */
+    theme_names: string[];
+    /**
+     * The prefix to use for theme class names.
+     *
+     * @default "multiui"
+     */
     theme_prefix?: string;
 };
 export type ThemeT = {
@@ -78,3 +96,4 @@ export type ColorValues<includeForeground = false> = includeForeground extends f
     900: string;
     foreground: string;
 };
+export declare function multiUIConfigCreator({ components_output_dir, framework, package_manager, theme_names, theme_prefix, ...rest }: MultiUIConfig): MultiUIConfig;

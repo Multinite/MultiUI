@@ -19,7 +19,7 @@ function ClientComp(props: any) {
         }}
         themeId={"test-2"}
       >
-        <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary">
+        <div className="flex items-center justify-center w-32 h-32 text-sm text-center bg-red-500 border-2 border-red-500 bg-primary">
           Server rendered red?
         </div>
       </Theme>

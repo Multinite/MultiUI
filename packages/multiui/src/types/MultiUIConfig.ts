@@ -1,9 +1,27 @@
 export type MultiUIConfig = {
+  /**
+   * The output directory for components.
+   *
+   * @default "/src/components/multiui"
+   **/
   components_output_dir: string;
+  /**
+   * The framework you are using.
+   **/
   framework: string;
+  /**
+   * The package manager to use for components.
+   **/
   package_manager: string;
-  themes: ThemeT[];
-  default_theme: string;
+  /**
+   * The name of every theme you want to use.
+   */
+  theme_names: string[];
+  /**
+   * The prefix to use for theme class names.
+   *
+   * @default "multiui"
+   */
   theme_prefix?: string;
 };
 
@@ -83,3 +101,21 @@ export type ColorValues<includeForeground = false> =
         900: string;
         foreground: string;
       };
+
+export function multiUIConfigCreator({
+  components_output_dir = "/src/components/multiui",
+  framework = "react",
+  package_manager = "npm",
+  theme_names = ["default"],
+  theme_prefix = "multiui",
+  ...rest
+}: MultiUIConfig): MultiUIConfig {
+  return {
+    components_output_dir,
+    framework,
+    package_manager,
+    theme_names: theme_names.filter((x) => x.trim().length !== 0).map(x => x.replaceAll(" ", "-")),
+    theme_prefix,
+    ...rest,
+  };
+}
