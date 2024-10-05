@@ -2,9 +2,9 @@ import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-run
 import { forwardRef } from "react";
 import { cn } from "../utils/cn";
 import GlobalThemeSet from "./GlobalThemeSet";
-const Theme = forwardRef(({ theme, themeId, style, defineThemeStylesInline = true, ...attr }, ref) => {
+export const Theme = forwardRef(({ theme, themeId, style, defineThemeStylesInline = true, boxSelectionOptions, enableBoxSelection = false, ...attr }, ref) => {
     if (defineThemeStylesInline) {
-        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: theme, themeId: themeId, defineThemeStylesInline: defineThemeStylesInline }), _jsx("div", { ...attr, slot: "multiui-theme-wrapper", "data-theme": theme.name, ...(!themeId ? {} : { "data-theme-id": themeId }), style: {
+        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: theme, themeId: themeId, defineThemeStylesInline: defineThemeStylesInline, boxSelectionOptions: boxSelectionOptions, enableBoxSelection: enableBoxSelection }), _jsx("div", { ...attr, slot: "multiui-theme-wrapper", "data-theme": theme.name, ...(!themeId ? {} : { "data-theme-id": themeId }), style: {
                         ...style,
                         ...getThemeFormatted({
                             theme,
@@ -13,7 +13,7 @@ const Theme = forwardRef(({ theme, themeId, style, defineThemeStylesInline = tru
                     }, ref: ref })] }));
     }
     const { className, ...rest } = attr;
-    return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: theme, themeId: themeId, defineThemeStylesInline: defineThemeStylesInline }), _jsx("style", { slot: "multiui-theme-style", "data-theme": theme.name, dangerouslySetInnerHTML: {
+    return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: theme, themeId: themeId, defineThemeStylesInline: defineThemeStylesInline, boxSelectionOptions: boxSelectionOptions, enableBoxSelection: enableBoxSelection }), _jsx("style", { slot: "multiui-theme-style", "data-theme": theme.name, dangerouslySetInnerHTML: {
                     __html: getThemeFormatted({
                         theme,
                         outputType: "style-element",

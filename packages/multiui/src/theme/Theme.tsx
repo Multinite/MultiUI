@@ -2,74 +2,140 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 import { cn } from "../utils/cn";
 import GlobalThemeSet from "./GlobalThemeSet";
-import useSelectify from "use-selectify";
 
-const Theme = forwardRef<
+export const Theme = forwardRef<
   HTMLDivElement,
   {
     theme: ThemeT;
     children?: ReactNode;
     defineThemeStylesInline?: boolean;
     themeId?: string;
+    enableBoxSelection?: boolean;
+    boxSelectionOptions?: {
+      /**
+       * Enable lazy loading of the box selection feature.
+       *
+       * @default true
+       */
+      lazyLoad?: boolean;
+      /**
+       * Disable box selection on mobile devices.
+       *
+       * @deafult true
+       */
+      disableOnMobile?: boolean;
+      /**
+       * Only enables the selection box if the user was pressing a meta key while initiating the drag. Included meta keys are: Shift, Ctrl, Cmd and Alt.
+       * @default true
+       */
+      activateOnMetaKey?: boolean;
+      /**
+       * Only enables the selection box if the user was pressing a specified key while initiating the drag.
+       *
+       * @default undefined
+       */
+      activateOnKey?: string[];
+      /**
+       * Automatically try to scroll the window when the pointer approaches the viewport edge while dragging.
+       *
+       * @default true
+       */
+      autoScroll?: boolean;
+      /**
+       * Distance in px from the viewport's edges from which the box will try scrolling the window when the pointer approaches the viewport edge while dragging.
+       * @default 100
+       */
+      autoScrollEdgeDistance?: number;
+      /**
+       * Auto scroll speed.
+       * @default 30
+       */
+      autoScrollStep?: number;
+      /**
+       * Will keep every item selected after selection. Can be cleared with clearSelection()
+       * @default false
+       */
+      disableUnselection?: boolean;
+      /**
+       * Maximum number of elements that can be selected. Will stop selecting after reaching that number and keep already selected elements. false = Infinite
+       * @default Infinity
+       */
+      maxSelections?: number | false;
+    };
   } & HTMLAttributes<HTMLDivElement>
->(({ theme, themeId, style, defineThemeStylesInline = true, ...attr }, ref) => {
-
-
-  if (defineThemeStylesInline) {
+>(
+  (
+    {
+      theme,
+      themeId,
+      style,
+      defineThemeStylesInline = true,
+      boxSelectionOptions,
+      enableBoxSelection = false,
+      ...attr
+    },
+    ref
+  ) => {
+    if (defineThemeStylesInline) {
+      return (
+        <>
+          <GlobalThemeSet
+            theme={theme}
+            themeId={themeId}
+            defineThemeStylesInline={defineThemeStylesInline}
+            boxSelectionOptions={boxSelectionOptions}
+            enableBoxSelection={enableBoxSelection}
+          />
+          <div
+            {...attr}
+            slot="multiui-theme-wrapper"
+            data-theme={theme.name}
+            {...(!themeId ? {} : { "data-theme-id": themeId })}
+            style={{
+              ...style,
+              ...getThemeFormatted({
+                theme,
+                outputType: "inline-style-object",
+              }),
+            }}
+            ref={ref}
+          />
+        </>
+      );
+    }
+    const { className, ...rest } = attr;
     return (
       <>
         <GlobalThemeSet
           theme={theme}
           themeId={themeId}
           defineThemeStylesInline={defineThemeStylesInline}
+          boxSelectionOptions={boxSelectionOptions}
+          enableBoxSelection={enableBoxSelection}
         />
-        <div
-          {...attr}
-          slot="multiui-theme-wrapper"
+        <style
+          slot="multiui-theme-style"
           data-theme={theme.name}
-          {...(!themeId ? {} : { "data-theme-id": themeId })}
-          style={{
-            ...style,
-            ...getThemeFormatted({
+          dangerouslySetInnerHTML={{
+            __html: getThemeFormatted({
               theme,
-              outputType: "inline-style-object",
+              outputType: "style-element",
             }),
           }}
+          {...(!themeId ? {} : { "data-style-theme-id": themeId })}
+        />
+        <div
+          {...rest}
+          slot="multiui-theme-wrapper"
+          data-theme={theme.name}
+          className={cn(`${theme.name}_theme`, className)}
+          {...(!themeId ? {} : { "data-theme-id": themeId })}
           ref={ref}
         />
       </>
     );
   }
-  const { className, ...rest } = attr;
-  return (
-    <>
-      <GlobalThemeSet
-        theme={theme}
-        themeId={themeId}
-        defineThemeStylesInline={defineThemeStylesInline}
-      />
-      <style
-        slot="multiui-theme-style"
-        data-theme={theme.name}
-        dangerouslySetInnerHTML={{
-          __html: getThemeFormatted({
-            theme,
-            outputType: "style-element",
-          }),
-        }}
-        {...(!themeId ? {} : { "data-style-theme-id": themeId })}
-      />
-      <div
-        {...rest}
-        slot="multiui-theme-wrapper"
-        data-theme={theme.name}
-        className={cn(`${theme.name}_theme`, className)}
-        {...(!themeId ? {} : { "data-theme-id": themeId })}
-        ref={ref}
-      />
-    </>
-  );
-});
+);
 
 export default Theme;
 

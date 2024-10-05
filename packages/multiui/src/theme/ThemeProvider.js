@@ -25,7 +25,7 @@ export function useTheme(themeId) {
         },
     };
 }
-export default function ThemeProvider({ children }) {
+export function ThemeProvider({ children }) {
     const themeHooks = useRef([]);
     return (_jsx(ThemeContext.Provider, { value: {
             addThemeHook: (id) => {

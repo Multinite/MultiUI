@@ -46,7 +46,7 @@ export function useTheme(themeId: string) {
   } satisfies UseThemeReturnType;
 }
 
-export default function ThemeProvider({ children }: { children: ReactNode }) {
+export function ThemeProvider({ children }: { children: ReactNode }) {
   const themeHooks = useRef<
     { themeId: string; theme: ThemeT; subs: ((theme: ThemeT) => void)[] }[]
   >([]);

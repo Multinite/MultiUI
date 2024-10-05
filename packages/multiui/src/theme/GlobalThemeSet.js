@@ -1,6 +1,18 @@
 "use client";
+import { jsx as _jsx } from "react/jsx-runtime";
 import useSelectify from "use-selectify";
-function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, }) {
+import { isMobile } from "react-device-detect";
+function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, enableBoxSelection, boxSelectionOptions = {
+    activateOnKey: undefined,
+    activateOnMetaKey: false,
+    disableOnMobile: true,
+    lazyLoad: true,
+    autoScroll: true,
+    autoScrollEdgeDistance: 100,
+    autoScrollStep: 30,
+    disableUnselection: false,
+    maxSelections: Number.POSITIVE_INFINITY,
+}, }) {
     if (typeof globalThis !== "undefined") {
         if (!globalThis["multiUI"]) {
             globalThis.multiUI = {
@@ -35,9 +47,11 @@ function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, }) {
         onUnselect: (element) => {
             element.removeAttribute("aria-selected");
         },
-        lazyLoad: boxSelectionOptions.lazyLoad,
+        lazyLoad: enableBoxSelection ? boxSelectionOptions.lazyLoad : true,
         activateOnMetaKey: boxSelectionOptions.activateOnMetaKey,
-        disabled: boxSelectionOptions.disableOnMobile && isMobile,
+        disabled: enableBoxSelection
+            ? boxSelectionOptions.disableOnMobile && isMobile
+            : true,
         activateOnKey: boxSelectionOptions.activateOnKey,
         autoScroll: boxSelectionOptions.autoScroll,
         autoScrollEdgeDistance: boxSelectionOptions.autoScrollEdgeDistance,
@@ -45,7 +59,7 @@ function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, }) {
         disableUnselection: boxSelectionOptions.disableUnselection,
         maxSelections: boxSelectionOptions.maxSelections,
     });
-    return null;
+    return _jsx(SelectBoxOutlet, {});
 }
 export default GlobalThemeSet;
 //# sourceMappingURL=GlobalThemeSet.js.map
