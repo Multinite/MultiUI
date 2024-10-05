@@ -87,7 +87,6 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
                 `Failed to setTheme, no <div> element found representing the "${themeId}" themeId.`
               );
             removeCSSVariables(wrapperEl);
-            console.log(`el`, wrapperEl);
             const styleObj = getThemeFormatted({
               theme,
               outputType: "inline-style-object",

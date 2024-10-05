@@ -50,7 +50,6 @@ export default function ThemeProvider({ children }) {
                     if (!wrapperEl)
                         throw new Error(`Failed to setTheme, no <div> element found representing the "${themeId}" themeId.`);
                     removeCSSVariables(wrapperEl);
-                    console.log(`el`, wrapperEl);
                     const styleObj = getThemeFormatted({
                         theme,
                         outputType: "inline-style-object",
