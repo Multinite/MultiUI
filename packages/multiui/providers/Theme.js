@@ -7,11 +7,13 @@ const Theme = forwardRef(({ theme, themeId, style, defineThemeStylesInline = tru
     // const subs = useRef<((theme: ThemeT) => void)[]>([]);
     // const wrapperEl = useRef<HTMLDivElement>(null);
     // const styleEl = useRef<HTMLStyleElement>(null);
-    console.log("server only log");
     if (defineThemeStylesInline) {
         return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: theme, themeId: themeId, defineThemeStylesInline: defineThemeStylesInline }), _jsx("div", { ...attr, slot: "multiui-theme-wrapper", "data-theme": theme.name, ...(!themeId ? {} : { "data-theme-id": themeId }), style: {
                         ...style,
-                        ...getThemeFormatted({ theme, outputType: "inline-style-object" }),
+                        ...getThemeFormatted({
+                            theme,
+                            outputType: "inline-style-object",
+                        }),
                     }, ref: ref })] }));
     }
     const { className, ...rest } = attr;

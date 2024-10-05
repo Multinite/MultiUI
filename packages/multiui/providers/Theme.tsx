@@ -16,15 +16,48 @@ const Theme = forwardRef<
     defineThemeStylesInline?: boolean;
     themeId?: string;
   } & HTMLAttributes<HTMLDivElement>
->(({ theme, themeId, style, defineThemeStylesInline = true, ...attr }, ref) => {
-  // const theme_ref = useRef<ThemeT>(theme);
-  // const subs = useRef<((theme: ThemeT) => void)[]>([]);
-  // const wrapperEl = useRef<HTMLDivElement>(null);
-  // const styleEl = useRef<HTMLStyleElement>(null);
+>(
+  (
+    {
+      theme,
+      themeId,
+      style,
+      defineThemeStylesInline = true,
+      ...attr
+    },
+    ref
+  ) => {
+    // const theme_ref = useRef<ThemeT>(theme);
+    // const subs = useRef<((theme: ThemeT) => void)[]>([]);
+    // const wrapperEl = useRef<HTMLDivElement>(null);
+    // const styleEl = useRef<HTMLStyleElement>(null);
 
-  console.log("server only log");
-
-  if (defineThemeStylesInline) {
+    if (defineThemeStylesInline) {
+      return (
+        <>
+          <GlobalThemeSet
+            theme={theme}
+            themeId={themeId}
+            defineThemeStylesInline={defineThemeStylesInline}
+          />
+          <div
+            {...attr}
+            slot="multiui-theme-wrapper"
+            data-theme={theme.name}
+            {...(!themeId ? {} : { "data-theme-id": themeId })}
+            style={{
+              ...style,
+              ...getThemeFormatted({
+                theme,
+                outputType: "inline-style-object",
+              }),
+            }}
+            ref={ref}
+          />
+        </>
+      );
+    }
+    const { className, ...rest } = attr;
     return (
       <>
         <GlobalThemeSet
@@ -32,50 +65,29 @@ const Theme = forwardRef<
           themeId={themeId}
           defineThemeStylesInline={defineThemeStylesInline}
         />
+        <style
+          slot="multiui-theme-style"
+          data-theme={theme.name}
+          dangerouslySetInnerHTML={{
+            __html: getThemeFormatted({
+              theme,
+              outputType: "style-element",
+            }),
+          }}
+          {...(!themeId ? {} : { "data-style-theme-id": themeId })}
+        />
         <div
-          {...attr}
+          {...rest}
           slot="multiui-theme-wrapper"
           data-theme={theme.name}
+          className={cn(`${theme.name}_theme`, className)}
           {...(!themeId ? {} : { "data-theme-id": themeId })}
-          style={{
-            ...style,
-            ...getThemeFormatted({ theme, outputType: "inline-style-object" }),
-          }}
           ref={ref}
         />
       </>
     );
   }
-  const { className, ...rest } = attr;
-  return (
-    <>
-      <GlobalThemeSet
-        theme={theme}
-        themeId={themeId}
-        defineThemeStylesInline={defineThemeStylesInline}
-      />
-      <style
-        slot="multiui-theme-style"
-        data-theme={theme.name}
-        dangerouslySetInnerHTML={{
-          __html: getThemeFormatted({
-            theme,
-            outputType: "style-element",
-          }),
-        }}
-        {...(!themeId ? {} : { "data-style-theme-id": themeId })}
-      />
-      <div
-        {...rest}
-        slot="multiui-theme-wrapper"
-        data-theme={theme.name}
-        className={cn(`${theme.name}_theme`, className)}
-        {...(!themeId ? {} : { "data-theme-id": themeId })}
-        ref={ref}
-      />
-    </>
-  );
-});
+);
 
 export default Theme;
 

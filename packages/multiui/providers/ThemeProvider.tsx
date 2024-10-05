@@ -2,7 +2,6 @@
 import {
   createContext,
   type ReactNode,
-  type RefObject,
   useContext,
   useRef,
 } from "react";
@@ -26,7 +25,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function useTheme(themeId: string) {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    throw new Error("useTheme must be used within a <ThemeProvider>");
   }
 
   if (
@@ -34,7 +33,7 @@ export function useTheme(themeId: string) {
     !globalThis.multiUI.themes[themeId]
   ) {
     throw new Error(
-      `Invalid themeId: ${themeId}.\nIf it is defined, but still isn't working, it's likey due to the hook being called before the <Theme> Component is rendered.`
+      `Invalid themeId: ${themeId}.\nIf it is defined, but still isn't working, it's likey due to the hook being called before the <Theme> Component is rendered.\nYou can think of this <Theme> Component as a Provider which should be rendered before any children component can use a hook to consume it.`
     );
   }
   context.addThemeHook(themeId);
@@ -133,33 +132,6 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// {/* <MultiUIThemeContext.Provider */}
-// // value={{
-// //   theme: theme_ref.current,
-// //   setTheme: (cb) => {
-// //     const newTheme = cb(theme_ref.current);
-// //     theme_ref.current = newTheme;
-// //     subs.current.forEach((x) => x(newTheme));
-// //     // update theme
-// //     if (!wrapperEl.current) return;
-// //     wrapperEl.current.removeAttribute("style");
-// //     wrapperEl.current.setAttribute(
-// //       "style",
-// //       reactCSSToString(style) +
-// //         getThemeFormatted({
-// //           theme: newTheme,
-// //           outputType: "inline-style-string",
-// //         })
-// //     );
-// //   },
-// //   subscribe: (cb) => {
-// //     subs.current.push(cb);
-// //     return () => {
-// //       subs.current = subs.current.filter((x) => x !== cb);
-// //     };
-// //   },
-// // }}
-// {/* > */}
 function removeCSSVariables(element: HTMLElement) {
   const style = element.style;
   for (let i = style.length - 1; i >= 0; i--) {
