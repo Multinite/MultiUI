@@ -1,7 +1,7 @@
 "use client";
 
-import Theme from "@multinite_official/multiui/providers/Theme";
-import ThemeProvider from "@multinite_official/multiui/providers/ThemeProvider";
+import {Theme} from "@multinite_official/multiui";
+import {ThemeProvider} from "@multinite_official/multiui";
 import ClientComp from "./ClientComp";
 import { default_theme } from "./themes";
 

@@ -1,6 +1,6 @@
 "use client";
 import { useTheme } from "@multinite_official/multiui";
-import Theme from "@multinite_official/multiui/providers/Theme";
+import Theme from "@multinite_official/multiui";
 import React, { useEffect, useRef } from "react";
 import { default_theme } from "./themes";
 

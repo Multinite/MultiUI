@@ -19,12 +19,8 @@
     "noImplicitAny": false
   },
   "include": [
-    "providers",
-    "utils",
-    "components",
-    "src",
-    "createComponent",
-    "index.ts"
+    "src/**/*",
+    "index.ts",
   ],
   "exclude": ["**/node_modules", "tailwind.config.ts"]
 }
