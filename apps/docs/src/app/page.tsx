@@ -61,13 +61,13 @@ export default function Home() {
       >
         Click to toggle theme (1)
       </button>
-      <div className="relative mt-32 border border-red-500 select-none w-fit h-fit text-primary">
+      <div className="relative mt-32 border border-red-500 select-none w-fit h-fit">
         <Theme
           theme={test_theme}
           enableBoxSelection={true}
           themeId="YOOOO"
           defineThemeStylesInline={false}
-          className="w-[500px] h-[300px] text-primary"
+          className="w-[500px] h-[300px] "
         >
           <div className="text-primary">
             Within this box, is a separate theme container!

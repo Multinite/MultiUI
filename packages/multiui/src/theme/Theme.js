@@ -2,7 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { forwardRef } from "react";
 import { cn } from "../utils/cn";
 import GlobalThemeSet from "./GlobalThemeSet";
-export const Theme = forwardRef(({ theme, themeId, style, defineThemeStylesInline = true, boxSelectionOptions = {
+export const Theme = forwardRef(({ theme, themeId = crypto.randomUUID(), style, defineThemeStylesInline = true, boxSelectionOptions = {
     lazyLoad: true,
     activateOnMetaKey: true,
     activateOnKey: undefined,

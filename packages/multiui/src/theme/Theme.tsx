@@ -67,7 +67,7 @@ export const Theme = forwardRef<
   (
     {
       theme,
-      themeId,
+      themeId = crypto.randomUUID(),
       style,
       defineThemeStylesInline = true,
       boxSelectionOptions = {
