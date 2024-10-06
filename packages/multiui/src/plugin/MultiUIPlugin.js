@@ -114,6 +114,7 @@ export const MultiUIPlugin = function (multiUIConfig) {
             themeName = themeName.replaceAll(" ", "-").replaceAll('"', "").replaceAll("'", "");
             return `[data-theme="${themeName}"] &`;
         });
+        addVariant("themed", "[data-theme] &");
     });
 };
 //# sourceMappingURL=MultiUIPlugin.js.map

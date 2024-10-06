@@ -173,5 +173,6 @@ export const MultiUIPlugin = function (
       themeName = themeName.replaceAll(" ", "-").replaceAll('"', "").replaceAll("'", "");
       return `[data-theme="${themeName}"] &`;
     });
+    addVariant("themed", "[data-theme] &");
   });
 };
