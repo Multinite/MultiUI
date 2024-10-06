@@ -54,9 +54,13 @@ function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, enableBoxSele
         selectCriteria: `[data-selectable=true], [data-selectable="${themeId}"]`,
         onSelect: (element) => {
             element.setAttribute("aria-selected", "true");
+            element.setAttribute("data-selected-theme-id", themeId || "none");
+            element.setAttribute("data-selected-theme", themeState.name);
         },
         onUnselect: (element) => {
             element.removeAttribute("aria-selected");
+            element.removeAttribute("data-selected-theme");
+            element.removeAttribute("data-selected-theme-id");
         },
         exclusionZone: `[data-theme]`,
         lazyLoad: enableBoxSelection ? boxSelectionOptions.lazyLoad : true,

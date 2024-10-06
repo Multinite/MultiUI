@@ -180,9 +180,14 @@ export const MultiUIPlugin = function (
       return `[data-theme="${themeName}"] &`;
     });
     addVariant("themed", "[data-theme] &");
-    addVariant("select", "&[aria-selected]");
-    addUtilities({
-      ".selectable": {},
+    addVariant("box-select", "&[aria-selected]");
+    matchVariant("box-select-by-name", (themeName) => {
+      themeName = themeName.replaceAll('"', "").replaceAll("'", "");
+      return `&[data-selected-theme="${themeName}"]`;
+    });
+    matchVariant("box-select-by-id", (themeName) => {
+      themeName = themeName.replaceAll('"', "").replaceAll("'", "");
+      return `&[data-selected-theme-id="${themeName}"]`;
     });
   });
 };

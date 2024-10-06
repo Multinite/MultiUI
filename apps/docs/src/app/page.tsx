@@ -74,17 +74,17 @@ export default function Home() {
           </div>
           <br />
           <Selectable specificThemeId="default">
-            <div className="border border-yellow-500 selectable select:bg-primary w-fit">
+            <div className="border border-yellow-500 box-select:bg-primary w-fit">
               I am only selectable by the purple theme!
             </div>
           </Selectable>
           <Selectable specificThemeId="YOOOO">
-            <div className="border border-yellow-500 selectable select:bg-primary w-fit">
+            <div className="border border-yellow-500 box-select:bg-primary w-fit">
               I am only selectable by the pink theme!
             </div>
           </Selectable>
-          <Selectable >
-            <div className="border border-yellow-500 selectable select:bg-primary w-fit">
+          <Selectable>
+            <div className="border border-yellow-500 box-select:bg-primary w-fit">
               I am selectable by ALL themes!
             </div>
           </Selectable>
@@ -95,13 +95,20 @@ export default function Home() {
             className="flex items-center justify-center gap-5"
             // specificThemeId="default"
           >
-            <div className="border border-yellow-500 selectable select:bg-primary text-secondary">
+            <div className="border border-yellow-500 selectable box-select:bg-primary text-secondary">
               Option 1
             </div>
-            <div className="border border-yellow-500 selectable select:bg-primary text-secondary">
+            <div className="border border-yellow-500 selectable box-select:bg-primary text-secondary">
               Option 2
             </div>
           </SelectableGroup>
+          <br />
+          <br />
+          <Selectable>
+            <div className="box-select-by-id-[default]:!border-red-500 border-[6px] box-select:!border-blue-500 border-yellow-500 w-fit">
+              red for purple, blue for pink
+            </div>
+          </Selectable>
         </Theme>
       </div>
 
