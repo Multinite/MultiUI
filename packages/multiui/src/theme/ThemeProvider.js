@@ -88,7 +88,6 @@ function removeCSSVariables(element) {
         const prop = style[i];
         if (prop.startsWith("--")) {
             style.removeProperty(prop);
-            console.log(`removing: `, prop);
         }
     }
 }
