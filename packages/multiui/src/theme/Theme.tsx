@@ -277,11 +277,14 @@ export const getThemeFormatted: <
     );
   } else if (outputType === "inline-style-string") {
     return Object.entries(style)
+      .filter((x) => x[1].trim() !== "*/")
       .map(([key, value]) => {
         return `  ${key}: ${value};\n`;
       })
       .join("");
   } else if (outputType === "inline-style-object") {
-    return style;
+    return Object.fromEntries(
+      Object.entries(style).filter((x) => x[1].trim() !== "*/")
+    );
   }
 };
