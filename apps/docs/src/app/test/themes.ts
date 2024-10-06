@@ -1,7 +1,6 @@
 import type { ThemeT } from "@multinite_official/multiui";
-
-const default_theme: ThemeT = {
-  name: "multiui_default",
+const default_theme = {
+  name: "multiui_default" as const,
   primary: {
     50: "272, 93%, 95%",
     100: "268, 91%, 91%",
@@ -114,7 +113,7 @@ const default_theme: ThemeT = {
     900: "54.55000000000001 91.67% 95.29%",
     foreground: "0 0% 100%",
   },
-  scheme: "dark",
+  scheme: "dark" as const,
   success: {
     DEFAULT: "145.96000000000004 79.46% 43.92%",
     50: "145.71000000000004 77.78% 8.82%",
@@ -154,15 +153,15 @@ const default_theme: ThemeT = {
     [`extra-extra-large`]: "1.5rem",
   },
   focus: `212.01999999999998 100% 46.67%`,
-};
+} satisfies ThemeT;
 
-const test_theme: ThemeT = {
+const test_theme = {
   ...default_theme,
-  name: "test_theme",
+  name: "test_theme" as const,
   primary: {
     ...default_theme.primary,
     DEFAULT: "306, 100%, 59%",
   },
-};
+} satisfies ThemeT;
 
 export { test_theme, default_theme };

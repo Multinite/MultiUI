@@ -68,10 +68,9 @@ export function ThemeProvider({ children }) {
                     typeof window === "undefined" ||
                     !globalThis.multiUI)
                     return;
-                const globalMultiUIObj = globalThis.multiUI;
                 themeHooks.current[index].theme = theme;
                 themeHooks.current[index].subs.forEach((x) => x(theme));
-                globalMultiUIObj.boxSelectionThemeSubscriptions
+                globalThis.multiUI.boxSelectionThemeSubscriptions
                     .filter((x) => x.themeId === themeId)
                     .forEach(({ cb }) => cb(theme));
                 const oldTheme = globalThis.multiUI.themes[themeId];

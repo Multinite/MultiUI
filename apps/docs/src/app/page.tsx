@@ -6,7 +6,7 @@ import {
   Theme,
   useTheme,
 } from "@multinite_official/multiui";
-import { ReactNode, RefAttributes, useEffect, useRef } from "react";
+import { RefAttributes, useEffect, useRef } from "react";
 import Button from "../multiui/test_button";
 import { useAria, useFocus, usePress } from "../multiui/test_button/lib/hooks";
 import { default_theme, test_theme } from "./test/themes";
@@ -36,9 +36,8 @@ export default function Home() {
       console.log("press end");
     },
   });
-
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen gap-5">
+    <div className="flex flex-col items-center justify-center w-screen h-screen gap-5 bg-background text-foreground">
       <span className="text-lg text-primary">
         Hello and welcome to the MultiUI docs!
       </span>
@@ -67,6 +66,7 @@ export default function Home() {
           $themeId="YOOOO"
           $defineThemeStylesInline={false}
           className="w-[500px] h-[300px] "
+          $persistOnLocalstorage
         >
           <div className="text-primary">
             Within this box, is a separate theme container!

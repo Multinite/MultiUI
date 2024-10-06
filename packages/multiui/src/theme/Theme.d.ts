@@ -2,6 +2,20 @@ import { type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 export declare const Theme: import("react").ForwardRefExoticComponent<{
     /**
+     * Whether to update the document color scheme automatically or not.
+     *
+     * @example
+     * <html style="color-scheme: dark">
+     *
+     * @default true
+     */
+    $updateDocumentColorScheme?: boolean;
+    /**
+     * Whether to persist the theme on localStorage or not.
+     * @default true
+     */
+    $persistOnLocalstorage?: boolean;
+    /**
      * The theme to use.
      */
     $theme: ThemeT;
@@ -16,12 +30,9 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
     $defineThemeStylesInline?: boolean;
     /**
      * The id of the theme.
-     *
      * This is required if you want to use the `useTheme` hook.
-     *
-     * If not provided, a random UUID will be generated.
      */
-    $themeId?: string;
+    $themeId: string;
     /**
      * Whether to enable the box selection feature.
      *

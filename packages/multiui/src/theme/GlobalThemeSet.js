@@ -1,13 +1,28 @@
 "use client";
-import { jsx as _jsx } from "react/jsx-runtime";
-import useSelectify from "use-selectify";
-import { isMobile } from "react-device-detect";
-import { useRef, useState } from "react";
-function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, enableBoxSelection, boxSelectionOptions, }) {
-    const [themeState, setThemeState] = useState(theme);
+import { useEffect, useRef } from "react";
+import { useLocalStorage } from "../utils/useLocalStorage";
+let alreadyUpdatedDocumentColorScheme = false;
+/**
+ * # !!Internal component, don't use!!
+ * Sets global values of MultiUI, including localstorage.
+ */
+function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, updateDocumentColorScheme, persistOnLocalstorage, }) {
     const ranOnce = useRef(false);
+    const ranUseEffectOnce = useRef(false);
+    const [value, setValue, removeValue] = useLocalStorage(`multiui-theme-${themeId}`, theme);
+    if (!persistOnLocalstorage) {
+        removeValue();
+    }
+    useEffect(() => {
+        if (!ranUseEffectOnce.current && typeof window !== "undefined") {
+            ranUseEffectOnce.current = true;
+            if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
+                setValue(theme);
+            }
+        }
+    }, []);
     if (!ranOnce.current && typeof window === "undefined") {
-        // ran on server, clear MultiUI from globalThis.
+        //? ran on server, clear MultiUI from globalThis.
         if (globalThis.multiUI) {
             delete globalThis.multiUI;
         }
@@ -20,9 +35,10 @@ function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, enableBoxSele
                 boxSelectionThemeSubscriptions: [],
             };
         }
-        if (themeId && !ranOnce.current) {
+        //TODO: probably make this support react's dynamic-ness... if a value changes on the prop, it won't reflect if programmed like this:
+        //? possible solution is to keep this, but add a useEffect for each prop that changes
+        if (!ranOnce.current) {
             ranOnce.current = true;
-            console.log(globalThis.multiUI, themeId, theme);
             globalThis.multiUI = {
                 ...globalThis.multiUI,
                 themes: {
@@ -35,50 +51,39 @@ function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, enableBoxSele
                 },
                 boxSelectionThemeSubscriptions: [
                     ...globalThis.multiUI.boxSelectionThemeSubscriptions,
-                    {
-                        themeId,
-                        cb: (theme) => {
-                            setThemeState(theme);
-                        },
-                    },
+                    ...(persistOnLocalstorage
+                        ? [
+                            {
+                                [themeId]: {
+                                    themeId,
+                                    cb: (theme) => {
+                                        if (persistOnLocalstorage)
+                                            setValue(theme);
+                                    },
+                                },
+                            },
+                        ]
+                        : []),
                 ],
             };
         }
     }
-    if (!enableBoxSelection)
-        return null;
-    const element = useRef(typeof document === "undefined"
-        ? null
-        : document.querySelector(`[data-theme-id="${themeId}"]`));
-    const { SelectBoxOutlet } = useSelectify(element, {
-        selectCriteria: `[data-selectable=true], [data-selectable="${themeId}"]`,
-        onSelect: (element) => {
-            element.setAttribute("aria-selected", "true");
-            element.setAttribute("data-selected-theme-id", themeId || "none");
-            element.setAttribute("data-selected-theme", themeState.name);
-        },
-        onUnselect: (element) => {
-            element.removeAttribute("aria-selected");
-            element.removeAttribute("data-selected-theme");
-            element.removeAttribute("data-selected-theme-id");
-        },
-        exclusionZone: `[data-theme]`,
-        lazyLoad: enableBoxSelection ? boxSelectionOptions.lazyLoad : true,
-        activateOnMetaKey: boxSelectionOptions.activateOnMetaKey,
-        disabled: enableBoxSelection
-            ? boxSelectionOptions.disableOnMobile && isMobile
-            : true,
-        activateOnKey: boxSelectionOptions.activateOnKey,
-        autoScroll: boxSelectionOptions.autoScroll,
-        autoScrollEdgeDistance: boxSelectionOptions.autoScrollEdgeDistance,
-        autoScrollStep: boxSelectionOptions.autoScrollStep,
-        disableUnselection: boxSelectionOptions.disableUnselection,
-        maxSelections: boxSelectionOptions.maxSelections,
-    });
-    return (_jsx(SelectBoxOutlet, { style: {
-            backgroundColor: `hsl(${themeState.primary["DEFAULT"]}, 20%)`,
-            border: `1px solid hsl(${themeState.primary["DEFAULT"]}, 100%)`,
-        } }));
+    useUpdateDocColorScheme(updateDocumentColorScheme, theme);
+    return null;
 }
 export default GlobalThemeSet;
+function useUpdateDocColorScheme(updateDocumentColorScheme, theme) {
+    useEffect(() => {
+        if (typeof document !== "undefined" &&
+            updateDocumentColorScheme &&
+            !alreadyUpdatedDocumentColorScheme) {
+            alreadyUpdatedDocumentColorScheme = true;
+            const root = document.querySelector("html");
+            if (!root)
+                throw new Error("Could not find html element to apply the colorScheme.");
+            root.style.colorScheme = theme.scheme;
+        }
+    }, []);
+    return null;
+}
 //# sourceMappingURL=GlobalThemeSet.js.map

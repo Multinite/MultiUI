@@ -1,8 +1,10 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { forwardRef } from "react";
 import { cn } from "../utils/cn";
 import GlobalThemeSet from "./GlobalThemeSet";
-export const Theme = forwardRef(({ $theme, $themeId = crypto.randomUUID(), style, $defineThemeStylesInline = true, $boxSelectionOptions = {
+import BoxSelection from "./BoxSelection";
+const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
+export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesInline = true, $updateDocumentColorScheme = true, $persistOnLocalstorage = true, $boxSelectionOptions = {
     lazyLoad: true,
     activateOnMetaKey: true,
     activateOnKey: undefined,
@@ -11,25 +13,27 @@ export const Theme = forwardRef(({ $theme, $themeId = crypto.randomUUID(), style
     autoScrollStep: 30,
     disableUnselection: false,
 }, $enableBoxSelection = false, children, ...attr }, ref) => {
+    if (validThemeIdRegex.test($themeId) === false)
+        throw new Error(`Invalid themeId: "${$themeId}"\nPlease use only letters, numbers, dashes, and underscores.`);
     if ($defineThemeStylesInline) {
-        return (_jsx("div", { className: "relative", slot: "multiui-theme-wrapper", children: _jsxs("div", { ...attr, slot: "multiui-theme", "data-theme": $theme.name, ...(!$themeId ? {} : { "data-theme-id": $themeId }), style: {
-                    ...style,
-                    position: $enableBoxSelection ? "relative" : "static",
-                    ...getThemeFormatted({
-                        theme: $theme,
-                        outputType: "inline-style-object",
-                    }),
-                }, ref: ref, children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, boxSelectionOptions: $boxSelectionOptions, enableBoxSelection: $enableBoxSelection }), children] }) }));
+        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, updateDocumentColorScheme: $updateDocumentColorScheme, persistOnLocalstorage: $persistOnLocalstorage }), _jsx("div", { className: "relative", slot: "multiui-theme-wrapper", children: _jsxs("div", { ...attr, slot: "multiui-theme", "data-theme": $theme.name, ...(!$themeId ? {} : { "data-theme-id": $themeId }), style: {
+                            ...style,
+                            position: $enableBoxSelection ? "relative" : "static",
+                            ...getThemeFormatted({
+                                theme: $theme,
+                                outputType: "inline-style-object",
+                            }),
+                        }, ref: ref, children: [_jsx(BoxSelection, { theme: $theme, themeId: $themeId, boxSelectionOptions: $boxSelectionOptions, enableBoxSelection: $enableBoxSelection }), children] }) })] }));
     }
     const { className, ...rest } = attr;
-    return (_jsxs("div", { className: "relative", slot: "multiui-theme-wrapper", children: [_jsx("style", { slot: "multiui-theme-style", "data-theme": $theme.name, dangerouslySetInnerHTML: {
-                    __html: getThemeFormatted({
-                        theme: $theme,
-                        outputType: "style-element",
-                    }),
-                }, ...(!$themeId ? {} : { "data-style-theme-id": $themeId }) }), _jsxs("div", { ...rest, slot: "multiui-theme", "data-theme": $theme.name, className: cn(`${$theme.name}_theme`, className), ...(!$themeId ? {} : { "data-theme-id": $themeId }), ref: ref, style: {
-                    position: $enableBoxSelection ? "relative" : "static",
-                }, children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, boxSelectionOptions: $boxSelectionOptions, enableBoxSelection: $enableBoxSelection }), children] })] }));
+    return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, persistOnLocalstorage: $persistOnLocalstorage, updateDocumentColorScheme: $updateDocumentColorScheme }), _jsxs("div", { className: "relative", slot: "multiui-theme-wrapper", children: [_jsx("style", { slot: "multiui-theme-style", "data-theme": $theme.name, dangerouslySetInnerHTML: {
+                            __html: getThemeFormatted({
+                                theme: $theme,
+                                outputType: "style-element",
+                            }),
+                        }, ...(!$themeId ? {} : { "data-style-theme-id": $themeId }) }), _jsxs("div", { ...rest, slot: "multiui-theme", "data-theme": $theme.name, className: cn(`${$theme.name}_theme`, className), ...(!$themeId ? {} : { "data-theme-id": $themeId }), ref: ref, style: {
+                            position: $enableBoxSelection ? "relative" : "static",
+                        }, children: [_jsx(BoxSelection, { theme: $theme, themeId: $themeId, boxSelectionOptions: $boxSelectionOptions, enableBoxSelection: $enableBoxSelection }), children] })] })] }));
 });
 export default Theme;
 /**

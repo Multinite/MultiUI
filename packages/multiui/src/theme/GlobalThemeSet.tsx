@@ -1,8 +1,7 @@
 "use client";
-import useSelectify from "use-selectify";
-import { ThemeT } from "../types/MultiUIConfig";
-import { isMobile } from "react-device-detect";
-import { useEffect, useRef, useState } from "react";
+import type { ThemeT } from "../types/MultiUIConfig";
+import { useEffect, useRef } from "react";
+import { useLocalStorage } from "../utils/useLocalStorage";
 
 export type GlobalThisMultiUIType = {
   themes: { [key: string]: ThemeT };
@@ -13,73 +12,46 @@ export type GlobalThisMultiUIType = {
   }[];
 };
 
+let alreadyUpdatedDocumentColorScheme = false;
+
+/**
+ * # !!Internal component, don't use!!
+ * Sets global values of MultiUI, including localstorage.
+ */
 function GlobalThemeSet({
   theme,
   themeId,
   defineThemeStylesInline,
-  enableBoxSelection,
-  boxSelectionOptions,
+  updateDocumentColorScheme,
+  persistOnLocalstorage,
 }: {
   theme: ThemeT;
-  themeId?: string;
-  enableBoxSelection: boolean;
+  themeId: string;
   defineThemeStylesInline: boolean;
-  boxSelectionOptions: {
-    /**
-     * Enable lazy loading of the box selection feature.
-     *
-     * @default true
-     */
-    lazyLoad?: boolean;
-    /**
-     * Disable box selection on mobile devices.
-     *
-     * @deafult true
-     */
-    disableOnMobile?: boolean;
-    /**
-     * Only enables the selection box if the user was pressing a meta key while initiating the drag. Included meta keys are: Shift, Ctrl, Cmd and Alt.
-     * @default true
-     */
-    activateOnMetaKey?: boolean;
-    /**
-     * Only enables the selection box if the user was pressing a specified key while initiating the drag.
-     *
-     * @default undefined
-     */
-    activateOnKey?: string[];
-    /**
-     * Automatically try to scroll the window when the pointer approaches the viewport edge while dragging.
-     *
-     * @default true
-     */
-    autoScroll?: boolean;
-    /**
-     * Distance in px from the viewport's edges from which the box will try scrolling the window when the pointer approaches the viewport edge while dragging.
-     * @default 100
-     */
-    autoScrollEdgeDistance?: number;
-    /**
-     * Auto scroll speed.
-     * @default 30
-     */
-    autoScrollStep?: number;
-    /**
-     * Will keep every item selected after selection. Can be cleared with clearSelection()
-     * @default false
-     */
-    disableUnselection?: boolean;
-    /**
-     * Maximum number of elements that can be selected. Will stop selecting after reaching that number and keep already selected elements. false = Infinite
-     * @default Infinity
-     */
-    maxSelections?: number | false;
-  };
+  updateDocumentColorScheme: boolean;
+  persistOnLocalstorage: boolean;
 }) {
-  const [themeState, setThemeState] = useState<ThemeT>(theme);
   const ranOnce = useRef(false);
+  const ranUseEffectOnce = useRef(false);
+  const [value, setValue, removeValue] = useLocalStorage<ThemeT>(
+    `multiui-theme-${themeId}`,
+    theme
+  );
+  if (!persistOnLocalstorage) {
+    removeValue();
+  }
+
+  useEffect(() => {
+    if (!ranUseEffectOnce.current && typeof window !== "undefined") {
+      ranUseEffectOnce.current = true;
+      if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
+        setValue(theme);
+      }
+    }
+  }, []);
+
   if (!ranOnce.current && typeof window === "undefined") {
-    // ran on server, clear MultiUI from globalThis.
+    //? ran on server, clear MultiUI from globalThis.
     if (globalThis.multiUI) {
       delete globalThis.multiUI;
     }
@@ -92,9 +64,12 @@ function GlobalThemeSet({
         boxSelectionThemeSubscriptions: [],
       } satisfies GlobalThisMultiUIType;
     }
-    if (themeId && !ranOnce.current) {
+
+    //TODO: probably make this support react's dynamic-ness... if a value changes on the prop, it won't reflect if programmed like this:
+    //? possible solution is to keep this, but add a useEffect for each prop that changes
+    if (!ranOnce.current) {
       ranOnce.current = true;
-      console.log(globalThis.multiUI, themeId, theme);
+
       globalThis.multiUI = {
         ...globalThis.multiUI,
         themes: {
@@ -107,58 +82,46 @@ function GlobalThemeSet({
         },
         boxSelectionThemeSubscriptions: [
           ...globalThis.multiUI.boxSelectionThemeSubscriptions,
-          {
-            themeId,
-            cb: (theme) => {
-              setThemeState(theme);
-            },
-          },
+          ...(persistOnLocalstorage
+            ? [
+                {
+                  [themeId]: {
+                    themeId,
+                    cb: (theme: ThemeT) => {
+                      if (persistOnLocalstorage) setValue(theme);
+                    },
+                  },
+                },
+              ]
+            : []),
         ],
       } satisfies GlobalThisMultiUIType;
     }
   }
-  if (!enableBoxSelection) return null;
-
-  const element = useRef(
-    typeof document === "undefined"
-      ? (null as never as HTMLElement)
-      : document.querySelector<HTMLDivElement>(`[data-theme-id="${themeId}"]`)
-  );
-
-  const { SelectBoxOutlet } = useSelectify(element, {
-    selectCriteria: `[data-selectable=true], [data-selectable="${themeId}"]`,
-    onSelect: (element) => {
-      element.setAttribute("aria-selected", "true");
-      element.setAttribute("data-selected-theme-id", themeId || "none");
-      element.setAttribute("data-selected-theme", themeState.name);
-    },
-    onUnselect: (element) => {
-      element.removeAttribute("aria-selected");
-      element.removeAttribute("data-selected-theme");
-      element.removeAttribute("data-selected-theme-id");
-    },
-    exclusionZone: `[data-theme]`,
-    lazyLoad: enableBoxSelection ? boxSelectionOptions.lazyLoad : true,
-    activateOnMetaKey: boxSelectionOptions.activateOnMetaKey,
-    disabled: enableBoxSelection
-      ? boxSelectionOptions.disableOnMobile && isMobile
-      : true,
-    activateOnKey: boxSelectionOptions.activateOnKey,
-    autoScroll: boxSelectionOptions.autoScroll,
-    autoScrollEdgeDistance: boxSelectionOptions.autoScrollEdgeDistance,
-    autoScrollStep: boxSelectionOptions.autoScrollStep,
-    disableUnselection: boxSelectionOptions.disableUnselection,
-    maxSelections: boxSelectionOptions.maxSelections,
-  });
-
-  return (
-    <SelectBoxOutlet
-      style={{
-        backgroundColor: `hsl(${themeState.primary["DEFAULT"]}, 20%)`,
-        border: `1px solid hsl(${themeState.primary["DEFAULT"]}, 100%)`,
-      }}
-    />
-  );
+  useUpdateDocColorScheme(updateDocumentColorScheme, theme);
+  return null;
 }
 
 export default GlobalThemeSet;
+
+function useUpdateDocColorScheme(
+  updateDocumentColorScheme: boolean,
+  theme: ThemeT
+) {
+  useEffect(() => {
+    if (
+      typeof document !== "undefined" &&
+      updateDocumentColorScheme &&
+      !alreadyUpdatedDocumentColorScheme
+    ) {
+      alreadyUpdatedDocumentColorScheme = true;
+      const root = document.querySelector<HTMLHtmlElement>("html");
+      if (!root)
+        throw new Error(
+          "Could not find html element to apply the colorScheme."
+        );
+      root.style.colorScheme = theme.scheme;
+    }
+  }, []);
+  return null;
+}

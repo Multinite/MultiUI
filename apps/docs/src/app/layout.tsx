@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" style={{ colorScheme: "dark" }}>
+    <html lang="en">
       <body
         className={cn(
           inter.className,
@@ -29,6 +29,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             $themeId="default"
             $enableBoxSelection={true}
             $defineThemeStylesInline={false}
+            $persistOnLocalstorage
+            $updateDocumentColorScheme
           >
             {children as any}
           </Theme>

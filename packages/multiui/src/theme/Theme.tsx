@@ -2,10 +2,27 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 import { cn } from "../utils/cn";
 import GlobalThemeSet from "./GlobalThemeSet";
+import BoxSelection from "./BoxSelection";
+
+const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
 
 export const Theme = forwardRef<
   HTMLDivElement,
   {
+    /**
+     * Whether to update the document color scheme automatically or not.
+     *
+     * @example
+     * <html style="color-scheme: dark">
+     *
+     * @default true
+     */
+    $updateDocumentColorScheme?: boolean;
+    /**
+     * Whether to persist the theme on localStorage or not.
+     * @default true
+     */
+    $persistOnLocalstorage?: boolean;
     /**
      * The theme to use.
      */
@@ -21,12 +38,9 @@ export const Theme = forwardRef<
     $defineThemeStylesInline?: boolean;
     /**
      * The id of the theme.
-     *
      * This is required if you want to use the `useTheme` hook.
-     *
-     * If not provided, a random UUID will be generated.
      */
-    $themeId?: string;
+    $themeId: string;
     /**
      * Whether to enable the box selection feature.
      *
@@ -93,9 +107,11 @@ export const Theme = forwardRef<
   (
     {
       $theme,
-      $themeId = crypto.randomUUID(),
+      $themeId,
       style,
       $defineThemeStylesInline = true,
+      $updateDocumentColorScheme = true,
+      $persistOnLocalstorage = true,
       $boxSelectionOptions = {
         lazyLoad: true,
         activateOnMetaKey: true,
@@ -111,71 +127,92 @@ export const Theme = forwardRef<
     },
     ref
   ) => {
+    if (validThemeIdRegex.test($themeId) === false)
+      throw new Error(
+        `Invalid themeId: "${$themeId}"\nPlease use only letters, numbers, dashes, and underscores.`
+      );
+
     if ($defineThemeStylesInline) {
       return (
+        <>
+          <GlobalThemeSet
+            theme={$theme}
+            themeId={$themeId}
+            defineThemeStylesInline={$defineThemeStylesInline}
+            updateDocumentColorScheme={$updateDocumentColorScheme}
+            persistOnLocalstorage={$persistOnLocalstorage}
+          />
+          <div className="relative" slot="multiui-theme-wrapper">
+            <div
+              {...attr}
+              slot="multiui-theme"
+              data-theme={$theme.name}
+              {...(!$themeId ? {} : { "data-theme-id": $themeId })}
+              style={{
+                ...style,
+                position: $enableBoxSelection ? "relative" : "static",
+                ...getThemeFormatted({
+                  theme: $theme,
+                  outputType: "inline-style-object",
+                }),
+              }}
+              ref={ref}
+            >
+              <BoxSelection
+                theme={$theme}
+                themeId={$themeId}
+                boxSelectionOptions={$boxSelectionOptions}
+                enableBoxSelection={$enableBoxSelection}
+              />
+              {children}
+            </div>
+          </div>
+        </>
+      );
+    }
+    const { className, ...rest } = attr;
+    return (
+      <>
+        <GlobalThemeSet
+          theme={$theme}
+          themeId={$themeId}
+          defineThemeStylesInline={$defineThemeStylesInline}
+          persistOnLocalstorage={$persistOnLocalstorage}
+          updateDocumentColorScheme={$updateDocumentColorScheme}
+        />
         <div className="relative" slot="multiui-theme-wrapper">
-          <div
-            {...attr}
-            slot="multiui-theme"
+          <style
+            slot="multiui-theme-style"
             data-theme={$theme.name}
-            {...(!$themeId ? {} : { "data-theme-id": $themeId })}
-            style={{
-              ...style,
-              position: $enableBoxSelection ? "relative" : "static",
-              ...getThemeFormatted({
+            dangerouslySetInnerHTML={{
+              __html: getThemeFormatted({
                 theme: $theme,
-                outputType: "inline-style-object",
+                outputType: "style-element",
               }),
             }}
+            {...(!$themeId ? {} : { "data-style-theme-id": $themeId })}
+          />
+          <div
+            {...rest}
+            slot="multiui-theme"
+            data-theme={$theme.name}
+            className={cn(`${$theme.name}_theme`, className)}
+            {...(!$themeId ? {} : { "data-theme-id": $themeId })}
             ref={ref}
+            style={{
+              position: $enableBoxSelection ? "relative" : "static",
+            }}
           >
-            <GlobalThemeSet
+            <BoxSelection
               theme={$theme}
               themeId={$themeId}
-              defineThemeStylesInline={$defineThemeStylesInline}
               boxSelectionOptions={$boxSelectionOptions}
               enableBoxSelection={$enableBoxSelection}
             />
             {children}
           </div>
         </div>
-      );
-    }
-    const { className, ...rest } = attr;
-    return (
-      <div className="relative" slot="multiui-theme-wrapper">
-        <style
-          slot="multiui-theme-style"
-          data-theme={$theme.name}
-          dangerouslySetInnerHTML={{
-            __html: getThemeFormatted({
-              theme: $theme,
-              outputType: "style-element",
-            }),
-          }}
-          {...(!$themeId ? {} : { "data-style-theme-id": $themeId })}
-        />
-        <div
-          {...rest}
-          slot="multiui-theme"
-          data-theme={$theme.name}
-          className={cn(`${$theme.name}_theme`, className)}
-          {...(!$themeId ? {} : { "data-theme-id": $themeId })}
-          ref={ref}
-          style={{
-            position: $enableBoxSelection ? "relative" : "static",
-          }}
-        >
-          <GlobalThemeSet
-            theme={$theme}
-            themeId={$themeId}
-            defineThemeStylesInline={$defineThemeStylesInline}
-            boxSelectionOptions={$boxSelectionOptions}
-            enableBoxSelection={$enableBoxSelection}
-          />
-          {children}
-        </div>
-      </div>
+      </>
     );
   }
 );

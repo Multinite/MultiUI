@@ -160,10 +160,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             !globalThis.multiUI
           )
             return;
-          const globalMultiUIObj = globalThis.multiUI as GlobalThisMultiUIType;
           themeHooks.current[index].theme = theme;
           themeHooks.current[index].subs.forEach((x) => x(theme));
-          globalMultiUIObj.boxSelectionThemeSubscriptions
+          (
+            globalThis.multiUI as GlobalThisMultiUIType
+          ).boxSelectionThemeSubscriptions
             .filter((x) => x.themeId === themeId)
             .forEach(({ cb }) => cb(theme));
           const oldTheme = globalThis.multiUI.themes[themeId];
