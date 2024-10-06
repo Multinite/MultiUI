@@ -98,14 +98,14 @@ export default function Home() {
             <div className="border border-yellow-500 selectable box-select:bg-primary text-secondary">
               Option 1
             </div>
-            <div className="border border-yellow-500 selectable box-select:bg-primary text-secondary">
+            <div className="border-[3px] border-yellow-500 selectable box-select:bg-primary text-secondary box-select-by-name-[multiui_default]:!border-green-500">
               Option 2
             </div>
           </SelectableGroup>
           <br />
           <br />
           <Selectable>
-            <div className="box-select-by-id-[default]:!border-red-500 border-[6px] box-select:!border-blue-500 border-yellow-500 w-fit">
+            <div className="box-select-by-id-[default]:!border-red-500 border-[6px] box-select:!border-blue-500 border-yellow-500 w-fit  ">
               red for purple, blue for pink
             </div>
           </Selectable>
