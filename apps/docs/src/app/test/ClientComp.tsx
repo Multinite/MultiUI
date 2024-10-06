@@ -5,10 +5,7 @@ import { useRef, Fragment } from "react";
 import { default_theme } from "./themes";
 
 function ClientComp(props: any) {
-  const ranOnce = useRef(false);
   const { getTheme } = useTheme("default");
-
-  console.log(getTheme());
 
   return (
     <Fragment>

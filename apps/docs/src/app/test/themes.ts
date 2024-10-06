@@ -1,4 +1,5 @@
-import type { Theme as ThemeT } from "@multinite_official/multiui/src/types/MultiUIConfig";
+import type { ThemeT } from "@multinite_official/multiui";
+
 const default_theme: ThemeT = {
   name: "multiui_default",
   primary: {

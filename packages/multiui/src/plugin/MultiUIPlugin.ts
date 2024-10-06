@@ -163,16 +163,15 @@ export const MultiUIPlugin = function (
       },
     };
 
-    // console.log(utils);
-
     addUtilities(utils);
     for (let index = 0; index < multiUIConfig.theme_names.length; index++) {}
     multiUIConfig.theme_names.forEach((themeName) => {
-      console.log("adding variant", themeName);
+      themeName = themeName.replaceAll(" ", "-").replaceAll('"', "");
       addVariant(`theme-${themeName}`, `[data-theme="${themeName}"] &`);
     });
-    matchVariant("theme", (value) => {
-      return `[data-theme="${value}"] &`;
+    matchVariant("theme", (themeName) => {
+      themeName = themeName.replaceAll(" ", "-").replaceAll('"', "");
+      return `[data-theme="${themeName}"] &`;
     });
   });
 };
