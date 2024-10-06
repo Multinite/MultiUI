@@ -64,7 +64,9 @@ export function ThemeProvider({ children }) {
             },
             setTheme: (theme, themeId) => {
                 const index = themeHooks.current.findIndex((x) => x.themeId === themeId);
-                if (index === -1 || typeof window === "undefined" || !globalThis.multiUI)
+                if (index === -1 ||
+                    typeof window === "undefined" ||
+                    !globalThis.multiUI)
                     return;
                 const globalMultiUIObj = globalThis.multiUI;
                 themeHooks.current[index].theme = theme;
@@ -72,6 +74,7 @@ export function ThemeProvider({ children }) {
                 globalMultiUIObj.boxSelectionThemeSubscriptions
                     .filter((x) => x.themeId === themeId)
                     .forEach(({ cb }) => cb(theme));
+                const oldTheme = globalThis.multiUI.themes[themeId];
                 globalThis.multiUI.themes[themeId] = theme;
                 const defineThemeStylesInline = globalThis.multiUI.defineThemeStylesInline[themeId];
                 if (defineThemeStylesInline) {
@@ -91,12 +94,17 @@ export function ThemeProvider({ children }) {
                 }
                 else {
                     const styleEl = document.querySelector(`[data-style-theme-id="${themeId}"]`);
+                    const wrapperEl = document.querySelector(`[data-theme-id="${themeId}"]`);
                     if (!styleEl)
                         throw new Error(`Failed to setTheme, no <style> element found representing the "${themeId}" themeId.`);
+                    if (!wrapperEl)
+                        throw new Error(`Failed to setTheme, no wrapper element found representing the "${themeId}" themeId.`);
                     styleEl.innerHTML = getThemeFormatted({
                         theme,
                         outputType: "style-element",
                     });
+                    wrapperEl.classList.remove(`${oldTheme.name}_theme`);
+                    wrapperEl.classList.add(`${theme.name}_theme`);
                 }
             },
             subscribe: (themeId, callback) => {

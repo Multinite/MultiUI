@@ -118,13 +118,19 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           const index = themeHooks.current.findIndex(
             (x) => x.themeId === themeId
           );
-          if (index === -1 || typeof window === "undefined" || !globalThis.multiUI) return;
+          if (
+            index === -1 ||
+            typeof window === "undefined" ||
+            !globalThis.multiUI
+          )
+            return;
           const globalMultiUIObj = globalThis.multiUI as GlobalThisMultiUIType;
           themeHooks.current[index].theme = theme;
           themeHooks.current[index].subs.forEach((x) => x(theme));
-            globalMultiUIObj.boxSelectionThemeSubscriptions
-              .filter((x) => x.themeId === themeId)
-              .forEach(({ cb }) => cb(theme));
+          globalMultiUIObj.boxSelectionThemeSubscriptions
+            .filter((x) => x.themeId === themeId)
+            .forEach(({ cb }) => cb(theme));
+          const oldTheme = globalThis.multiUI.themes[themeId];
           globalThis.multiUI.themes[themeId] = theme;
 
           const defineThemeStylesInline =
@@ -151,14 +157,23 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             const styleEl = document.querySelector<HTMLStyleElement>(
               `[data-style-theme-id="${themeId}"]`
             );
+            const wrapperEl = document.querySelector<HTMLDivElement>(
+              `[data-theme-id="${themeId}"]`
+            );
             if (!styleEl)
               throw new Error(
                 `Failed to setTheme, no <style> element found representing the "${themeId}" themeId.`
+              );
+            if (!wrapperEl)
+              throw new Error(
+                `Failed to setTheme, no wrapper element found representing the "${themeId}" themeId.`
               );
             styleEl.innerHTML = getThemeFormatted({
               theme,
               outputType: "style-element",
             });
+            wrapperEl.classList.remove(`${oldTheme.name}_theme`);
+            wrapperEl.classList.add(`${theme.name}_theme`);
           }
         },
         subscribe: (themeId, callback) => {

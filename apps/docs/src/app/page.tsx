@@ -67,7 +67,7 @@ export default function Home() {
           enableBoxSelection={true}
           themeId="YOOOO"
           defineThemeStylesInline={false}
-          className="w-[500px] h-[300px]"
+          className="w-[500px] h-[300px] text-primary"
         >
           <div className="text-primary">
             Within this box, is a separate theme container!
