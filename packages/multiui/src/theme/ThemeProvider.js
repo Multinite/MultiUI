@@ -14,8 +14,10 @@ export function useTheme(themeId) {
     }
     context.addThemeHook(themeId);
     return {
-        setTheme(callback) {
-            context.setTheme(callback(context.getTheme(themeId)), themeId);
+        setTheme(theme_or_callback) {
+            context.setTheme(typeof theme_or_callback === "function"
+                ? theme_or_callback(context.getTheme(themeId))
+                : theme_or_callback, themeId);
         },
         subscribe: (cb) => {
             return context.subscribe(themeId, cb);

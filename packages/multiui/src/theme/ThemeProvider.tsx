@@ -5,7 +5,7 @@ import { getThemeFormatted } from "./Theme";
 
 type UseThemeReturnType = {
   getTheme: () => ThemeT;
-  setTheme: (callback: (theme: ThemeT) => ThemeT) => void;
+  setTheme: (callback: ThemeT | ((current_theme: ThemeT) => ThemeT)) => void;
   subscribe: (callback: (theme: ThemeT) => void) => () => void;
 };
 type ThemeContextType = {
@@ -34,8 +34,13 @@ export function useTheme(themeId: string) {
   context.addThemeHook(themeId);
 
   return {
-    setTheme(callback) {
-      context.setTheme(callback(context.getTheme(themeId)), themeId);
+    setTheme(theme_or_callback) {
+      context.setTheme(
+        typeof theme_or_callback === "function"
+          ? theme_or_callback(context.getTheme(themeId))
+          : theme_or_callback,
+        themeId
+      );
     },
     subscribe: (cb) => {
       return context.subscribe(themeId, cb);
