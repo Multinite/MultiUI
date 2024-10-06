@@ -10,7 +10,6 @@ import { ReactNode, RefAttributes, useEffect, useRef } from "react";
 import Button from "../multiui/test_button";
 import { useAria, useFocus, usePress } from "../multiui/test_button/lib/hooks";
 import { default_theme, test_theme } from "./test/themes";
-
 export default function Home() {
   const { setTheme, theme, subscribe } = useTheme("default", {
     rerenderOnThemeChange: true,
@@ -63,10 +62,10 @@ export default function Home() {
       </button>
       <div className="relative mt-32 border border-red-500 select-none w-fit h-fit">
         <Theme
-          theme={test_theme}
-          enableBoxSelection={true}
-          themeId="YOOOO"
-          defineThemeStylesInline={false}
+          $theme={test_theme}
+          $enableBoxSelection={true}
+          $themeId="YOOOO"
+          $defineThemeStylesInline={false}
           className="w-[500px] h-[300px] "
         >
           <div className="text-primary">

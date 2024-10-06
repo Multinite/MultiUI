@@ -1,12 +1,38 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 export declare const Theme: import("react").ForwardRefExoticComponent<{
-    theme: ThemeT;
+    /**
+     * The theme to use.
+     */
+    $theme: ThemeT;
     children?: ReactNode;
-    defineThemeStylesInline?: boolean;
-    themeId?: string;
-    enableBoxSelection?: boolean;
-    boxSelectionOptions?: {
+    /**
+     * Whether to define the theme styles inline.
+     *
+     * if `true`, the theme style will be define using the `style` attribute of the `<div>` element.
+     * Otherwise, the theme style will be defined using a `<style>` element.
+     * @default true
+     */
+    $defineThemeStylesInline?: boolean;
+    /**
+     * The id of the theme.
+     *
+     * This is required if you want to use the `useTheme` hook.
+     *
+     * If not provided, a random UUID will be generated.
+     */
+    $themeId?: string;
+    /**
+     * Whether to enable the box selection feature.
+     *
+     * If `true`, the box selection feature will be enabled.
+     * @default false
+     */
+    $enableBoxSelection?: boolean;
+    /**
+     * The options for the box selection feature.
+     */
+    $boxSelectionOptions?: {
         /**
          * Enable lazy loading of the box selection feature.
          *
@@ -60,6 +86,10 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
 } & HTMLAttributes<HTMLDivElement> & import("react").RefAttributes<HTMLDivElement>>;
 export default Theme;
 export type ThemeRenderOutputType = "style-element" | "inline-style-string" | "inline-style-object";
+/**
+ * Internal function to get the theme object formatted to either a style element or inline style string.
+ *
+ */
 export declare const getThemeFormatted: <
 /**
  * style-element: <style>HERE</style> - string

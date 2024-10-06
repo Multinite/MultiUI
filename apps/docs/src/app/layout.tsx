@@ -25,10 +25,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {process.env.NODE_ENV === "production" && <Analytics />}
         <ThemeProvider>
           <Theme
-            theme={default_theme}
-            themeId="default"
-            enableBoxSelection={true}
-            defineThemeStylesInline={false}
+            $theme={default_theme}
+            $themeId="default"
+            $enableBoxSelection={true}
+            $defineThemeStylesInline={false}
           >
             {children as any}
           </Theme>

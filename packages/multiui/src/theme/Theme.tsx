@@ -6,12 +6,38 @@ import GlobalThemeSet from "./GlobalThemeSet";
 export const Theme = forwardRef<
   HTMLDivElement,
   {
-    theme: ThemeT;
+    /**
+     * The theme to use.
+     */
+    $theme: ThemeT;
     children?: ReactNode;
-    defineThemeStylesInline?: boolean;
-    themeId?: string;
-    enableBoxSelection?: boolean;
-    boxSelectionOptions?: {
+    /**
+     * Whether to define the theme styles inline.
+     *
+     * if `true`, the theme style will be define using the `style` attribute of the `<div>` element.
+     * Otherwise, the theme style will be defined using a `<style>` element.
+     * @default true
+     */
+    $defineThemeStylesInline?: boolean;
+    /**
+     * The id of the theme.
+     *
+     * This is required if you want to use the `useTheme` hook.
+     *
+     * If not provided, a random UUID will be generated.
+     */
+    $themeId?: string;
+    /**
+     * Whether to enable the box selection feature.
+     *
+     * If `true`, the box selection feature will be enabled.
+     * @default false
+     */
+    $enableBoxSelection?: boolean;
+    /**
+     * The options for the box selection feature.
+     */
+    $boxSelectionOptions?: {
       /**
        * Enable lazy loading of the box selection feature.
        *
@@ -66,11 +92,11 @@ export const Theme = forwardRef<
 >(
   (
     {
-      theme,
-      themeId = crypto.randomUUID(),
+      $theme,
+      $themeId = crypto.randomUUID(),
       style,
-      defineThemeStylesInline = true,
-      boxSelectionOptions = {
+      $defineThemeStylesInline = true,
+      $boxSelectionOptions = {
         lazyLoad: true,
         activateOnMetaKey: true,
         activateOnKey: undefined,
@@ -79,36 +105,36 @@ export const Theme = forwardRef<
         autoScrollStep: 30,
         disableUnselection: false,
       },
-      enableBoxSelection = false,
+      $enableBoxSelection = false,
       children,
       ...attr
     },
     ref
   ) => {
-    if (defineThemeStylesInline) {
+    if ($defineThemeStylesInline) {
       return (
         <div className="relative" slot="multiui-theme-wrapper">
           <div
             {...attr}
             slot="multiui-theme"
-            data-theme={theme.name}
-            {...(!themeId ? {} : { "data-theme-id": themeId })}
+            data-theme={$theme.name}
+            {...(!$themeId ? {} : { "data-theme-id": $themeId })}
             style={{
               ...style,
-              position: enableBoxSelection ? "relative" : "static",
+              position: $enableBoxSelection ? "relative" : "static",
               ...getThemeFormatted({
-                theme,
+                theme: $theme,
                 outputType: "inline-style-object",
               }),
             }}
             ref={ref}
           >
             <GlobalThemeSet
-              theme={theme}
-              themeId={themeId}
-              defineThemeStylesInline={defineThemeStylesInline}
-              boxSelectionOptions={boxSelectionOptions}
-              enableBoxSelection={enableBoxSelection}
+              theme={$theme}
+              themeId={$themeId}
+              defineThemeStylesInline={$defineThemeStylesInline}
+              boxSelectionOptions={$boxSelectionOptions}
+              enableBoxSelection={$enableBoxSelection}
             />
             {children}
           </div>
@@ -120,32 +146,32 @@ export const Theme = forwardRef<
       <div className="relative" slot="multiui-theme-wrapper">
         <style
           slot="multiui-theme-style"
-          data-theme={theme.name}
+          data-theme={$theme.name}
           dangerouslySetInnerHTML={{
             __html: getThemeFormatted({
-              theme,
+              theme: $theme,
               outputType: "style-element",
             }),
           }}
-          {...(!themeId ? {} : { "data-style-theme-id": themeId })}
+          {...(!$themeId ? {} : { "data-style-theme-id": $themeId })}
         />
         <div
           {...rest}
           slot="multiui-theme"
-          data-theme={theme.name}
-          className={cn(`${theme.name}_theme`, className)}
-          {...(!themeId ? {} : { "data-theme-id": themeId })}
+          data-theme={$theme.name}
+          className={cn(`${$theme.name}_theme`, className)}
+          {...(!$themeId ? {} : { "data-theme-id": $themeId })}
           ref={ref}
           style={{
-            position: enableBoxSelection ? "relative" : "static",
+            position: $enableBoxSelection ? "relative" : "static",
           }}
         >
           <GlobalThemeSet
-            theme={theme}
-            themeId={themeId}
-            defineThemeStylesInline={defineThemeStylesInline}
-            boxSelectionOptions={boxSelectionOptions}
-            enableBoxSelection={enableBoxSelection}
+            theme={$theme}
+            themeId={$themeId}
+            defineThemeStylesInline={$defineThemeStylesInline}
+            boxSelectionOptions={$boxSelectionOptions}
+            enableBoxSelection={$enableBoxSelection}
           />
           {children}
         </div>
@@ -161,6 +187,10 @@ export type ThemeRenderOutputType =
   | "inline-style-string"
   | "inline-style-object";
 
+/**
+ * Internal function to get the theme object formatted to either a style element or inline style string.
+ *
+ */
 //@ts-ignore
 export const getThemeFormatted: <
   /**
