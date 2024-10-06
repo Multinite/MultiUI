@@ -166,11 +166,11 @@ export const MultiUIPlugin = function (
     addUtilities(utils);
     for (let index = 0; index < multiUIConfig.theme_names.length; index++) {}
     multiUIConfig.theme_names.forEach((themeName) => {
-      themeName = themeName.replaceAll(" ", "-").replaceAll('"', "");
+      themeName = themeName.replaceAll(" ", "-").replaceAll('"', "").replaceAll("'", "");
       addVariant(`theme-${themeName}`, `[data-theme="${themeName}"] &`);
     });
     matchVariant("theme", (themeName) => {
-      themeName = themeName.replaceAll(" ", "-").replaceAll('"', "");
+      themeName = themeName.replaceAll(" ", "-").replaceAll('"', "").replaceAll("'", "");
       return `[data-theme="${themeName}"] &`;
     });
   });
