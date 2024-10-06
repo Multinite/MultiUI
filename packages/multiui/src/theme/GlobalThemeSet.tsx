@@ -2,29 +2,29 @@
 import useSelectify from "use-selectify";
 import { ThemeT } from "../types/MultiUIConfig";
 import { isMobile } from "react-device-detect";
+import { useEffect, useRef, useState } from "react";
+
+export type GlobalThisMultiUIType = {
+  themes: { [key: string]: ThemeT };
+  defineThemeStylesInline: { [key: string]: boolean };
+  boxSelectionThemeSubscriptions: {
+    themeId: string;
+    cb: (theme: ThemeT) => void;
+  }[];
+};
 
 function GlobalThemeSet({
   theme,
   themeId,
   defineThemeStylesInline,
   enableBoxSelection,
-  boxSelectionOptions = {
-    activateOnKey: undefined,
-    activateOnMetaKey: false,
-    disableOnMobile: true,
-    lazyLoad: true,
-    autoScroll: true,
-    autoScrollEdgeDistance: 100,
-    autoScrollStep: 30,
-    disableUnselection: false,
-    maxSelections: Number.POSITIVE_INFINITY,
-  },
+  boxSelectionOptions,
 }: {
   theme: ThemeT;
   themeId?: string;
   enableBoxSelection: boolean;
   defineThemeStylesInline: boolean;
-  boxSelectionOptions?: {
+  boxSelectionOptions: {
     /**
      * Enable lazy loading of the box selection feature.
      *
@@ -76,61 +76,85 @@ function GlobalThemeSet({
     maxSelections?: number | false;
   };
 }) {
+  const [themeState, setThemeState] = useState<ThemeT>(theme);
+  const ranOnce = useRef(false);
+  if (!ranOnce.current && typeof window === "undefined") {
+    // ran on server, clear MultiUI from globalThis.
+    if (globalThis.multiUI) {
+      delete globalThis.multiUI;
+    }
+  }
   if (typeof globalThis !== "undefined") {
     if (!globalThis["multiUI"]) {
       globalThis.multiUI = {
         themes: {},
         defineThemeStylesInline: {},
-      };
+        boxSelectionThemeSubscriptions: [],
+      } satisfies GlobalThisMultiUIType;
     }
-    if (globalThis.multiUI) {
-      if (themeId) {
-        globalThis.multiUI = {
-          themes: {
-            ...globalThis.multiUI.themes,
-            [themeId]: theme,
+    if (themeId && !ranOnce.current) {
+      ranOnce.current = true;
+      console.log(globalThis.multiUI, themeId, theme);
+      globalThis.multiUI = {
+        ...globalThis.multiUI,
+        themes: {
+          ...globalThis.multiUI.themes,
+          [themeId]: theme,
+        },
+        defineThemeStylesInline: {
+          ...globalThis.multiUI.defineThemeStylesInline,
+          [themeId]: defineThemeStylesInline,
+        },
+        boxSelectionThemeSubscriptions: [
+          ...globalThis.multiUI.boxSelectionThemeSubscriptions,
+          {
+            themeId,
+            cb: (theme) => {
+              setThemeState(theme);
+            },
           },
-          defineThemeStylesInline: {
-            ...globalThis.multiUI.defineThemeStylesInline,
-            [themeId]: defineThemeStylesInline,
-          },
-        };
-      }
+        ],
+      } satisfies GlobalThisMultiUIType;
     }
   }
-  const { SelectBoxOutlet } = useSelectify(
-    {
-      current:
-        typeof document === "undefined"
-          ? (null as never as HTMLElement)
-          : document.querySelector<HTMLDivElement>(
-              `[data-theme-id="${themeId}"]`
-            ),
-    },
-    {
-      selectCriteria: ".selectable",
-      onSelect: (element) => {
-        element.setAttribute("aria-selected", "true");
-      },
-      onUnselect: (element) => {
-        element.removeAttribute("aria-selected");
-      },
+  if (!enableBoxSelection) return null;
 
-      lazyLoad: enableBoxSelection ? boxSelectionOptions.lazyLoad : true,
-      activateOnMetaKey: boxSelectionOptions.activateOnMetaKey,
-      disabled: enableBoxSelection
-        ? boxSelectionOptions.disableOnMobile && isMobile
-        : true,
-      activateOnKey: boxSelectionOptions.activateOnKey,
-      autoScroll: boxSelectionOptions.autoScroll,
-      autoScrollEdgeDistance: boxSelectionOptions.autoScrollEdgeDistance,
-      autoScrollStep: boxSelectionOptions.autoScrollStep,
-      disableUnselection: boxSelectionOptions.disableUnselection,
-      maxSelections: boxSelectionOptions.maxSelections,
-    }
+  const element = useRef(
+    typeof document === "undefined"
+      ? (null as never as HTMLElement)
+      : document.querySelector<HTMLDivElement>(`[data-theme-id="${themeId}"]`)
   );
 
-  return <SelectBoxOutlet />;
+  const { SelectBoxOutlet } = useSelectify(element, {
+    selectCriteria: `[data-selectable=true], [data-selectable="${themeId}"]`,
+    onSelect: (element) => {
+      element.setAttribute("aria-selected", "true");
+    },
+    onUnselect: (element) => {
+      element.removeAttribute("aria-selected");
+    },
+    exclusionZone: `[data-theme]`,
+    lazyLoad: enableBoxSelection ? boxSelectionOptions.lazyLoad : true,
+    activateOnMetaKey: boxSelectionOptions.activateOnMetaKey,
+    disabled: enableBoxSelection
+      ? boxSelectionOptions.disableOnMobile && isMobile
+      : true,
+    activateOnKey: boxSelectionOptions.activateOnKey,
+    autoScroll: boxSelectionOptions.autoScroll,
+    autoScrollEdgeDistance: boxSelectionOptions.autoScrollEdgeDistance,
+    autoScrollStep: boxSelectionOptions.autoScrollStep,
+    disableUnselection: boxSelectionOptions.disableUnselection,
+    maxSelections: boxSelectionOptions.maxSelections,
+  });
+
+  return (
+    <SelectBoxOutlet
+      style={{
+        backgroundColor: `hsl(${themeState.primary["DEFAULT"]}, 20%)`,
+        border: `1px solid hsl(${themeState.primary["DEFAULT"]}, 100%)`,
+      }}
+    />
+  );
 }
 
 export default GlobalThemeSet;

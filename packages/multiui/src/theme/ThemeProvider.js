@@ -1,9 +1,11 @@
 "use client";
 import { jsx as _jsx } from "react/jsx-runtime";
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useEffect, useRef, useState, } from "react";
 import { getThemeFormatted } from "./Theme";
 const ThemeContext = createContext(undefined);
-export function useTheme(themeId) {
+export function useTheme(themeId, options = {
+    rerenderOnThemeChange: true,
+}) {
     const context = useContext(ThemeContext);
     if (context === undefined) {
         throw new Error("useTheme must be used within a <ThemeProvider>");
@@ -13,7 +15,31 @@ export function useTheme(themeId) {
         throw new Error(`Invalid themeId: ${themeId}.\nIf it is defined, but still isn't working, it's likey due to the hook being called before the <Theme> Component is rendered.\nYou can think of this <Theme> Component as a Provider which should be rendered before any children component can use a hook to consume it.`);
     }
     context.addThemeHook(themeId);
+    if (!options.rerenderOnThemeChange)
+        //@ts-expect-error - intentional
+        return {
+            setTheme(theme_or_callback) {
+                context.setTheme(typeof theme_or_callback === "function"
+                    ? theme_or_callback(context.getTheme(themeId))
+                    : theme_or_callback, themeId);
+            },
+            subscribe: (cb) => {
+                return context.subscribe(themeId, cb);
+            },
+            getTheme: () => {
+                return context.getTheme(themeId);
+            },
+        };
+    const [theme, setTheme] = useState(context.getTheme(themeId));
+    useEffect(() => {
+        const sub = context.subscribe(themeId, (new_theme) => {
+            setTheme(new_theme);
+        });
+        return sub;
+    }, []);
+    //@ts-expect-error - intentional
     return {
+        theme: theme,
         setTheme(theme_or_callback) {
             context.setTheme(typeof theme_or_callback === "function"
                 ? theme_or_callback(context.getTheme(themeId))
@@ -21,9 +47,6 @@ export function useTheme(themeId) {
         },
         subscribe: (cb) => {
             return context.subscribe(themeId, cb);
-        },
-        getTheme: () => {
-            return context.getTheme(themeId);
         },
     };
 }
@@ -41,10 +64,14 @@ export function ThemeProvider({ children }) {
             },
             setTheme: (theme, themeId) => {
                 const index = themeHooks.current.findIndex((x) => x.themeId === themeId);
-                if (index === -1 || typeof window === "undefined")
+                if (index === -1 || typeof window === "undefined" || !globalThis.multiUI)
                     return;
+                const globalMultiUIObj = globalThis.multiUI;
                 themeHooks.current[index].theme = theme;
                 themeHooks.current[index].subs.forEach((x) => x(theme));
+                globalMultiUIObj.boxSelectionThemeSubscriptions
+                    .filter((x) => x.themeId === themeId)
+                    .forEach(({ cb }) => cb(theme));
                 globalThis.multiUI.themes[themeId] = theme;
                 const defineThemeStylesInline = globalThis.multiUI.defineThemeStylesInline[themeId];
                 if (defineThemeStylesInline) {

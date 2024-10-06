@@ -2,9 +2,9 @@ import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ClientLayout from "./ClientLayout";
-import { cn } from "@multinite_official/multiui";
-// import { theme_prefix } from "../../multiui.config.json";
+import { cn, Theme, ThemeProvider } from "@multinite_official/multiui";
+import type { ReactNode } from "react";
+import { default_theme } from "./test/themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,31 +13,26 @@ export const metadata: Metadata = {
   description: "The MultiUI documentation.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" style={{colorScheme: "dark"}}>
+    <html lang="en" style={{ colorScheme: "dark" }}>
       <body
         className={cn(
           inter.className,
           "overflow-hidden bg-background text-foreground ring-focus transition-[background-color] ease-in-out duration-300"
         )}
       >
-        <Analytics />
-        <ClientLayout>
-          {/* <MultiUIProvider
-            config={{
-              // theme_prefix,
-            }}
-            themes={[multiUI_defaultTheme]}
-            // blurOnThemeChange
-          > */}
-            {children}
-          {/* </MultiUIProvider> */}
-        </ClientLayout>
+        {process.env.NODE_ENV === "production" && <Analytics />}
+        <ThemeProvider>
+          <Theme
+            theme={default_theme}
+            themeId="default"
+            enableBoxSelection={true}
+            defineThemeStylesInline={false}
+          >
+            {children as any}
+          </Theme>
+        </ThemeProvider>
       </body>
     </html>
   );

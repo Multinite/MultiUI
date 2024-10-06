@@ -1,10 +1,23 @@
 "use client";
-import { createContext, type ReactNode, useContext, useRef } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 import { getThemeFormatted } from "./Theme";
+import { GlobalThisMultiUIType } from "./GlobalThemeSet";
 
 type UseThemeReturnType = {
   getTheme: () => ThemeT;
+  setTheme: (callback: ThemeT | ((current_theme: ThemeT) => ThemeT)) => void;
+  subscribe: (callback: (theme: ThemeT) => void) => () => void;
+};
+type UseThemeWithRerenderReturnType = {
+  theme: ThemeT;
   setTheme: (callback: ThemeT | ((current_theme: ThemeT) => ThemeT)) => void;
   subscribe: (callback: (theme: ThemeT) => void) => () => void;
 };
@@ -17,7 +30,14 @@ type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function useTheme(themeId: string) {
+export function useTheme<RerenderOnThemeChange extends boolean = true>(
+  themeId: string,
+  options: { rerenderOnThemeChange: RerenderOnThemeChange } = {
+    rerenderOnThemeChange: true as RerenderOnThemeChange,
+  }
+): RerenderOnThemeChange extends true
+  ? UseThemeWithRerenderReturnType
+  : UseThemeReturnType {
   const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error("useTheme must be used within a <ThemeProvider>");
@@ -32,8 +52,38 @@ export function useTheme(themeId: string) {
     );
   }
   context.addThemeHook(themeId);
+  if (!options.rerenderOnThemeChange)
+    //@ts-expect-error - intentional
+    return {
+      setTheme(theme_or_callback) {
+        context.setTheme(
+          typeof theme_or_callback === "function"
+            ? theme_or_callback(context.getTheme(themeId))
+            : theme_or_callback,
+          themeId
+        );
+      },
+      subscribe: (cb) => {
+        return context.subscribe(themeId, cb);
+      },
 
+      getTheme: () => {
+        return context.getTheme(themeId);
+      },
+    } satisfies UseThemeReturnType;
+
+  const [theme, setTheme] = useState(context.getTheme(themeId));
+
+  useEffect(() => {
+    const sub = context.subscribe(themeId, (new_theme) => {
+      setTheme(new_theme);
+    });
+    return sub;
+  }, []);
+
+  //@ts-expect-error - intentional
   return {
+    theme: theme,
     setTheme(theme_or_callback) {
       context.setTheme(
         typeof theme_or_callback === "function"
@@ -45,10 +95,7 @@ export function useTheme(themeId: string) {
     subscribe: (cb) => {
       return context.subscribe(themeId, cb);
     },
-    getTheme: () => {
-      return context.getTheme(themeId);
-    },
-  } satisfies UseThemeReturnType;
+  } satisfies UseThemeWithRerenderReturnType;
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -71,9 +118,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           const index = themeHooks.current.findIndex(
             (x) => x.themeId === themeId
           );
-          if (index === -1 || typeof window === "undefined") return;
+          if (index === -1 || typeof window === "undefined" || !globalThis.multiUI) return;
+          const globalMultiUIObj = globalThis.multiUI as GlobalThisMultiUIType;
           themeHooks.current[index].theme = theme;
           themeHooks.current[index].subs.forEach((x) => x(theme));
+            globalMultiUIObj.boxSelectionThemeSubscriptions
+              .filter((x) => x.themeId === themeId)
+              .forEach(({ cb }) => cb(theme));
           globalThis.multiUI.themes[themeId] = theme;
 
           const defineThemeStylesInline =

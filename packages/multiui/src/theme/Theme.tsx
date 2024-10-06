@@ -70,49 +70,54 @@ export const Theme = forwardRef<
       themeId,
       style,
       defineThemeStylesInline = true,
-      boxSelectionOptions,
+      boxSelectionOptions = {
+        lazyLoad: true,
+        activateOnMetaKey: true,
+        activateOnKey: undefined,
+        autoScroll: true,
+        autoScrollEdgeDistance: 100,
+        autoScrollStep: 30,
+        disableUnselection: false,
+      },
       enableBoxSelection = false,
+      children,
       ...attr
     },
     ref
   ) => {
     if (defineThemeStylesInline) {
       return (
-        <>
-          <GlobalThemeSet
-            theme={theme}
-            themeId={themeId}
-            defineThemeStylesInline={defineThemeStylesInline}
-            boxSelectionOptions={boxSelectionOptions}
-            enableBoxSelection={enableBoxSelection}
-          />
+        <div className="relative" slot="multiui-theme-wrapper">
           <div
             {...attr}
-            slot="multiui-theme-wrapper"
+            slot="multiui-theme"
             data-theme={theme.name}
             {...(!themeId ? {} : { "data-theme-id": themeId })}
             style={{
               ...style,
+              position: enableBoxSelection ? "relative" : "static",
               ...getThemeFormatted({
                 theme,
                 outputType: "inline-style-object",
               }),
             }}
             ref={ref}
-          />
-        </>
+          >
+            <GlobalThemeSet
+              theme={theme}
+              themeId={themeId}
+              defineThemeStylesInline={defineThemeStylesInline}
+              boxSelectionOptions={boxSelectionOptions}
+              enableBoxSelection={enableBoxSelection}
+            />
+            {children}
+          </div>
+        </div>
       );
     }
     const { className, ...rest } = attr;
     return (
-      <>
-        <GlobalThemeSet
-          theme={theme}
-          themeId={themeId}
-          defineThemeStylesInline={defineThemeStylesInline}
-          boxSelectionOptions={boxSelectionOptions}
-          enableBoxSelection={enableBoxSelection}
-        />
+      <div className="relative" slot="multiui-theme-wrapper">
         <style
           slot="multiui-theme-style"
           data-theme={theme.name}
@@ -126,13 +131,25 @@ export const Theme = forwardRef<
         />
         <div
           {...rest}
-          slot="multiui-theme-wrapper"
+          slot="multiui-theme"
           data-theme={theme.name}
           className={cn(`${theme.name}_theme`, className)}
           {...(!themeId ? {} : { "data-theme-id": themeId })}
           ref={ref}
-        />
-      </>
+          style={{
+            position: enableBoxSelection ? "relative" : "static",
+          }}
+        >
+          <GlobalThemeSet
+            theme={theme}
+            themeId={themeId}
+            defineThemeStylesInline={defineThemeStylesInline}
+            boxSelectionOptions={boxSelectionOptions}
+            enableBoxSelection={enableBoxSelection}
+          />
+          {children}
+        </div>
+      </div>
     );
   }
 );

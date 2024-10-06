@@ -10,7 +10,7 @@ function Page() {
     <div className="flex w-screen h-screen gap-10">
       <ThemeProvider>
         <Theme theme={default_theme} themeId={"default"}>
-          <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2 border-red-500 bg-primary theme-[cool]:theme-[sup]:bg-red-200">
+          <div className="flex items-center justify-center w-32 h-32 text-sm text-center border-2  border-red-500 bg-primary theme-[cool]:theme-[sup]:bg-red-200/50">
             server rendered purple?
           </div>
         </Theme>

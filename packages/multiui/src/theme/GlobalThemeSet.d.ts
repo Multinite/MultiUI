@@ -1,10 +1,22 @@
 import { ThemeT } from "../types/MultiUIConfig";
+export type GlobalThisMultiUIType = {
+    themes: {
+        [key: string]: ThemeT;
+    };
+    defineThemeStylesInline: {
+        [key: string]: boolean;
+    };
+    boxSelectionThemeSubscriptions: {
+        themeId: string;
+        cb: (theme: ThemeT) => void;
+    }[];
+};
 declare function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, enableBoxSelection, boxSelectionOptions, }: {
     theme: ThemeT;
     themeId?: string;
     enableBoxSelection: boolean;
     defineThemeStylesInline: boolean;
-    boxSelectionOptions?: {
+    boxSelectionOptions: {
         /**
          * Enable lazy loading of the box selection feature.
          *
@@ -55,5 +67,5 @@ declare function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, enabl
          */
         maxSelections?: number | false;
     };
-}): import("react/jsx-runtime").JSX.Element;
+}): import("react/jsx-runtime").JSX.Element | null;
 export default GlobalThemeSet;
