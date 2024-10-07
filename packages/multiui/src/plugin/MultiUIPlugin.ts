@@ -171,6 +171,7 @@ export const MultiUIPlugin = function (
         .replaceAll('"', "")
         .replaceAll("'", "");
       addVariant(`theme-${themeName}`, `[data-theme="${themeName}"] &`);
+      addVariant(`box-select-via-${themeName}`, `&[data-selected-theme="${themeName}"]`);
     });
     matchVariant("theme", (themeName) => {
       themeName = themeName

@@ -61,14 +61,14 @@ export default function Home() {
       </button>
       <div className="relative mt-32 border border-red-500 select-none w-fit h-fit">
         <Theme
-          $theme={test_theme}
+          $theme={({ prefers_color_scheme }) => prefers_color_scheme === "dark" ? test_theme : test_theme}
           $enableBoxSelection={true}
           $themeId="YOOOO"
           $defineThemeStylesInline={false}
           className="w-[500px] h-[300px] "
           $persistOnLocalstorage
         >
-          <div className="text-primary">
+          <div className="text-primary ">
             Within this box, is a separate theme container!
           </div>
           <br />
@@ -140,7 +140,7 @@ export default function Home() {
           );
         }}
       </Button> */}
-      <Button>Test</Button>
+      {/* <Button>Test</Button> */}
     </div>
   );
 }

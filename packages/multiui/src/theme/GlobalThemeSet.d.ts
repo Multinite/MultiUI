@@ -16,7 +16,9 @@ export type GlobalThisMultiUIType = {
  * Sets global values of MultiUI, including localstorage.
  */
 declare function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, updateDocumentColorScheme, persistOnLocalstorage, }: {
-    theme: ThemeT;
+    theme: ThemeT | ((args: {
+        prefers_color_scheme: "dark" | "light" | undefined;
+    }) => ThemeT);
     themeId: string;
     defineThemeStylesInline: boolean;
     updateDocumentColorScheme: boolean;

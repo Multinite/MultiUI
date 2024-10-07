@@ -26,7 +26,11 @@ export const Theme = forwardRef<
     /**
      * The theme to use.
      */
-    $theme: ThemeT;
+    $theme:
+      | ((args: {
+          prefers_color_scheme: "dark" | "light" | undefined;
+        }) => ThemeT)
+      | ThemeT;
     children?: ReactNode;
     /**
      * Whether to define the theme styles inline.
@@ -132,6 +136,25 @@ export const Theme = forwardRef<
         `Invalid themeId: "${$themeId}"\nPlease use only letters, numbers, dashes, and underscores.`
       );
 
+    if ($themeId === "true" || $themeId === "false") {
+      throw new Error(
+        `Invalid themeId: "${$themeId}"\nPlease do not use "true" or "false" as a themeId.`
+      );
+    }
+
+    if (
+      $theme.name === "true" ||
+      $theme.name === "false" ||
+      $theme.name === "id"
+    )
+      throw new Error(
+        `Invalid theme: "${$theme.name}"\nPlease do not use "true" or "false" or "id" as a theme name.`
+      );
+    let theme =
+      typeof $theme === "function"
+        ? $theme({ prefers_color_scheme: undefined })
+        : $theme;
+
     if ($defineThemeStylesInline) {
       return (
         <>
@@ -146,20 +169,20 @@ export const Theme = forwardRef<
             <div
               {...attr}
               slot="multiui-theme"
-              data-theme={$theme.name}
+              data-theme={theme.name}
               {...(!$themeId ? {} : { "data-theme-id": $themeId })}
               style={{
                 ...style,
                 position: $enableBoxSelection ? "relative" : "static",
                 ...getThemeFormatted({
-                  theme: $theme,
+                  theme: theme,
                   outputType: "inline-style-object",
                 }),
               }}
               ref={ref}
             >
               <BoxSelection
-                theme={$theme}
+                theme={theme}
                 themeId={$themeId}
                 boxSelectionOptions={$boxSelectionOptions}
                 enableBoxSelection={$enableBoxSelection}
@@ -186,7 +209,7 @@ export const Theme = forwardRef<
             data-theme={$theme.name}
             dangerouslySetInnerHTML={{
               __html: getThemeFormatted({
-                theme: $theme,
+                theme: theme,
                 outputType: "style-element",
               }),
             }}
@@ -204,7 +227,7 @@ export const Theme = forwardRef<
             }}
           >
             <BoxSelection
-              theme={$theme}
+              theme={theme}
               themeId={$themeId}
               boxSelectionOptions={$boxSelectionOptions}
               enableBoxSelection={$enableBoxSelection}

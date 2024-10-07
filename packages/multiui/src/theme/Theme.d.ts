@@ -18,7 +18,9 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
     /**
      * The theme to use.
      */
-    $theme: ThemeT;
+    $theme: ((args: {
+        prefers_color_scheme: "dark" | "light" | undefined;
+    }) => ThemeT) | ThemeT;
     children?: ReactNode;
     /**
      * Whether to define the theme styles inline.
