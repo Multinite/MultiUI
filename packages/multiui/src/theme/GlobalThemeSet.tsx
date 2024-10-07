@@ -43,14 +43,12 @@ function GlobalThemeSet({
     Array.isArray(theme) ? theme : [theme, theme]
   );
 
-  if (!persistOnLocalstorage) {
-    removeValue();
-  }
-
   useEffect(() => {
     if (!ranUseEffectOnce.current && typeof window !== "undefined") {
       ranUseEffectOnce.current = true;
-      if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
+      if (!persistOnLocalstorage) {
+        removeValue();
+      } else if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
         setValue(Array.isArray(theme) ? theme : [theme, theme]);
       }
       if (theme_was_cb_fn) {

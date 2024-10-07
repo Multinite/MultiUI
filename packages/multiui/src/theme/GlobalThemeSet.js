@@ -13,13 +13,13 @@ function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, updateDocumen
     const ranOnce = useRef(false);
     const ranUseEffectOnce = useRef(false);
     const [value, setValue, removeValue] = useLocalStorage(`multiui-theme-${themeId}`, Array.isArray(theme) ? theme : [theme, theme]);
-    if (!persistOnLocalstorage) {
-        removeValue();
-    }
     useEffect(() => {
         if (!ranUseEffectOnce.current && typeof window !== "undefined") {
             ranUseEffectOnce.current = true;
-            if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
+            if (!persistOnLocalstorage) {
+                removeValue();
+            }
+            else if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
                 setValue(Array.isArray(theme) ? theme : [theme, theme]);
             }
             if (theme_was_cb_fn) {

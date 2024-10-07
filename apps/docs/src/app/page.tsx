@@ -107,10 +107,10 @@ export default function Home() {
           <br />
           <Theme
             $theme={[default_theme, test_theme2]}
-            $enableBoxSelection={false}
+            $enableBoxSelection={true}
             $themeId="test"
             className="w-fit h-fit"
-            $persistOnLocalstorage={true}
+            $persistOnLocalstorage={false}
           >
             <div className="theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black ">
               if your system is light, I am light. if your system is dark, I am
