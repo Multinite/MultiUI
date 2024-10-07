@@ -1,7 +1,7 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 import GlobalThemeSet from "./GlobalThemeSet";
-import BoxSelection from "./BoxSelection";
+// import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
 
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
@@ -143,6 +143,18 @@ export const Theme = forwardRef<
     },
     ref
   ) => {
+    $boxSelectionOptions = {
+      lazyLoad: $boxSelectionOptions.lazyLoad ?? true,
+      activateOnMetaKey: $boxSelectionOptions.activateOnMetaKey ?? true,
+      activateOnKey: $boxSelectionOptions.activateOnKey ?? undefined,
+      autoScroll: $boxSelectionOptions.autoScroll ?? true,
+      autoScrollEdgeDistance:
+        $boxSelectionOptions.autoScrollEdgeDistance ?? 100,
+      autoScrollStep: $boxSelectionOptions.autoScrollStep ?? 30,
+      disableUnselection: $boxSelectionOptions.disableUnselection ?? false,
+      className: $boxSelectionOptions.className ?? undefined,
+    };
+
     if (validThemeIdRegex.test($themeId) === false)
       throw new Error(
         `Invalid themeId: "${$themeId}"\nPlease use only letters, numbers, dashes, and underscores.`
@@ -192,33 +204,33 @@ export const Theme = forwardRef<
             updateDocumentColorScheme={$updateDocumentColorScheme}
             persistOnLocalstorage={$persistOnLocalstorage}
           />
-          <div className="relative" slot="multiui-theme-wrapper">
-            <div
-              suppressHydrationWarning
-              {...attr}
-              slot="multiui-theme"
-              id={`multiui-theme-${$themeId}`}
-              data-theme={$serverSelectedTheme.name}
-              {...(!$themeId ? {} : { "data-theme-id": $themeId })}
-              style={{
-                ...style,
-                position: $enableBoxSelection ? "relative" : "static",
-                ...getThemeFormatted({
-                  theme: $serverSelectedTheme,
-                  outputType: "inline-style-object",
-                }),
-              }}
-              ref={ref}
-            >
-              <BoxSelection
+          {/* <div className="relative" slot="multiui-theme-wrapper"> */}
+          <div
+            suppressHydrationWarning
+            {...attr}
+            slot="multiui-theme"
+            id={`multiui-theme-${$themeId}`}
+            data-theme={$serverSelectedTheme.name}
+            {...(!$themeId ? {} : { "data-theme-id": $themeId })}
+            style={{
+              ...style,
+              position: $enableBoxSelection ? "relative" : "static",
+              ...getThemeFormatted({
+                theme: $serverSelectedTheme,
+                outputType: "inline-style-object",
+              }),
+            }}
+            ref={ref}
+          >
+            {/* <BoxSelection
                 theme={$theme}
                 themeId={$themeId}
                 boxSelectionOptions={$boxSelectionOptions}
                 enableBoxSelection={$enableBoxSelection}
-              />
-              {children}
-            </div>
+              /> */}
+            {children}
           </div>
+          {/* </div> */}
           <ScriptComponnet
             theme={$theme}
             themeId={$themeId}

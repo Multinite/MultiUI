@@ -1,7 +1,7 @@
-import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
+import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
 import { forwardRef } from "react";
 import GlobalThemeSet from "./GlobalThemeSet";
-import BoxSelection from "./BoxSelection";
+// import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
 export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesInline = true, $updateDocumentColorScheme = true, $persistOnLocalstorage = true, $boxSelectionOptions = {
@@ -14,6 +14,16 @@ export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesIn
     disableUnselection: false,
     className: undefined,
 }, $enableBoxSelection = false, children, ...attr }, ref) => {
+    $boxSelectionOptions = {
+        lazyLoad: $boxSelectionOptions.lazyLoad ?? true,
+        activateOnMetaKey: $boxSelectionOptions.activateOnMetaKey ?? true,
+        activateOnKey: $boxSelectionOptions.activateOnKey ?? undefined,
+        autoScroll: $boxSelectionOptions.autoScroll ?? true,
+        autoScrollEdgeDistance: $boxSelectionOptions.autoScrollEdgeDistance ?? 100,
+        autoScrollStep: $boxSelectionOptions.autoScrollStep ?? 30,
+        disableUnselection: $boxSelectionOptions.disableUnselection ?? false,
+        className: $boxSelectionOptions.className ?? undefined,
+    };
     if (validThemeIdRegex.test($themeId) === false)
         throw new Error(`Invalid themeId: "${$themeId}"\nPlease use only letters, numbers, dashes, and underscores.`);
     if ($themeId === "true" || $themeId === "false") {
@@ -36,14 +46,14 @@ export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesIn
     }
     const $serverSelectedTheme = Array.isArray($theme) ? $theme[0] : $theme;
     if ($defineThemeStylesInline) {
-        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, updateDocumentColorScheme: $updateDocumentColorScheme, persistOnLocalstorage: $persistOnLocalstorage }), _jsx("div", { className: "relative", slot: "multiui-theme-wrapper", children: _jsxs("div", { suppressHydrationWarning: true, ...attr, slot: "multiui-theme", id: `multiui-theme-${$themeId}`, "data-theme": $serverSelectedTheme.name, ...(!$themeId ? {} : { "data-theme-id": $themeId }), style: {
-                            ...style,
-                            position: $enableBoxSelection ? "relative" : "static",
-                            ...getThemeFormatted({
-                                theme: $serverSelectedTheme,
-                                outputType: "inline-style-object",
-                            }),
-                        }, ref: ref, children: [_jsx(BoxSelection, { theme: $theme, themeId: $themeId, boxSelectionOptions: $boxSelectionOptions, enableBoxSelection: $enableBoxSelection }), children] }) }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
+        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, updateDocumentColorScheme: $updateDocumentColorScheme, persistOnLocalstorage: $persistOnLocalstorage }), _jsx("div", { suppressHydrationWarning: true, ...attr, slot: "multiui-theme", id: `multiui-theme-${$themeId}`, "data-theme": $serverSelectedTheme.name, ...(!$themeId ? {} : { "data-theme-id": $themeId }), style: {
+                        ...style,
+                        position: $enableBoxSelection ? "relative" : "static",
+                        ...getThemeFormatted({
+                            theme: $serverSelectedTheme,
+                            outputType: "inline-style-object",
+                        }),
+                    }, ref: ref, children: children }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
     }
     const { className, ...rest } = attr;
     return (_jsx(_Fragment, { children: _jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, persistOnLocalstorage: $persistOnLocalstorage, updateDocumentColorScheme: $updateDocumentColorScheme }) }));
