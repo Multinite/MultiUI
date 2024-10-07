@@ -2,15 +2,16 @@
 import type { ThemeT } from "../types/MultiUIConfig";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
-import { useColorScheme } from "./useColorScheme";
+import { getColorSchemeSync, useColorScheme } from "./useColorScheme";
 import { setThemeToUI } from "./setTheme";
+import { Schemes } from "./Theme";
 
 export type GlobalThisMultiUIType = {
-  themes: { [key: string]: ThemeT };
+  themes: { [key: string]: [dark: ThemeT, light: ThemeT] };
   defineThemeStylesInline: { [key: string]: boolean };
   boxSelectionThemeSubscriptions: {
     themeId: string;
-    cb: (theme: ThemeT) => void;
+    cb: (theme: ThemeT | Schemes) => void;
   }[];
 };
 
@@ -27,27 +28,19 @@ function GlobalThemeSet({
   updateDocumentColorScheme,
   persistOnLocalstorage,
 }: {
-  theme:
-    | ThemeT
-    | ((args: {
-        prefers_color_scheme: "dark" | "light" | undefined;
-      }) => ThemeT);
+  theme: ThemeT | Schemes;
   themeId: string;
   defineThemeStylesInline: boolean;
   updateDocumentColorScheme: boolean;
   persistOnLocalstorage: boolean;
 }) {
   let theme_was_cb_fn = typeof theme === "function";
-  theme =
-    typeof theme === "function"
-      ? theme({ prefers_color_scheme: useColorScheme() })
-      : theme;
 
   const ranOnce = useRef(false);
   const ranUseEffectOnce = useRef(false);
-  const [value, setValue, removeValue] = useLocalStorage<ThemeT>(
+  const [value, setValue, removeValue] = useLocalStorage<Schemes>(
     `multiui-theme-${themeId}`,
-    theme
+    Array.isArray(theme) ? theme : [theme, theme]
   );
 
   if (!persistOnLocalstorage) {
@@ -58,10 +51,10 @@ function GlobalThemeSet({
     if (!ranUseEffectOnce.current && typeof window !== "undefined") {
       ranUseEffectOnce.current = true;
       if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
-        setValue(theme);
+        setValue(Array.isArray(theme) ? theme : [theme, theme]);
       }
       if (theme_was_cb_fn) {
-        console.log('setting theme based on color-scheme preference')
+        console.log("setting theme based on color-scheme preference");
         setThemeToUI({ theme, themeId });
       }
     }
@@ -87,7 +80,7 @@ export default GlobalThemeSet;
 
 function useUpdateDocColorScheme(
   updateDocumentColorScheme: boolean,
-  theme: ThemeT
+  theme: ThemeT | Schemes
 ) {
   useEffect(() => {
     if (
@@ -101,7 +94,11 @@ function useUpdateDocColorScheme(
         throw new Error(
           "Could not find html element to apply the colorScheme."
         );
-      root.style.colorScheme = theme.scheme;
+      root.style.colorScheme = Array.isArray(theme)
+        ? getColorSchemeSync() === "light"
+          ? theme[1].scheme
+          : theme[0].scheme
+        : theme.scheme;
     }
   }, []);
   return null;
@@ -147,11 +144,11 @@ function setDefaultGlobalValues({
   persistOnLocalstorage,
   setValue,
 }: {
-  theme: ThemeT;
+  theme: ThemeT | Schemes;
   themeId: string;
   defineThemeStylesInline: boolean;
   persistOnLocalstorage: boolean;
-  setValue: Dispatch<SetStateAction<ThemeT>>;
+  setValue: Dispatch<SetStateAction<Schemes>>;
 }) {
   if (!globalThis["multiUI"]) {
     globalThis.multiUI = {
@@ -164,7 +161,7 @@ function setDefaultGlobalValues({
     ...globalThis.multiUI,
     themes: {
       ...globalThis.multiUI.themes,
-      [themeId]: theme,
+      [themeId]: Array.isArray(theme) ? theme : [theme, theme],
     },
     defineThemeStylesInline: {
       ...globalThis.multiUI.defineThemeStylesInline,
@@ -177,8 +174,9 @@ function setDefaultGlobalValues({
             {
               [themeId]: {
                 themeId,
-                cb: (theme: ThemeT) => {
-                  if (persistOnLocalstorage) setValue(theme);
+                cb: (theme: ThemeT | Schemes) => {
+                  if (persistOnLocalstorage)
+                    setValue(Array.isArray(theme) ? theme : [theme, theme]);
                 },
               },
             },

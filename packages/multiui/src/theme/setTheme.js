@@ -1,5 +1,11 @@
 import { getThemeFormatted } from "./Theme";
-export function setThemeToUI({ theme, themeId }) {
+import { getColorSchemeSync } from "./useColorScheme";
+export function setThemeToUI({ theme, themeId, }) {
+    theme = Array.isArray(theme)
+        ? getColorSchemeSync() === "light"
+            ? theme[1]
+            : theme[0]
+        : theme;
     globalThis.multiUI.boxSelectionThemeSubscriptions
         .filter((x) => x.themeId === themeId)
         .forEach(({ cb }) => cb(theme));

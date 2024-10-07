@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
-import { useColorScheme } from "./useColorScheme";
+import { getColorSchemeSync } from "./useColorScheme";
 import { setThemeToUI } from "./setTheme";
 let alreadyUpdatedDocumentColorScheme = false;
 /**
@@ -10,13 +10,9 @@ let alreadyUpdatedDocumentColorScheme = false;
  */
 function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, updateDocumentColorScheme, persistOnLocalstorage, }) {
     let theme_was_cb_fn = typeof theme === "function";
-    theme =
-        typeof theme === "function"
-            ? theme({ prefers_color_scheme: useColorScheme() })
-            : theme;
     const ranOnce = useRef(false);
     const ranUseEffectOnce = useRef(false);
-    const [value, setValue, removeValue] = useLocalStorage(`multiui-theme-${themeId}`, theme);
+    const [value, setValue, removeValue] = useLocalStorage(`multiui-theme-${themeId}`, Array.isArray(theme) ? theme : [theme, theme]);
     if (!persistOnLocalstorage) {
         removeValue();
     }
@@ -24,10 +20,10 @@ function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, updateDocumen
         if (!ranUseEffectOnce.current && typeof window !== "undefined") {
             ranUseEffectOnce.current = true;
             if (!localStorage.getItem(`multiui-theme-${themeId}`)) {
-                setValue(theme);
+                setValue(Array.isArray(theme) ? theme : [theme, theme]);
             }
             if (theme_was_cb_fn) {
-                console.log('setting theme based on color-scheme preference');
+                console.log("setting theme based on color-scheme preference");
                 setThemeToUI({ theme, themeId });
             }
         }
@@ -56,7 +52,11 @@ function useUpdateDocColorScheme(updateDocumentColorScheme, theme) {
             const root = document.querySelector("html");
             if (!root)
                 throw new Error("Could not find html element to apply the colorScheme.");
-            root.style.colorScheme = theme.scheme;
+            root.style.colorScheme = Array.isArray(theme)
+                ? getColorSchemeSync() === "light"
+                    ? theme[1].scheme
+                    : theme[0].scheme
+                : theme.scheme;
         }
     }, []);
     return null;
@@ -104,7 +104,7 @@ function setDefaultGlobalValues({ theme, themeId, defineThemeStylesInline, persi
         ...globalThis.multiUI,
         themes: {
             ...globalThis.multiUI.themes,
-            [themeId]: theme,
+            [themeId]: Array.isArray(theme) ? theme : [theme, theme],
         },
         defineThemeStylesInline: {
             ...globalThis.multiUI.defineThemeStylesInline,
@@ -119,7 +119,7 @@ function setDefaultGlobalValues({ theme, themeId, defineThemeStylesInline, persi
                             themeId,
                             cb: (theme) => {
                                 if (persistOnLocalstorage)
-                                    setValue(theme);
+                                    setValue(Array.isArray(theme) ? theme : [theme, theme]);
                             },
                         },
                     },

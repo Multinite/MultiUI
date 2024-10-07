@@ -1,8 +1,21 @@
 import { ThemeT } from "../types";
 import { type GlobalThisMultiUIType } from "./GlobalThemeSet";
-import { getThemeFormatted } from "./Theme";
+import { getThemeFormatted, Schemes } from "./Theme";
+import { getColorSchemeSync } from "./useColorScheme";
 
-export function setThemeToUI({ theme, themeId }: { theme: ThemeT; themeId: string }) {
+export function setThemeToUI({
+  theme,
+  themeId,
+}: {
+  theme: ThemeT | Schemes;
+  themeId: string;
+}) {
+  theme = Array.isArray(theme)
+    ? getColorSchemeSync() === "light"
+      ? theme[1]
+      : theme[0]
+    : theme;
+
   (globalThis.multiUI as GlobalThisMultiUIType).boxSelectionThemeSubscriptions
     .filter((x) => x.themeId === themeId)
     .forEach(({ cb }) => cb(theme));

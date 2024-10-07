@@ -164,4 +164,13 @@ const test_theme = {
   },
 } satisfies ThemeT;
 
-export { test_theme, default_theme };
+const test_theme2 = {
+  ...default_theme,
+  name: "test_theme2" as const,
+  primary: {
+    ...default_theme.primary,
+    DEFAULT: "118, 95%, 53%",
+  },
+} satisfies ThemeT;
+
+export { test_theme, default_theme, test_theme2 };

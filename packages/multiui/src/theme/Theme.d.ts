@@ -1,5 +1,6 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
+export type Schemes = [dark: ThemeT, light: ThemeT];
 export declare const Theme: import("react").ForwardRefExoticComponent<{
     /**
      * Whether to update the document color scheme automatically or not.
@@ -17,10 +18,16 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
     $persistOnLocalstorage?: boolean;
     /**
      * The theme to use.
+     *
+     * If you want to cater the users color scheme preference, you must pass an array with two theme objects, first being dark, second being light.
+     * Or you can pass a single theme which will be used for both dark and light.
+     *
+     * @example
+     * <Theme $theme={[darkTheme, lightTheme]}>
+     *   <App />
+     * </Theme>
      */
-    $theme: ((args: {
-        prefers_color_scheme: "dark" | "light" | undefined;
-    }) => ThemeT) | ThemeT;
+    $theme: ThemeT | Schemes;
     children?: ReactNode;
     /**
      * Whether to define the theme styles inline.
@@ -95,6 +102,11 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
          * @default Infinity
          */
         maxSelections?: number | false;
+        /**
+         * Any additional className to be added to the box-selection element.
+         * @default undefined
+         */
+        className?: string;
     };
 } & HTMLAttributes<HTMLDivElement> & import("react").RefAttributes<HTMLDivElement>>;
 export default Theme;

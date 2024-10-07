@@ -9,7 +9,7 @@ import {
 import { RefAttributes, useEffect, useRef } from "react";
 import Button from "../multiui/test_button";
 import { useAria, useFocus, usePress } from "../multiui/test_button/lib/hooks";
-import { default_theme, test_theme } from "./test/themes";
+import { default_theme, test_theme, test_theme2 } from "./test/themes";
 export default function Home() {
   const { setTheme, theme, subscribe } = useTheme("default", {
     rerenderOnThemeChange: true,
@@ -61,12 +61,14 @@ export default function Home() {
       </button>
       <div className="relative mt-32 border border-red-500 select-none w-fit h-fit">
         <Theme
-          $theme={({ prefers_color_scheme }) => prefers_color_scheme === "dark" ? test_theme : test_theme}
+          $theme={test_theme}
           $enableBoxSelection={true}
           $themeId="YOOOO"
-          $defineThemeStylesInline={false}
           className="w-[500px] h-[300px] "
           $persistOnLocalstorage
+          $boxSelectionOptions={{
+            className: "rounded-[6px]",
+          }}
         >
           <div className="text-primary ">
             Within this box, is a separate theme container!
@@ -103,11 +105,18 @@ export default function Home() {
           </SelectableGroup>
           <br />
           <br />
-          <Selectable>
-            <div className="box-select-by-id-[default]:!border-red-500 border-[6px] box-select:!border-blue-500 border-yellow-500 w-fit  ">
-              red for purple, blue for pink
+          <Theme
+            $theme={[default_theme, test_theme2]}
+            $enableBoxSelection={false}
+            $themeId="test"
+            className="w-fit h-fit"
+            $persistOnLocalstorage={true}
+          >
+            <div className="theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black ">
+              if your system is light, I am light. if your system is dark, I am
+              dark.
             </div>
-          </Selectable>
+          </Theme>
         </Theme>
       </div>
 

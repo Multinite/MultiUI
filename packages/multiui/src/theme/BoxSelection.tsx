@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import useSelectify from "use-selectify";
 import { ThemeT } from "../types";
+import { Schemes } from "./Theme";
 
 function BoxSelection({
   themeId,
@@ -10,7 +11,7 @@ function BoxSelection({
   enableBoxSelection,
   theme,
 }: {
-  theme: ThemeT;
+  theme: ThemeT | Schemes;
   themeId: string;
   enableBoxSelection: boolean;
   boxSelectionOptions: {
@@ -23,10 +24,13 @@ function BoxSelection({
     autoScrollStep?: number;
     disableUnselection?: boolean;
     maxSelections?: number | false;
+    className?: string;
   };
 }) {
   if (!enableBoxSelection) return null;
-  const [themeState, setThemeState] = useState<ThemeT>(theme);
+  const [themeState, setThemeState] = useState<ThemeT>(
+    Array.isArray(theme) ? theme[0] : theme
+  );
 
   const element = useRef(
     typeof document === "undefined"
@@ -66,6 +70,7 @@ function BoxSelection({
         backgroundColor: `hsl(${themeState.primary["DEFAULT"]}, 20%)`,
         border: `1px solid hsl(${themeState.primary["DEFAULT"]}, 100%)`,
       }}
+      className={boxSelectionOptions.className}
     />
   );
 }

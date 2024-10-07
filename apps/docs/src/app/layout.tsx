@@ -28,7 +28,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             $theme={default_theme}
             $themeId="default"
             $enableBoxSelection={true}
-            $defineThemeStylesInline={false}
             $persistOnLocalstorage
             $updateDocumentColorScheme
           >

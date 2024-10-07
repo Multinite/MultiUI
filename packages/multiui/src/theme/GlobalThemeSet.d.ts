@@ -1,14 +1,15 @@
 import type { ThemeT } from "../types/MultiUIConfig";
+import { Schemes } from "./Theme";
 export type GlobalThisMultiUIType = {
     themes: {
-        [key: string]: ThemeT;
+        [key: string]: [dark: ThemeT, light: ThemeT];
     };
     defineThemeStylesInline: {
         [key: string]: boolean;
     };
     boxSelectionThemeSubscriptions: {
         themeId: string;
-        cb: (theme: ThemeT) => void;
+        cb: (theme: ThemeT | Schemes) => void;
     }[];
 };
 /**
@@ -16,9 +17,7 @@ export type GlobalThisMultiUIType = {
  * Sets global values of MultiUI, including localstorage.
  */
 declare function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, updateDocumentColorScheme, persistOnLocalstorage, }: {
-    theme: ThemeT | ((args: {
-        prefers_color_scheme: "dark" | "light" | undefined;
-    }) => ThemeT);
+    theme: ThemeT | Schemes;
     themeId: string;
     defineThemeStylesInline: boolean;
     updateDocumentColorScheme: boolean;

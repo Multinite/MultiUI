@@ -1,6 +1,7 @@
 import { ThemeT } from "../types";
+import { Schemes } from "./Theme";
 declare function BoxSelection({ themeId, boxSelectionOptions, enableBoxSelection, theme, }: {
-    theme: ThemeT;
+    theme: ThemeT | Schemes;
     themeId: string;
     enableBoxSelection: boolean;
     boxSelectionOptions: {
@@ -13,6 +14,7 @@ declare function BoxSelection({ themeId, boxSelectionOptions, enableBoxSelection
         autoScrollStep?: number;
         disableUnselection?: boolean;
         maxSelections?: number | false;
+        className?: string;
     };
 }): import("react/jsx-runtime").JSX.Element | null;
 export default BoxSelection;

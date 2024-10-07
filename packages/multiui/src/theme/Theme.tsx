@@ -1,10 +1,12 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
-import { cn } from "../utils/cn";
 import GlobalThemeSet from "./GlobalThemeSet";
 import BoxSelection from "./BoxSelection";
+import { ScriptComponnet } from "./ScriptComponnet";
 
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
+
+export type Schemes = [dark: ThemeT, light: ThemeT];
 
 export const Theme = forwardRef<
   HTMLDivElement,
@@ -25,12 +27,16 @@ export const Theme = forwardRef<
     $persistOnLocalstorage?: boolean;
     /**
      * The theme to use.
+     *
+     * If you want to cater the users color scheme preference, you must pass an array with two theme objects, first being dark, second being light.
+     * Or you can pass a single theme which will be used for both dark and light.
+     *
+     * @example
+     * <Theme $theme={[darkTheme, lightTheme]}>
+     *   <App />
+     * </Theme>
      */
-    $theme:
-      | ((args: {
-          prefers_color_scheme: "dark" | "light" | undefined;
-        }) => ThemeT)
-      | ThemeT;
+    $theme: ThemeT | Schemes;
     children?: ReactNode;
     /**
      * Whether to define the theme styles inline.
@@ -105,6 +111,11 @@ export const Theme = forwardRef<
        * @default Infinity
        */
       maxSelections?: number | false;
+      /**
+       * Any additional className to be added to the box-selection element.
+       * @default undefined
+       */
+      className?: string;
     };
   } & HTMLAttributes<HTMLDivElement>
 >(
@@ -124,6 +135,7 @@ export const Theme = forwardRef<
         autoScrollEdgeDistance: 100,
         autoScrollStep: 30,
         disableUnselection: false,
+        className: undefined,
       },
       $enableBoxSelection = false,
       children,
@@ -141,19 +153,34 @@ export const Theme = forwardRef<
         `Invalid themeId: "${$themeId}"\nPlease do not use "true" or "false" as a themeId.`
       );
     }
+    if (Array.isArray($theme)) {
+      const [dark, light] = $theme;
 
-    if (
-      $theme.name === "true" ||
-      $theme.name === "false" ||
-      $theme.name === "id"
-    )
-      throw new Error(
-        `Invalid theme: "${$theme.name}"\nPlease do not use "true" or "false" or "id" as a theme name.`
-      );
-    let theme =
-      typeof $theme === "function"
-        ? $theme({ prefers_color_scheme: undefined })
-        : $theme;
+      if (dark.name === "true" || dark.name === "false" || dark.name === "id")
+        throw new Error(
+          `Invalid theme name for dark-mode: "${dark.name}"\nPlease do not use "true" or "false" or "id" as a theme name.`
+        );
+
+      if (
+        light.name === "true" ||
+        light.name === "false" ||
+        light.name === "id"
+      )
+        throw new Error(
+          `Invalid theme name for light-mode: "${light.name}"\nPlease do not use "true" or "false" or "id" as a theme name.`
+        );
+    } else {
+      if (
+        $theme.name === "true" ||
+        $theme.name === "false" ||
+        $theme.name === "id"
+      )
+        throw new Error(
+          `Invalid theme name: "${$theme.name}"\nPlease do not use "true" or "false" or "id" as a theme name.`
+        );
+    }
+
+    const $serverSelectedTheme = Array.isArray($theme) ? $theme[0] : $theme;
 
     if ($defineThemeStylesInline) {
       return (
@@ -167,22 +194,24 @@ export const Theme = forwardRef<
           />
           <div className="relative" slot="multiui-theme-wrapper">
             <div
+              suppressHydrationWarning
               {...attr}
               slot="multiui-theme"
-              data-theme={theme.name}
+              id={`multiui-theme-${$themeId}`}
+              data-theme={$serverSelectedTheme.name}
               {...(!$themeId ? {} : { "data-theme-id": $themeId })}
               style={{
                 ...style,
                 position: $enableBoxSelection ? "relative" : "static",
                 ...getThemeFormatted({
-                  theme: theme,
+                  theme: $serverSelectedTheme,
                   outputType: "inline-style-object",
                 }),
               }}
               ref={ref}
             >
               <BoxSelection
-                theme={theme}
+                theme={$theme}
                 themeId={$themeId}
                 boxSelectionOptions={$boxSelectionOptions}
                 enableBoxSelection={$enableBoxSelection}
@@ -190,6 +219,11 @@ export const Theme = forwardRef<
               {children}
             </div>
           </div>
+          <ScriptComponnet
+            theme={$theme}
+            themeId={$themeId}
+            defineThemeStylesInline={$defineThemeStylesInline}
+          />
         </>
       );
     }
@@ -203,10 +237,11 @@ export const Theme = forwardRef<
           persistOnLocalstorage={$persistOnLocalstorage}
           updateDocumentColorScheme={$updateDocumentColorScheme}
         />
-        <div className="relative" slot="multiui-theme-wrapper">
+        {/* <div className="relative" slot="multiui-theme-wrapper">
           <style
             slot="multiui-theme-style"
             data-theme={$theme.name}
+            suppressHydrationWarning
             dangerouslySetInnerHTML={{
               __html: getThemeFormatted({
                 theme: theme,
@@ -227,14 +262,14 @@ export const Theme = forwardRef<
             }}
           >
             <BoxSelection
-              theme={theme}
+              theme={$theme}
               themeId={$themeId}
               boxSelectionOptions={$boxSelectionOptions}
               enableBoxSelection={$enableBoxSelection}
             />
             {children}
-          </div>
-        </div>
+          </div> 
+        </div>*/}
       </>
     );
   }

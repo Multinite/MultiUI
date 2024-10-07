@@ -6,7 +6,7 @@ import useSelectify from "use-selectify";
 function BoxSelection({ themeId, boxSelectionOptions, enableBoxSelection, theme, }) {
     if (!enableBoxSelection)
         return null;
-    const [themeState, setThemeState] = useState(theme);
+    const [themeState, setThemeState] = useState(Array.isArray(theme) ? theme[0] : theme);
     const element = useRef(typeof document === "undefined"
         ? null
         : document.querySelector(`[data-theme-id="${themeId}"]`));
@@ -38,7 +38,7 @@ function BoxSelection({ themeId, boxSelectionOptions, enableBoxSelection, theme,
     return (_jsx(SelectBoxOutlet, { style: {
             backgroundColor: `hsl(${themeState.primary["DEFAULT"]}, 20%)`,
             border: `1px solid hsl(${themeState.primary["DEFAULT"]}, 100%)`,
-        } }));
+        }, className: boxSelectionOptions.className }));
 }
 export default BoxSelection;
 //# sourceMappingURL=BoxSelection.js.map

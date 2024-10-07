@@ -5,7 +5,7 @@ import { multiUIConfig } from "./multiui.config";
 const config: Config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "../../packages/multiui/**/*.{js,ts,jsx,tsx,mdx}",
+    "../../packages/multiui/src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {},
   plugins: [MultiUIPlugin(multiUIConfig)],
