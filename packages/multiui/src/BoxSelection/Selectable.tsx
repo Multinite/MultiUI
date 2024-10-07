@@ -2,8 +2,6 @@
 import {
   cloneElement,
   forwardRef,
-  useEffect,
-  useRef,
   type HTMLAttributes,
   type ReactElement,
 } from "react";
