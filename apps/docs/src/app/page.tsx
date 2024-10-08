@@ -125,27 +125,27 @@ export default function Home() {
                 </div>
               </Theme>
             </div>
-            {/* <div className="w-full h-fit border-[3px] border-indigo-500 ">
+          </Theme>
+        </div>
+        <div className="w-full h-fit border-[3px] border-indigo-500 mt-10">
+          <Theme
+            $theme={test_theme2}
+            $enableBoxSelection={true}
+            $themeId="test2"
+            className="w-full h-[100px] select-none border-[3px] border-indigo-500 bg-primary/20"
+            $persistOnLocalstorage={false}
+          >
+            <div className="">TEST</div>
+
             <Theme
-              $theme={test_theme2}
+              $theme={default_theme}
               $enableBoxSelection={true}
-              $themeId="test2"
-              className="w-full h-[100px] select-none border-[3px] border-indigo-500"
+              $themeId="test3"
+              className="w-full h-[80px] bg-black/50 border-[3px] border-indigo-500"
               $persistOnLocalstorage={false}
             >
               <div className="">TEST</div>
-
-              <Theme
-                $theme={default_theme}
-                $enableBoxSelection={true}
-                $themeId="test3"
-                className="w-full h-[80px] bg-black/50 border-[3px] border-indigo-500"
-                $persistOnLocalstorage={false}
-              >
-                <div className="">TEST</div>
-              </Theme>
             </Theme>
-          </div> */}
           </Theme>
         </div>
         {/* <Theme

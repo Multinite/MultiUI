@@ -144,10 +144,10 @@ export function formatTheme(prefix = "multiui", e) {
     };
     function cssVar(value, transp) {
         //@ts-expect-error - this works.
-        return `hsl(var(--${prefix}-${value
+        return `hsl${transp ? "a" : ""}(var(--${prefix}-${value
             .map((x) => x.replaceAll("-", "_"))
             .filter((x) => x)
-            .join("-")})${transp ? ` / ${transp}` : ""})`;
+            .join("-")})${transp ? `, ${transp}` : ""})`;
     }
 }
 //# sourceMappingURL=formatTheme.js.map

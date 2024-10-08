@@ -254,12 +254,12 @@ export function formatTheme(
   >(
     value: Val,
     transp?: Transp
-  ): `hsl(var(--${typeof prefix}-${RemoveTrailingHyphen<JoinWithHyphen<Val>>})${Transp extends undefined ? "" : ` \/ ${Transp}`})` {
+  ): `hsl${Transp extends undefined ? "" : `a`}(var(--${typeof prefix}-${RemoveTrailingHyphen<JoinWithHyphen<Val>>})${Transp extends undefined ? "" : ` , ${Transp}`})` {
     //@ts-expect-error - this works.
-    return `hsl(var(--${prefix}-${value
+    return `hsl${transp ? "a" : ""}(var(--${prefix}-${value
       .map((x) => x.replaceAll("-", "_"))
       .filter((x) => x)
-      .join("-")})${transp ? ` / ${transp}` : ""})` as const;
+      .join("-")})${transp ? `, ${transp}` : ""})` as const;
   }
 }
 type JoinWithHyphen<T extends string[]> = T extends []
