@@ -2,7 +2,7 @@
 import type { ThemeT } from "../types/MultiUIConfig";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { useLocalStorage } from "../utils/useLocalStorage";
-import { getColorSchemeSync, useColorScheme } from "./useColorScheme";
+import { getColorSchemeSync } from "./useColorScheme";
 import { setThemeToUI } from "./setTheme";
 import { Schemes } from "./Theme";
 
@@ -112,28 +112,6 @@ function useClearServerGlobalThis() {
     }
   }
 }
-
-// function useSetInitialGlobalValues({
-//   initialTheme,
-//   initialThemeId,
-//   defineThemeStylesInline,
-//   persistOnLocalstorage,
-//   setValue,
-// }: {
-//   initialTheme: ThemeT;
-//   initialThemeId: string;
-//   defineThemeStylesInline: boolean;
-//   persistOnLocalstorage: boolean;
-//   setValue: Dispatch<SetStateAction<ThemeT>>;
-// }) {
-//   setDefaultGlobalValues({
-//     theme: initialTheme,
-//     themeId: initialThemeId,
-//     defineThemeStylesInline,
-//     persistOnLocalstorage,
-//     setValue,
-//   });
-// }
 
 function setDefaultGlobalValues({
   theme,

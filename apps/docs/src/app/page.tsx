@@ -37,6 +37,7 @@ export default function Home() {
       console.log("press end");
     },
   });
+
   return (
     <BoxSelection $boxSelectionId="hi">
       <div className="flex flex-col items-center justify-center w-screen h-screen gap-5 bg-background text-foreground">
@@ -66,7 +67,7 @@ export default function Home() {
             $theme={test_theme}
             $enableBoxSelection={true}
             $themeId="YOOOO"
-            className="w-[500px] h-fit border-[3px] border-indigo-500"
+            className="w-[500px] h-fit border-[3px] border-indigo-500 text-secondary"
             $persistOnLocalstorage
             $boxSelectionOptions={{
               className: "rounded-[6px]",
@@ -116,7 +117,7 @@ export default function Home() {
                 $persistOnLocalstorage={false}
               >
                 <div
-                  className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black "
+                  className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black bg-primary-500/45 via-red-500 via-primary/20"
                   data-exclsion-zone
                 >
                   if your system is light, I am light. if your system is dark, I

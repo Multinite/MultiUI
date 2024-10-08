@@ -71,27 +71,6 @@ function useClearServerGlobalThis() {
         }
     }
 }
-// function useSetInitialGlobalValues({
-//   initialTheme,
-//   initialThemeId,
-//   defineThemeStylesInline,
-//   persistOnLocalstorage,
-//   setValue,
-// }: {
-//   initialTheme: ThemeT;
-//   initialThemeId: string;
-//   defineThemeStylesInline: boolean;
-//   persistOnLocalstorage: boolean;
-//   setValue: Dispatch<SetStateAction<ThemeT>>;
-// }) {
-//   setDefaultGlobalValues({
-//     theme: initialTheme,
-//     themeId: initialThemeId,
-//     defineThemeStylesInline,
-//     persistOnLocalstorage,
-//     setValue,
-//   });
-// }
 function setDefaultGlobalValues({ theme, themeId, defineThemeStylesInline, persistOnLocalstorage, setValue, }) {
     if (!globalThis["multiUI"]) {
         globalThis.multiUI = {

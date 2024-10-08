@@ -1,20 +1,42 @@
 import plugin from "tailwindcss/plugin";
-import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
 import type { MultiUIConfig } from "../types/MultiUIConfig.js";
+import { formatTheme } from "./utils/formatTheme.js";
+import type { KeyValuePair } from "tailwindcss/types/config.js";
+
+type MatchVariant = <T = string>(
+  name: string,
+  cb: (
+    value: T | string,
+    extra: {
+      modifier: string | null;
+    }
+  ) => string | string[],
+  options?: {
+    values?: KeyValuePair<string, T>;
+    sort?(
+      a: {
+        value: T | string;
+        modifier: string | null;
+      },
+      b: {
+        value: T | string;
+        modifier: string | null;
+      }
+    ): number;
+  }
+) => void;
+
+type AddVariant = (
+  name: string,
+  definition: string | string[] | (() => string) | (() => string)[]
+) => void;
 
 export const MultiUIPlugin = function (
   multiUIConfig: MultiUIConfig & { $schema?: string }
 ) {
   const prefix = (multiUIConfig.theme_prefix || "multiui") as "multiui";
 
-  function cssVar(value: string[]) {
-    return `hsl(var(--${prefix}-${value
-      .map((x) => x.replaceAll("-", "_"))
-      .filter((x) => x)
-      .join("-")}))` as const;
-  }
   return plugin(function ({
-    theme,
     addUtilities,
     addComponents,
     addBase,
@@ -23,172 +45,58 @@ export const MultiUIPlugin = function (
     addVariant,
     matchVariant,
   }) {
-    const allColorIndexs = [
-      -1, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900,
-    ] as const;
-    type ColorIndexs =
-      | 50
-      | 100
-      | 200
-      | 300
-      | 400
-      | 500
-      | 600
-      | 700
-      | 800
-      | 900
-      | "DEFAULT";
-    type ColorIndexValues =
-      | 50
-      | 100
-      | 200
-      | 300
-      | 400
-      | 500
-      | 600
-      | 700
-      | 800
-      | 900;
-    const allColorTypes = [
-      "primary",
-      "secondary",
-      "foreground",
-      "background",
-    ] as const;
-    type StyleObj = RecursiveKeyValuePair;
-    const allColorUtils = ["bg", "text"] as const;
-    const allColorUtilValues = {
-      bg: (
-        colorType: (typeof allColorTypes)[number],
-        colorIndex: ColorIndexs
-      ) => ({
-        backgroundColor: cssVar([
-          colorType,
-          colorIndex === "DEFAULT" ? "" : colorIndex.toString(),
-        ]),
-      }),
-      text: (
-        colorType: (typeof allColorTypes)[number],
-        colorIndex: ColorIndexs
-      ) => ({
-        color: cssVar([
-          colorType,
-          colorIndex === "DEFAULT" ? "" : colorIndex.toString(),
-        ]),
-      }),
-    };
-    type Utils = Record<
-      `.${(typeof allColorUtils)[number]}-${(typeof allColorTypes)[number]}${
-        | ""
-        | `-${ColorIndexValues}`}`,
-      StyleObj
-    >;
-    const colorUtils: Utils = allColorUtils.reduce((zacc, z) => {
-      return {
-        ...zacc,
-        ...allColorTypes.reduce((acc, x) => {
-          return allColorIndexs.reduce((acc2, x2) => {
-            return {
-              ...acc2,
-              [`.${z}-${x}${x2 === -1 ? "" : `-${x2}`}`]: allColorUtilValues[z](
-                x,
-                x2 === -1 ? "DEFAULT" : x2
-              ),
-            };
-          }, acc);
-        }, {}),
-      };
-    }, {}) as Utils;
-
-    const allSizeClasses = [
-      {
-        class: "text",
-        values: {
-          small: {
-            fontSize: cssVar(["text", "small"]),
-          },
-          medium: {
-            fontSize: cssVar(["text", "medium"]),
-          },
-          large: {
-            fontSize: cssVar(["text", "large"]),
-          },
-        },
-      },
-      {
-        class: "rounded",
-        values: {
-          small: {
-            borderRadius: cssVar(["rounded", "small"]),
-          },
-          medium: {
-            borderRadius: cssVar(["rounded", "medium"]),
-          },
-          large: {
-            borderRadius: cssVar(["rounded", "large"]),
-          },
-        },
-      },
-    ] as const;
-
-    const sizeClasses = allSizeClasses.reduce((acc, x) => {
-      const values = Object.entries(x.values)
-        .map(([k, v]) => {
-          return {
-            [`.${x.class}-${k}`]: v,
-          };
-        })
-        .reduce((zacc, z) => {
-          return {
-            ...zacc,
-            ...z,
-          };
-        }, {});
-
-      return {
-        ...acc,
-        ...values,
-      };
-    }, {});
-
-    const utils = {
-      ...colorUtils,
-      ...sizeClasses,
-      ".outline-focus": {
-        outlineColor: `hsl(var(--${prefix}-focus))`,
-      },
-      ".ring-focus": {
-        "--tw-ring-opacity": (1).toString(),
-        "--tw-ring-color": `hsl(var(--${prefix}-focus) / var(--tw-ring-opacity))`,
-      },
-    };
+    const { utils } = formatTheme(prefix, e);
 
     addUtilities(utils);
-    for (let index = 0; index < multiUIConfig.theme_names.length; index++) {}
-    multiUIConfig.theme_names.forEach((themeName) => {
-      themeName = themeName
-        .replaceAll(" ", "-")
-        .replaceAll('"', "")
-        .replaceAll("'", "");
-      addVariant(`theme-${themeName}`, `[data-theme="${themeName}"] &`);
-      addVariant(`box-select-via-${themeName}`, `&[data-selected-theme="${themeName}"]`);
-    });
-    matchVariant("theme", (themeName) => {
-      themeName = themeName
-        .replaceAll(" ", "-")
-        .replaceAll('"', "")
-        .replaceAll("'", "");
-      return `[data-theme="${themeName}"] &`;
-    });
-    addVariant("themed", "[data-theme] &");
-    addVariant("box-select", "&[aria-selected]");
-    matchVariant("box-select-by-name", (themeName) => {
-      themeName = themeName.replaceAll('"', "").replaceAll("'", "");
-      return `&[data-selected-theme="${themeName}"]`;
-    });
-    matchVariant("box-select-by-id", (themeName) => {
-      themeName = themeName.replaceAll('"', "").replaceAll("'", "");
-      return `&[data-selected-theme-id="${themeName}"]`;
-    });
+    addThemeClasses({ addVariant, matchVariant, multiUIConfig });
+    addBoxSelectClasses({ addVariant, matchVariant });
   });
 };
+
+function addThemeClasses({
+  addVariant,
+  matchVariant,
+  multiUIConfig,
+}: {
+  multiUIConfig: MultiUIConfig;
+  addVariant: AddVariant;
+  matchVariant: MatchVariant;
+}) {
+  multiUIConfig.theme_names.forEach((themeName) => {
+    themeName = themeName
+      .replaceAll(" ", "-")
+      .replaceAll('"', "")
+      .replaceAll("'", "");
+    addVariant(`theme-${themeName}`, `[data-theme="${themeName}"] &`);
+    addVariant(
+      `box-select-via-${themeName}`,
+      `&[data-selected-theme="${themeName}"]`
+    );
+  });
+  matchVariant("theme", (themeName) => {
+    themeName = themeName
+      .replaceAll(" ", "-")
+      .replaceAll('"', "")
+      .replaceAll("'", "");
+    return `[data-theme="${themeName}"] &`;
+  });
+  addVariant("themed", "[data-theme] &");
+}
+
+function addBoxSelectClasses({
+  addVariant,
+  matchVariant,
+}: {
+  addVariant: AddVariant;
+  matchVariant: MatchVariant;
+}) {
+  addVariant("box-select", "&[aria-selected]");
+  matchVariant("box-select-by-name", (themeName) => {
+    themeName = themeName.replaceAll('"', "").replaceAll("'", "");
+    return `&[data-selected-theme="${themeName}"]`;
+  });
+  matchVariant("box-select-by-id", (themeName) => {
+    themeName = themeName.replaceAll('"', "").replaceAll("'", "");
+    return `&[data-selected-theme-id="${themeName}"]`;
+  });
+}
