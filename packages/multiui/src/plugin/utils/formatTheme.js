@@ -47,15 +47,23 @@ export function formatTheme(prefix = "multiui", e) {
         shadow: ({ colorIndex, colorType, colorTransparency }) => ({
             "--tw-shadow-color": cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined),
         }),
-        from: ({ colorIndex, colorType, colorTransparency }) => ({
-            "--tw-gradient-from": cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined),
-        }),
-        via: ({ colorIndex, colorType, colorTransparency }) => ({
-            "--tw-gradient-via": cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined) + " / var(--tw-gradient-to-position)",
-            "--tw-gradient-stops": `var(--tw-gradient-from), ${cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined)} var(--tw-gradient-via-position), var(--tw-gradient-to)`,
-        }),
+        from: ({ colorIndex, colorType, colorTransparency }) => {
+            const color = cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined);
+            return {
+                "--tw-gradient-from": `${color} var(--tw-gradient-from-position)`,
+                "--tw-gradient-to": `${color} var(--tw-gradient-to-position)`,
+                "--tw-gradient-stops": "var(--tw-gradient-from), var(--tw-gradient-to)",
+            };
+        },
+        via: ({ colorIndex, colorType, colorTransparency }) => {
+            const color = cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined);
+            return {
+                "--tw-gradient-to": color + " var(--tw-gradient-to-position)",
+                "--tw-gradient-stops": `var(--tw-gradient-from), ${color} var(--tw-gradient-via-position), var(--tw-gradient-to)`,
+            };
+        },
         to: ({ colorIndex, colorType, colorTransparency }) => ({
-            "--tw-gradient-to": cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined),
+            "--tw-gradient-to": cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined) + ` var(--tw-gradient-to-position);`,
         }),
     };
     // todo: add transparency values too

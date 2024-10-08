@@ -117,7 +117,7 @@ export default function Home() {
                 $persistOnLocalstorage={false}
               >
                 <div
-                  className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black bg-primary-500/45 via-red-500 via-primary/20"
+                  className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black bg-gradient-to-r from-primary to-secondary"
                   data-exclsion-zone
                 >
                   if your system is light, I am light. if your system is dark, I

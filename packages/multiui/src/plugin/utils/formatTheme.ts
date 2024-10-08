@@ -122,28 +122,33 @@ export function formatTheme(
         colorTransparency ? colorTransparency / 100 : undefined
       ),
     }),
-    from: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      "--tw-gradient-from": cssVar(
+    from: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
-      ),
-    }),
-    via: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      "--tw-gradient-via":
+      );
+      return {
+        "--tw-gradient-from": `${color} var(--tw-gradient-from-position)`,
+        "--tw-gradient-to": `${color} var(--tw-gradient-to-position)`,
+        "--tw-gradient-stops": "var(--tw-gradient-from), var(--tw-gradient-to)",
+      };
+    },
+    via: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color = cssVar(
+        [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
+        colorTransparency ? colorTransparency / 100 : undefined
+      );
+      return {
+        "--tw-gradient-to": color + " var(--tw-gradient-to-position)",
+        "--tw-gradient-stops": `var(--tw-gradient-from), ${color} var(--tw-gradient-via-position), var(--tw-gradient-to)`,
+      };
+    },
+    to: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
+      "--tw-gradient-to":
         cssVar(
           [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
           colorTransparency ? colorTransparency / 100 : undefined
-        ) + " / var(--tw-gradient-to-position)",
-      "--tw-gradient-stops": `var(--tw-gradient-from), ${cssVar(
-        [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
-        colorTransparency ? colorTransparency / 100 : undefined
-      )} var(--tw-gradient-via-position), var(--tw-gradient-to)`,
-    }),
-    to: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      "--tw-gradient-to": cssVar(
-        [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
-        colorTransparency ? colorTransparency / 100 : undefined
-      ),
+        ) + ` var(--tw-gradient-to-position);`,
     }),
   };
 
