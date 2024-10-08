@@ -102,7 +102,7 @@ export default function Home() {
               <div className="border border-yellow-500 selectable box-select:bg-primary text-secondary">
                 Option 1
               </div>
-              <div className="border-[3px] border-yellow-500 selectable box-select:bg-primary text-secondary box-select-by-name-[multiui_default]:!border-green-500">
+              <div className="border-[3px] border-yellow-500 selectable box-select:bg-primary text-secondary box-select-by-name-[multiui_default]:!border-green-500 rounded-r-lg">
                 Option 2
               </div>
             </SelectableGroup>
@@ -117,7 +117,7 @@ export default function Home() {
                 $persistOnLocalstorage={false}
               >
                 <div
-                  className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black bg-gradient-to-r from-primary to-secondary"
+                  className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black bg-gradient-to-r from-primary to-secondary via-secondary/65 text-primary/50 border-primary ring-primary-500 "
                   data-exclsion-zone
                 >
                   if your system is light, I am light. if your system is dark, I

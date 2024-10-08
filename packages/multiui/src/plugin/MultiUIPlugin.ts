@@ -1,5 +1,5 @@
 import plugin from "tailwindcss/plugin";
-import type { MultiUIConfig } from "../types/MultiUIConfig.js";
+import type { MultiUIConfig, ThemeT } from "../types/MultiUIConfig.js";
 import { formatTheme } from "./utils/formatTheme.js";
 import type { KeyValuePair } from "tailwindcss/types/config.js";
 
@@ -32,7 +32,13 @@ type AddVariant = (
 ) => void;
 
 export const MultiUIPlugin = function (
-  multiUIConfig: MultiUIConfig & { $schema?: string }
+  multiUIConfig: MultiUIConfig & { $schema?: string },
+  /**
+   * We use this theme to generate the colors for you to preview in Tailwind.
+   *
+   * ![Example Image showing how you can see the color next to the tailwind class](https://multiui.org/code/example-tw-with-color.png)
+   */
+  exampleTheme?: ThemeT
 ) {
   const prefix = (multiUIConfig.theme_prefix || "multiui") as "multiui";
 
@@ -45,7 +51,7 @@ export const MultiUIPlugin = function (
     addVariant,
     matchVariant,
   }) {
-    const { utils } = formatTheme(prefix, e);
+    const { utils } = formatTheme(prefix, e, exampleTheme);
 
     addUtilities(utils);
     addThemeClasses({ addVariant, matchVariant, multiUIConfig });

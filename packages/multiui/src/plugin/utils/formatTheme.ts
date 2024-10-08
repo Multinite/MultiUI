@@ -1,5 +1,6 @@
 import Color from "color";
 import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
+import { ThemeT } from "../../types";
 type ColorIndexs = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 type ColorIndexValues =
   | 50
@@ -74,7 +75,8 @@ type getCssVariable = {
 
 export function formatTheme(
   prefix: string = "multiui",
-  e: (className: string) => string
+  e: (className: string) => string,
+  exampleTheme?: ThemeT
 ) {
   const getCSSStylesFromColorData = {
     bg: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
@@ -88,49 +90,97 @@ export function formatTheme(
         colorTransparency ? colorTransparency / 100 : undefined
       ),
     }),
-    text: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      color: cssVar(
+    text: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const colorVar = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
-      ),
-    }),
-    border: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      borderColor: cssVar(
+      );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
+      return {
+        color: colorVar + colorExample,
+      };
+    },
+    border: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
-      ),
-    }),
-    ring: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      "--tw-ring-color": cssVar(
+      );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
+      return {
+        borderColor: color + colorExample,
+      };
+    },
+    ring: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
-      ),
-    }),
-    outline: ({
-      colorIndex,
-      colorType,
-      colorTransparency,
-    }: getCssVariable) => ({
-      "--tw-ring-color": cssVar(
+      );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
+      return {
+        "--tw-ring-color": color + colorExample,
+      };
+    },
+    outline: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
-      ),
-    }),
-    shadow: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      "--tw-shadow-color": cssVar(
+      );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
+      return {
+        "--tw-ring-color": color + colorExample,
+      };
+    },
+    shadow: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
-      ),
-    }),
+      );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
+      return {
+        "--tw-shadow-color": color + colorExample,
+      };
+    },
     from: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
       const color = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
       );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
       return {
         "--tw-gradient-from": `${color} var(--tw-gradient-from-position)`,
         "--tw-gradient-to": `${color} var(--tw-gradient-to-position)`,
-        "--tw-gradient-stops": "var(--tw-gradient-from), var(--tw-gradient-to)",
+        "--tw-gradient-stops":
+          "var(--tw-gradient-from), var(--tw-gradient-to)" + colorExample,
       };
     },
     via: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
@@ -138,18 +188,35 @@ export function formatTheme(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
       );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
       return {
         "--tw-gradient-to": color + " var(--tw-gradient-to-position)",
-        "--tw-gradient-stops": `var(--tw-gradient-from), ${color} var(--tw-gradient-via-position), var(--tw-gradient-to)`,
+        "--tw-gradient-stops":
+          `var(--tw-gradient-from), ${color} var(--tw-gradient-via-position), var(--tw-gradient-to)` +
+          colorExample,
       };
     },
-    to: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      "--tw-gradient-to":
+    to: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color =
         cssVar(
           [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
           colorTransparency ? colorTransparency / 100 : undefined
-        ) + ` var(--tw-gradient-to-position);`,
-    }),
+        ) + ` var(--tw-gradient-to-position);`;
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
+      return {
+        "--tw-gradient-to": color + colorExample,
+      };
+    },
   };
 
   type Utils = Record<
@@ -205,13 +272,100 @@ export function formatTheme(
       class: "rounded",
       values: {
         small: {
-          borderRadius: cssVar(["rounded", "small"]),
+          borderRadius: cssVar(["rounded", "small"] as const, undefined),
         },
         medium: {
           borderRadius: cssVar(["rounded", "medium"]),
         },
         large: {
           borderRadius: cssVar(["rounded", "large"]),
+        },
+        //--- large
+        "t-large": {
+          borderTopLeftRadius: cssVar(["rounded", "large"]),
+          borderTopRightRadius: cssVar(["rounded", "large"]),
+        },
+        "b-large": {
+          borderBottomLeftRadius: cssVar(["rounded", "large"]),
+          borderBottomRightRadius: cssVar(["rounded", "large"]),
+        },
+        "l-large": {
+          borderBottomLeftRadius: cssVar(["rounded", "large"]),
+          borderTopLeftRadius: cssVar(["rounded", "large"]),
+        },
+        "r-large": {
+          borderBottomRightRadius: cssVar(["rounded", "large"]),
+          borderTopRightRadius: cssVar(["rounded", "large"]),
+        },
+        "tl-large": {
+          borderTopLeftRadius: cssVar(["rounded", "large"]),
+        },
+        "tr-large": {
+          borderTopRightRadius: cssVar(["rounded", "large"]),
+        },
+        "bl-large": {
+          borderBottomLeftRadius: cssVar(["rounded", "large"]),
+        },
+        "br-large": {
+          borderBottomRightRadius: cssVar(["rounded", "large"]),
+        },
+        //---- medium
+        "t-medium": {
+          borderTopLeftRadius: cssVar(["rounded", "medium"]),
+          borderTopRightRadius: cssVar(["rounded", "medium"]),
+        },
+        "b-medium": {
+          borderBottomLeftRadius: cssVar(["rounded", "medium"]),
+          borderBottomRightRadius: cssVar(["rounded", "medium"]),
+        },
+        "l-medium": {
+          borderBottomLeftRadius: cssVar(["rounded", "medium"]),
+          borderTopLeftRadius: cssVar(["rounded", "medium"]),
+        },
+        "r-medium": {
+          borderBottomRightRadius: cssVar(["rounded", "medium"]),
+          borderTopRightRadius: cssVar(["rounded", "medium"]),
+        },
+        "tl-medium": {
+          borderTopLeftRadius: cssVar(["rounded", "medium"]),
+        },
+        "tr-medium": {
+          borderTopRightRadius: cssVar(["rounded", "medium"]),
+        },
+        "bl-medium": {
+          borderBottomLeftRadius: cssVar(["rounded", "medium"]),
+        },
+        "br-medium": {
+          borderBottomRightRadius: cssVar(["rounded", "medium"]),
+        },
+        //---- small
+        "t-small": {
+          borderTopLeftRadius: cssVar(["rounded", "small"]),
+          borderTopRightRadius: cssVar(["rounded", "small"]),
+        },
+        "b-small": {
+          borderBottomLeftRadius: cssVar(["rounded", "small"]),
+          borderBottomRightRadius: cssVar(["rounded", "small"]),
+        },
+        "l-small": {
+          borderBottomLeftRadius: cssVar(["rounded", "small"]),
+          borderTopLeftRadius: cssVar(["rounded", "small"]),
+        },
+        "r-small": {
+          borderBottomRightRadius: cssVar(["rounded", "small"]),
+          borderTopRightRadius: cssVar(["rounded", "small"]),
+        },
+        "tl-small": {
+          borderTopLeftRadius: cssVar(["rounded", "small"]),
+        },
+        "tr-small": {
+          borderTopRightRadius: cssVar(["rounded", "small"]),
+        },
+        "bl-small": {
+          borderBottomLeftRadius: cssVar(["rounded", "small"]),
+        },
+        "br-small": {
+          borderBottomRightRadius: cssVar(["rounded", "small"]),
         },
       },
     },
@@ -277,3 +431,21 @@ type JoinWithHyphen<T extends string[]> = T extends []
 type NumberToString<T extends number> = `${T}`;
 
 type RemoveTrailingHyphen<T extends string> = T extends `${infer X}-` ? X : T;
+
+/**
+ * Internal function used specifically for `getCSSStylesFromColorData`.
+ */
+function generateHexFromColor(
+  exampleTheme: ThemeT | undefined,
+  colorType: ColorTypes,
+  colorIndex: ColorIndexs | undefined,
+  colorTransparency: ColorTransparencyValues | undefined
+): string {
+  let color: string | undefined = exampleTheme
+    ? exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
+    : undefined;
+
+  return color
+    ? ` /* ${Color(`hsla(${color}${colorTransparency ? `, ${colorTransparency / 100}` : ""})`).hexa()} */`
+    : "";
+}

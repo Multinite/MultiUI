@@ -1,9 +1,15 @@
 import plugin from "tailwindcss/plugin";
 import { formatTheme } from "./utils/formatTheme.js";
-export const MultiUIPlugin = function (multiUIConfig) {
+export const MultiUIPlugin = function (multiUIConfig, 
+/**
+ * We use this theme to generate the colors for you to preview in Tailwind.
+ *
+ * ![Example Image showing how you can see the color next to the tailwind class](https://multiui.org/code/example-tw-with-color.png)
+ */
+exampleTheme) {
     const prefix = (multiUIConfig.theme_prefix || "multiui");
     return plugin(function ({ addUtilities, addComponents, addBase, e, config, addVariant, matchVariant, }) {
-        const { utils } = formatTheme(prefix, e);
+        const { utils } = formatTheme(prefix, e, exampleTheme);
         addUtilities(utils);
         addThemeClasses({ addVariant, matchVariant, multiUIConfig });
         addBoxSelectClasses({ addVariant, matchVariant });
