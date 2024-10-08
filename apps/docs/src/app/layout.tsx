@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cn, Theme, ThemeProvider } from "@multinite_official/multiui";
+import { cn, Theme, MultiUIProvider } from "@multinite_official/multiui";
 import type { ReactNode } from "react";
 import { default_theme } from "./test/themes";
 
@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         )}
       >
         {process.env.NODE_ENV === "production" && <Analytics />}
-        <ThemeProvider>
+        <MultiUIProvider >
           <Theme
             $theme={default_theme}
             $themeId="default"
@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           >
             {children as any}
           </Theme>
-        </ThemeProvider>
+        </MultiUIProvider>
       </body>
     </html>
   );
