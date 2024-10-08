@@ -4,6 +4,11 @@ import { isMobile } from "react-device-detect";
 import useSelectify from "use-selectify";
 import { cn } from "../utils";
 
+/**
+ * Enable box-selection for this component.
+ *
+ * @see {@link https://multiui.org/docs/box-selection}
+ */
 export function BoxSelection({
   $boxSelectionId,
   $boxSelectionOptions = {

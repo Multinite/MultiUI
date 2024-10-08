@@ -1,4 +1,9 @@
 import { type HTMLAttributes, type ReactNode } from "react";
+/**
+ * Enable box-selection for this component.
+ *
+ * @see {@link https://multiui.org/docs/box-selection}
+ */
 export declare function BoxSelection({ $boxSelectionId, $boxSelectionOptions, children, className, ...attr }: {
     $boxSelectionId: string;
     $boxSelectionOptions?: {
