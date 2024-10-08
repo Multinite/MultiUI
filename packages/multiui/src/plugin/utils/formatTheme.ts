@@ -280,7 +280,7 @@ export function formatTheme(
         large: {
           borderRadius: cssVar(["rounded", "large"]),
         },
-        //--- large
+        //?--- large
         "t-large": {
           borderTopLeftRadius: cssVar(["rounded", "large"]),
           borderTopRightRadius: cssVar(["rounded", "large"]),
@@ -309,7 +309,27 @@ export function formatTheme(
         "br-large": {
           borderBottomRightRadius: cssVar(["rounded", "large"]),
         },
-        //---- medium
+        "e-large": {
+          borderStartEndRadius: cssVar(["rounded", "large"]),
+          borderEndEndRadius: cssVar(["rounded", "large"]),
+        },
+        "s-large": {
+          borderStartStartRadius: cssVar(["rounded", "large"]),
+          borderEndStartRadius: cssVar(["rounded", "large"]),
+        },
+        "ss-large": {
+          borderStartStartRadius: cssVar(["rounded", "large"]),
+        },
+        "se-large": {
+          borderStartEndRadius: cssVar(["rounded", "large"]),
+        },
+        "ee-large": {
+          borderEndEndRadius: cssVar(["rounded", "large"]),
+        },
+        "es-large": {
+          borderEndStartRadius: cssVar(["rounded", "large"]),
+        },
+        //?---- medium
         "t-medium": {
           borderTopLeftRadius: cssVar(["rounded", "medium"]),
           borderTopRightRadius: cssVar(["rounded", "medium"]),
@@ -338,7 +358,27 @@ export function formatTheme(
         "br-medium": {
           borderBottomRightRadius: cssVar(["rounded", "medium"]),
         },
-        //---- small
+        "e-medium": {
+          borderStartEndRadius: cssVar(["rounded", "medium"]),
+          borderEndEndRadius: cssVar(["rounded", "medium"]),
+        },
+        "s-medium": {
+          borderStartStartRadius: cssVar(["rounded", "medium"]),
+          borderEndStartRadius: cssVar(["rounded", "medium"]),
+        },
+        "ss-medium": {
+          borderStartStartRadius: cssVar(["rounded", "medium"]),
+        },
+        "se-medium": {
+          borderStartEndRadius: cssVar(["rounded", "medium"]),
+        },
+        "ee-medium": {
+          borderEndEndRadius: cssVar(["rounded", "medium"]),
+        },
+        "es-medium": {
+          borderEndStartRadius: cssVar(["rounded", "medium"]),
+        },
+        //?---- small
         "t-small": {
           borderTopLeftRadius: cssVar(["rounded", "small"]),
           borderTopRightRadius: cssVar(["rounded", "small"]),
@@ -366,6 +406,26 @@ export function formatTheme(
         },
         "br-small": {
           borderBottomRightRadius: cssVar(["rounded", "small"]),
+        },
+        "e-small": {
+          borderStartEndRadius: cssVar(["rounded", "small"]),
+          borderEndEndRadius: cssVar(["rounded", "small"]),
+        },
+        "s-small": {
+          borderStartStartRadius: cssVar(["rounded", "small"]),
+          borderEndStartRadius: cssVar(["rounded", "small"]),
+        },
+        "ss-small": {
+          borderStartStartRadius: cssVar(["rounded", "small"]),
+        },
+        "se-small": {
+          borderStartEndRadius: cssVar(["rounded", "small"]),
+        },
+        "ee-small": {
+          borderEndEndRadius: cssVar(["rounded", "small"]),
+        },
+        "es-small": {
+          borderEndStartRadius: cssVar(["rounded", "small"]),
         },
       },
     },
