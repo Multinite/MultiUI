@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+"use client";
+import { useEffect, type ReactNode } from "react";
 import type { MultiUIConfig } from "../types";
 import { ThemeProvider } from "../theme/ThemeProvider";
 
@@ -15,18 +16,24 @@ export function MultiUIProvider({
    *
    * @see Dark-reader {@link https://darkreader.org/}
    * @see MultiUI disable dark reader documentation {@link https://multiui.org/docs/dark-reader}
-   * 
+   *
    * @default true
    */
   disableDarkReaderByDeafult?: boolean;
 }) {
-  if (typeof document !== "undefined") {
-    if (disableDarkReaderByDeafult) {
-      const lock = document.createElement("meta");
-      lock.name = "darkreader-lock";
-      document.head.appendChild(lock);
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      if (disableDarkReaderByDeafult) {
+        const findDarkReaderDisableEl = document.querySelector(
+          "meta[name=darkreader-lock]"
+        );
+        if (findDarkReaderDisableEl) return;
+        const lock = document.createElement("meta");
+        lock.name = "darkreader-lock";
+        document.head.appendChild(lock);
+      }
     }
-  }
+  }, []);
 
   return (
     <>

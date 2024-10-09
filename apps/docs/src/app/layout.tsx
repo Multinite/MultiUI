@@ -22,8 +22,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           "overflow-hidden bg-background text-foreground ring-focus transition-[background-color] ease-in-out duration-300"
         )}
       >
-        {process.env.NODE_ENV === "production" && <Analytics />}
-        <MultiUIProvider >
+        <MultiUIProvider disableDarkReaderByDeafult>
+          {process.env.NODE_ENV === "production" && <Analytics />}
           <Theme
             $theme={default_theme}
             $themeId="default"
