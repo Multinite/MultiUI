@@ -191,12 +191,12 @@ const setThemeScript = (args: {
         : args.theme[0]
       : args.theme;
 
+    theme_element.setAttribute("data-theme", theme.name);
     if (args.defineThemeStylesInline) {
       theme_element.style.cssText = getThemeFormatted({
         theme: theme,
         outputType: "inline-style-string",
       });
-      theme_element.setAttribute("data-theme", theme.name);
     }
   }
 

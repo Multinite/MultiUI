@@ -117,10 +117,7 @@ export default function Home() {
                 className="w-full h-[30px] border-[3px] border-indigo-500"
                 $persistOnLocalstorage={false}
               >
-                <div
-                  className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black bg-gradient-to-r from-primary to-secondary via-secondary/65 text-primary/50 border-primary ring-primary-500 "
-                  data-exclsion-zone
-                >
+                <div className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black  ">
                   if your system is light, I am light. if your system is dark, I
                   am dark.
                 </div>
