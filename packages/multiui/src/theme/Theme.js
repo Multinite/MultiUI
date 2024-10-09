@@ -3,8 +3,9 @@ import { forwardRef } from "react";
 import GlobalThemeSet from "./GlobalThemeSet";
 // import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
+import { cn } from "../utils";
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
-export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesInline = true, $updateDocumentColorScheme = true, $persistOnLocalstorage = true, $boxSelectionOptions = {
+export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesInline = false, $updateDocumentColorScheme = true, $persistOnLocalstorage = true, $boxSelectionOptions = {
     lazyLoad: true,
     activateOnMetaKey: true,
     activateOnKey: undefined,
@@ -56,7 +57,14 @@ export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesIn
                     }, ref: ref, children: children }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
     }
     const { className, ...rest } = attr;
-    return (_jsx(_Fragment, { children: _jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, persistOnLocalstorage: $persistOnLocalstorage, updateDocumentColorScheme: $updateDocumentColorScheme }) }));
+    return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, persistOnLocalstorage: $persistOnLocalstorage, updateDocumentColorScheme: $updateDocumentColorScheme }), _jsx("style", { slot: "multiui-theme-style", suppressHydrationWarning: true, dangerouslySetInnerHTML: {
+                    __html: getThemeFormatted({
+                        theme: $serverSelectedTheme,
+                        outputType: "style-element",
+                    }),
+                }, ...(!$themeId ? {} : { "data-style-theme-id": $themeId }) }), _jsx("div", { ...rest, slot: "multiui-theme", "data-theme": $serverSelectedTheme.name, id: `multiui-theme-${$themeId}`, className: cn(`${$serverSelectedTheme.name}_theme`, className), ...(!$themeId ? {} : { "data-theme-id": $themeId }), ref: ref, style: {
+                    position: $enableBoxSelection ? "relative" : "static",
+                }, children: children }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
 });
 export default Theme;
 /**

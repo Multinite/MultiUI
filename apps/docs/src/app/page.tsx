@@ -111,7 +111,7 @@ export default function Home() {
             <br />
             <div className="relative">
               <Theme
-                $theme={[test_theme, test_theme2]}
+                $theme={[default_theme, test_theme2]}
                 $enableBoxSelection={true}
                 $themeId="test"
                 className="w-full h-[30px] border-[3px] border-indigo-500"

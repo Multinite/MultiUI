@@ -34,7 +34,7 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
      *
      * if `true`, the theme style will be define using the `style` attribute of the `<div>` element.
      * Otherwise, the theme style will be defined using a `<style>` element.
-     * @default true
+     * @default false
      */
     $defineThemeStylesInline?: boolean;
     /**

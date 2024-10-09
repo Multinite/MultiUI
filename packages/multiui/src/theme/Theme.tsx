@@ -3,6 +3,7 @@ import type { ThemeT } from "../types/MultiUIConfig";
 import GlobalThemeSet from "./GlobalThemeSet";
 // import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
+import { cn } from "../utils";
 
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
 
@@ -43,7 +44,7 @@ export const Theme = forwardRef<
      *
      * if `true`, the theme style will be define using the `style` attribute of the `<div>` element.
      * Otherwise, the theme style will be defined using a `<style>` element.
-     * @default true
+     * @default false
      */
     $defineThemeStylesInline?: boolean;
     /**
@@ -124,7 +125,7 @@ export const Theme = forwardRef<
       $theme,
       $themeId,
       style,
-      $defineThemeStylesInline = true,
+      $defineThemeStylesInline = false,
       $updateDocumentColorScheme = true,
       $persistOnLocalstorage = true,
       $boxSelectionOptions = {
@@ -204,7 +205,6 @@ export const Theme = forwardRef<
             updateDocumentColorScheme={$updateDocumentColorScheme}
             persistOnLocalstorage={$persistOnLocalstorage}
           />
-          {/* <div className="relative" slot="multiui-theme-wrapper"> */}
           <div
             suppressHydrationWarning
             {...attr}
@@ -222,15 +222,8 @@ export const Theme = forwardRef<
             }}
             ref={ref}
           >
-            {/* <BoxSelection
-                theme={$theme}
-                themeId={$themeId}
-                boxSelectionOptions={$boxSelectionOptions}
-                enableBoxSelection={$enableBoxSelection}
-              /> */}
             {children}
           </div>
-          {/* </div> */}
           <ScriptComponnet
             theme={$theme}
             themeId={$themeId}
@@ -249,39 +242,36 @@ export const Theme = forwardRef<
           persistOnLocalstorage={$persistOnLocalstorage}
           updateDocumentColorScheme={$updateDocumentColorScheme}
         />
-        {/* <div className="relative" slot="multiui-theme-wrapper">
-          <style
-            slot="multiui-theme-style"
-            data-theme={$theme.name}
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{
-              __html: getThemeFormatted({
-                theme: theme,
-                outputType: "style-element",
-              }),
-            }}
-            {...(!$themeId ? {} : { "data-style-theme-id": $themeId })}
-          />
-          <div
-            {...rest}
-            slot="multiui-theme"
-            data-theme={$theme.name}
-            className={cn(`${$theme.name}_theme`, className)}
-            {...(!$themeId ? {} : { "data-theme-id": $themeId })}
-            ref={ref}
-            style={{
-              position: $enableBoxSelection ? "relative" : "static",
-            }}
-          >
-            <BoxSelection
-              theme={$theme}
-              themeId={$themeId}
-              boxSelectionOptions={$boxSelectionOptions}
-              enableBoxSelection={$enableBoxSelection}
-            />
-            {children}
-          </div> 
-        </div>*/}
+        <style
+          slot="multiui-theme-style"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: getThemeFormatted({
+              theme: $serverSelectedTheme,
+              outputType: "style-element",
+            }),
+          }}
+          {...(!$themeId ? {} : { "data-style-theme-id": $themeId })}
+        />
+        <div
+          {...rest}
+          slot="multiui-theme"
+          data-theme={$serverSelectedTheme.name}
+          id={`multiui-theme-${$themeId}`}
+          className={cn(`${$serverSelectedTheme.name}_theme`, className)}
+          {...(!$themeId ? {} : { "data-theme-id": $themeId })}
+          ref={ref}
+          style={{
+            position: $enableBoxSelection ? "relative" : "static",
+          }}
+        >
+          {children}
+        </div>
+        <ScriptComponnet
+          theme={$theme}
+          themeId={$themeId}
+          defineThemeStylesInline={$defineThemeStylesInline}
+        />
       </>
     );
   }
