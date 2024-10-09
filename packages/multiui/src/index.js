@@ -5,4 +5,5 @@ export * from "./types";
 export * from "./utils";
 export * from "./BoxSelection";
 export * from "./MultiUIProvider";
+export * from "./disableDarkModeExtensions";
 //# sourceMappingURL=index.js.map
