@@ -9,10 +9,6 @@ import { Schemes } from "./Theme";
 export type GlobalThisMultiUIType = {
   themes: { [key: string]: [dark: ThemeT, light: ThemeT] };
   defineThemeStylesInline: { [key: string]: boolean };
-  boxSelectionThemeSubscriptions: {
-    themeId: string;
-    cb: (theme: ThemeT | Schemes) => void;
-  }[];
 };
 
 let alreadyUpdatedDocumentColorScheme = false;
@@ -107,7 +103,9 @@ function useClearServerGlobalThis() {
   if (!ranOnce.current && typeof window === "undefined") {
     ranOnce.current = true;
     //? ran on server, clear MultiUI from globalThis.
-    if (globalThis.multiUI) {
+    //@ts-ignore - nextjs won't compile without this...
+    if (typeof globalThis != "undefined" && globalThis.multiUI) {
+      //@ts-ignore - nextjs won't compile without this...
       delete globalThis.multiUI;
     }
   }
@@ -130,8 +128,7 @@ function setDefaultGlobalValues({
     globalThis.multiUI = {
       themes: {},
       defineThemeStylesInline: {},
-      boxSelectionThemeSubscriptions: [],
-    } satisfies GlobalThisMultiUIType;
+    };
   }
   globalThis.multiUI = {
     ...globalThis.multiUI,
@@ -143,21 +140,5 @@ function setDefaultGlobalValues({
       ...globalThis.multiUI.defineThemeStylesInline,
       [themeId]: defineThemeStylesInline,
     },
-    boxSelectionThemeSubscriptions: [
-      ...globalThis.multiUI.boxSelectionThemeSubscriptions,
-      ...(persistOnLocalstorage
-        ? [
-            {
-              [themeId]: {
-                themeId,
-                cb: (theme: ThemeT | Schemes) => {
-                  if (persistOnLocalstorage)
-                    setValue(Array.isArray(theme) ? theme : [theme, theme]);
-                },
-              },
-            },
-          ]
-        : []),
-    ],
   } satisfies GlobalThisMultiUIType;
 }

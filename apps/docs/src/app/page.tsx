@@ -8,9 +8,10 @@ import {
   useTheme,
 } from "@multinite_official/multiui";
 import { RefAttributes, useEffect, useRef } from "react";
-import Button from "../multiui/test_button";
+// import Button from "../multiui/test_button";
 import { useAria, useFocus, usePress } from "../multiui/test_button/lib/hooks";
 import { default_theme, test_theme, test_theme2 } from "./test/themes";
+// import { default_theme, test_theme, test_theme2 } from "./test/themes";
 export default function Home() {
   const { setTheme, theme, subscribe } = useTheme("default", {
     rerenderOnThemeChange: true,
@@ -52,13 +53,13 @@ export default function Home() {
         </h1>
         <button
           className="selectable select:bg-primary select:text-foreground"
-          onClick={() => setTheme(test_theme)}
+          // onClick={() => setTheme(test_theme)}
         >
           Click to toggle theme (0)
         </button>
         <button
           className="selectable select:bg-secondary select:text-foreground"
-          onClick={() => setTheme(default_theme)}
+          // onClick={() => setTheme(default_theme)}
         >
           Click to toggle theme (1)
         </button>

@@ -18,9 +18,6 @@
     "downlevelIteration": true,
     "noImplicitAny": false
   },
-  "include": [
-    "src/**/*",
-    "index.ts",
-  ],
+  "include": ["src/**/*", "index.ts", "./src/global.d.ts"],
   "exclude": ["**/node_modules", "tailwind.config.ts"]
 }
