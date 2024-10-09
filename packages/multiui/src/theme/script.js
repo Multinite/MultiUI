@@ -1,4 +1,4 @@
-export default function setThemeScript(args) {
+const setThemeScript = (args) => {
     //@ts-ignore
     const getThemeFormatted = function ({ theme, outputType = "inline-style", theme_prefix = "multiui", custom_className, }) {
         if (theme === undefined)
@@ -166,5 +166,6 @@ export default function setThemeScript(args) {
     }
     // clean up - delete this script.
     //   document.getElementById(`multiui-theme-script-${args.themeId}`)!.remove();
-}
+};
+export default setThemeScript;
 //# sourceMappingURL=script.js.map

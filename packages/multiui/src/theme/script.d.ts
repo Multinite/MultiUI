@@ -1,7 +1,8 @@
 import { ThemeT } from "../types";
 import { Schemes } from "./Theme";
-export default function setThemeScript(args: {
+declare const setThemeScript: (args: {
     themeId: string;
     theme: ThemeT | Schemes;
     defineThemeStylesInline: boolean;
-}): void;
+}) => void;
+export default setThemeScript;

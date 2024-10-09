@@ -7,10 +7,6 @@ export type GlobalThisMultiUIType = {
     defineThemeStylesInline: {
         [key: string]: boolean;
     };
-    boxSelectionThemeSubscriptions: {
-        themeId: string;
-        cb: (theme: ThemeT | Schemes) => void;
-    }[];
 };
 /**
  * # !!Internal component, don't use!!

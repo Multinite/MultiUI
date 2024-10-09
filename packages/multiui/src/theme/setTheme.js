@@ -6,11 +6,8 @@ export function setThemeToUI({ theme, themeId, }) {
             ? theme[1]
             : theme[0]
         : theme;
-    globalThis.multiUI.boxSelectionThemeSubscriptions
-        .filter((x) => x.themeId === themeId)
-        .forEach(({ cb }) => cb(theme));
     const oldTheme = globalThis.multiUI.themes[themeId];
-    globalThis.multiUI.themes[themeId] = theme;
+    globalThis.multiUI.themes[themeId] = [theme, theme];
     const defineThemeStylesInline = globalThis.multiUI.defineThemeStylesInline[themeId];
     if (defineThemeStylesInline) {
         const wrapperEl = document.querySelector(`[data-theme-id="${themeId}"]`);
@@ -38,7 +35,8 @@ export function setThemeToUI({ theme, themeId, }) {
             theme,
             outputType: "style-element",
         });
-        wrapperEl.classList.remove(`${oldTheme.name}_theme`);
+        wrapperEl.classList.remove(`${oldTheme[0].name}_theme`);
+        wrapperEl.classList.remove(`${oldTheme[1].name}_theme`);
         wrapperEl.classList.add(`${theme.name}_theme`);
     }
 }

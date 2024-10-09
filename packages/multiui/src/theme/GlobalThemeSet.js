@@ -66,7 +66,9 @@ function useClearServerGlobalThis() {
     if (!ranOnce.current && typeof window === "undefined") {
         ranOnce.current = true;
         //? ran on server, clear MultiUI from globalThis.
-        if (globalThis.multiUI) {
+        //@ts-ignore - nextjs won't compile without this...
+        if (typeof globalThis != "undefined" && globalThis.multiUI) {
+            //@ts-ignore - nextjs won't compile without this...
             delete globalThis.multiUI;
         }
     }
@@ -76,7 +78,6 @@ function setDefaultGlobalValues({ theme, themeId, defineThemeStylesInline, persi
         globalThis.multiUI = {
             themes: {},
             defineThemeStylesInline: {},
-            boxSelectionThemeSubscriptions: [],
         };
     }
     globalThis.multiUI = {
@@ -89,22 +90,6 @@ function setDefaultGlobalValues({ theme, themeId, defineThemeStylesInline, persi
             ...globalThis.multiUI.defineThemeStylesInline,
             [themeId]: defineThemeStylesInline,
         },
-        boxSelectionThemeSubscriptions: [
-            ...globalThis.multiUI.boxSelectionThemeSubscriptions,
-            ...(persistOnLocalstorage
-                ? [
-                    {
-                        [themeId]: {
-                            themeId,
-                            cb: (theme) => {
-                                if (persistOnLocalstorage)
-                                    setValue(Array.isArray(theme) ? theme : [theme, theme]);
-                            },
-                        },
-                    },
-                ]
-                : []),
-        ],
     };
 }
 //# sourceMappingURL=GlobalThemeSet.js.map

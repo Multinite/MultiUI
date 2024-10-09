@@ -1,11 +1,11 @@
 import { ThemeT } from "../types";
 import { Schemes, ThemeRenderOutputType } from "./Theme";
 
-export default function setThemeScript(args: {
+const setThemeScript = (args: {
   themeId: string;
   theme: ThemeT | Schemes;
   defineThemeStylesInline: boolean;
-}) {
+}) => {
   //@ts-ignore
   const getThemeFormatted: <
     /**
@@ -202,4 +202,6 @@ export default function setThemeScript(args: {
 
   // clean up - delete this script.
   //   document.getElementById(`multiui-theme-script-${args.themeId}`)!.remove();
-}
+};
+
+export default setThemeScript;

@@ -1,11 +1,12 @@
+
 export async function register() {
-  return new Promise((r) => {
-    console.log(
-      `Hello from register! Hogging 10 seconds.`,
-      process.env.NEXT_RUNTIME
-    );
-    setTimeout(() => {
-      r(1);
-    }, 10000);
-  });
+  await demo_MultiUIRegister();
+}
+
+async function demo_MultiUIRegister() {
+  console.log(`Initiating MultiUI register...`);
+  if(process.env.NEXT_RUNTIME === "nodejs") {
+    const fs = await import('fs');
+    // fs.wri
+  }
 }
