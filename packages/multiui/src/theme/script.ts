@@ -197,6 +197,20 @@ const setThemeScript = (args: {
         theme: theme,
         outputType: "inline-style-string",
       });
+    } else {
+      const findStyleEl = document.querySelector(
+        `style[data-style-theme-id="${args.themeId}"]`
+      );
+      if (findStyleEl) {
+        findStyleEl.innerHTML = getThemeFormatted({
+          theme: theme,
+          outputType: "style-element",
+        });
+      } else {
+        throw new Error(
+          `MultiUI: Failed to update the theme for theme-id ${args.themeId}: Couldn't find style element to update.`
+        );
+      }
     }
   }
 

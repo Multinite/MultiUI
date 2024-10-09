@@ -163,6 +163,18 @@ const setThemeScript = (args) => {
                 outputType: "inline-style-string",
             });
         }
+        else {
+            const findStyleEl = document.querySelector(`style[data-style-theme-id="${args.themeId}"]`);
+            if (findStyleEl) {
+                findStyleEl.innerHTML = getThemeFormatted({
+                    theme: theme,
+                    outputType: "style-element",
+                });
+            }
+            else {
+                throw new Error(`MultiUI: Failed to update the theme for theme-id ${args.themeId}: Couldn't find style element to update.`);
+            }
+        }
     }
     // clean up - delete this script.
     //   document.getElementById(`multiui-theme-script-${args.themeId}`)!.remove();
