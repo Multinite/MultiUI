@@ -2,23 +2,27 @@
 
 import {
   BoxSelection,
+  cn,
   Selectable,
   SelectableGroup,
   Theme,
   useTheme,
 } from "@multinite_official/multiui";
-import { RefAttributes, useEffect, useRef } from "react";
+import { RefAttributes, useEffect, useRef, useState } from "react";
 // import Button from "../multiui/test_button";
 import { useAria, useFocus, usePress } from "../multiui/test_button/lib/hooks";
 import { default_theme, test_theme, test_theme2 } from "./test/themes";
 // import { default_theme, test_theme, test_theme2 } from "./test/themes";
 export default function Home() {
+  const ref = useRef(null);
+  const scheme = useThemeScheme(ref);
   const { setTheme, theme, subscribe } = useTheme("default", {
     rerenderOnThemeChange: true,
   });
   const rerenders = useRef(0);
   rerenders.current++;
   console.log("Rerender:", rerenders.current);
+  console.log(`Closest theme's Color scheme:`, scheme);
 
   useEffect(() => {
     return subscribe((theme) => {
@@ -42,7 +46,10 @@ export default function Home() {
   return (
     <BoxSelection $boxSelectionId="hi">
       <BoxSelection $boxSelectionId="hey"></BoxSelection>
-      <div className="flex flex-col items-center justify-center w-screen h-screen gap-5 bg-background text-foreground">
+      <div
+        className="flex flex-col items-center justify-center w-screen h-screen gap-5 bg-background text-foreground"
+        ref={ref}
+      >
         <div className="opacity-0 dark-theme:opacity-100">
           If it's a dark theme, then I'm visible!
         </div>
@@ -130,7 +137,11 @@ export default function Home() {
                 className="w-full h-[30px] border-[3px] border-indigo-500"
                 $persistOnLocalstorage={false}
               >
-                <div className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black">
+                <div
+                  className={cn(
+                    scheme === "light" ? "bg-white text-white" : ""
+                  )}
+                >
                   if your system is light, I am light. if your system is dark, I
                   am dark.
                 </div>
@@ -147,7 +158,6 @@ export default function Home() {
             $persistOnLocalstorage={false}
           >
             <div className="">TEST</div>
-
             <Theme
               $theme={default_theme}
               $enableBoxSelection={true}
@@ -220,4 +230,50 @@ export default function Home() {
   );
 }
 
-const d: RefAttributes<HTMLButtonElement> = {};
+/**
+ *  Find the closest <Theme> based on the input ref element.
+ */
+function findClosestTheme(elementRef: { current: HTMLElement | null }) {
+  if (!elementRef.current) return null;
+  const theme = elementRef.current.closest(`[data-theme]`);
+  return theme;
+}
+
+/**
+ * Returns the closest <Theme> component's color scheme.
+ */
+function useThemeScheme(elementRef: {
+  current: HTMLElement | null;
+}): null | "dark" | "light" {
+  const [scheme, $scheme] = useState<null | "dark" | "light">(null);
+  useEffect(() => {
+    const theme = findClosestTheme(elementRef);
+    if (!theme) return $scheme(null);
+    console.log(theme);
+    setTimeout(() => {
+      $scheme(theme.getAttribute("data-theme-scheme")! as "dark" | "light");
+    }, 200);
+  }, []);
+  return scheme;
+}
+
+/**
+ * We will find the closest parent <Theme>.
+ */
+function useThemeFinder() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const themeId = findClosestTheme(ref)?.getAttribute("data-theme-id");
+    console.log(themeId);
+  }, []);
+
+  return (
+    <div
+      className="absolute invisible hidden"
+      aria-hidden
+      aria-disabled
+      ref={ref}
+    ></div>
+  );
+}

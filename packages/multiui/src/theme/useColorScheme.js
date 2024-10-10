@@ -42,12 +42,12 @@ export function useColorScheme() {
  * Get the user's preferred color scheme from the browser synchronously, without React states.
  */
 export function getColorSchemeSync() {
-    if (window.matchMedia) {
+    if (typeof window != "undefined" && window.matchMedia) {
         const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
         return mediaQuery.matches ? "dark" : "light";
     }
     else {
-        return undefined;
+        return "dark";
     }
 }
 //# sourceMappingURL=useColorScheme.js.map
