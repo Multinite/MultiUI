@@ -24,6 +24,7 @@
     "db:push": "drizzle-kit push --config=drizzle.config.ts"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.7.2",
     "@planetscale/database": "^1.18.0",
     "chroma-js": "^2.6.0",
     "dotenv": "^16.4.5",
