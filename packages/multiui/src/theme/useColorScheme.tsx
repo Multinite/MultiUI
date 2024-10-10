@@ -18,7 +18,8 @@ export function useColorScheme() {
       setColorScheme(mediaQuery.matches ? "dark" : "light");
 
       // Add event listener for changes
-      const handler = (e) => setColorScheme(e.matches ? "dark" : "light");
+      const handler = (e: MediaQueryListEvent) =>
+        setColorScheme(e.matches ? "dark" : "light");
 
       // Use addListener or addEventListener, depending on browser support
       if (mediaQuery.addListener) {

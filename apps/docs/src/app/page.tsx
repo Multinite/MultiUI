@@ -51,10 +51,10 @@ export default function Home() {
         ref={ref}
       >
         <div className="opacity-0 dark-theme:opacity-100">
-          If it's a dark theme, then I'm visible!
+          If its a dark theme, then Im visible!
         </div>
         <div className="opacity-0 light-theme:opacity-100">
-          If it's a light theme, then I'm visible!
+          If its a light theme, then Im visible!
         </div>
         <span className="text-lg text-primary">
           Hello and welcome to the MultiUI docs!
