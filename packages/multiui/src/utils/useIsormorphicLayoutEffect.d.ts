@@ -5,7 +5,7 @@
  * THE ORIGINAL CODE IS LICENSED UNDER MIT
  * https://github.com/juliencrn/usehooks-ts/blob/master/LICENSE
  */
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 /**
  * Custom hook that uses either `useLayoutEffect` or `useEffect` based on the environment (client-side or server-side).
  * @param {Function} effect - The effect function to be executed.
@@ -19,4 +19,4 @@ import { useEffect } from "react";
  * }, [dependency1, dependency2]);
  * ```
  */
-export declare const useIsomorphicLayoutEffect: typeof useEffect;
+export declare const useIsomorphicLayoutEffect: typeof useLayoutEffect;

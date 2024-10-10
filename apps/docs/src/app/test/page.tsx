@@ -10,8 +10,12 @@ import {
 } from "@multinite_official/multiui";
 import { RefAttributes, useEffect, useRef, useState } from "react";
 // import Button from "../multiui/test_button";
-import { useAria, useFocus, usePress } from "../multiui/test_button/lib/hooks";
-import { default_theme, test_theme, test_theme2 } from "./test/themes";
+import {
+  useAria,
+  useFocus,
+  usePress,
+} from "../../multiui/test_button/lib/hooks";
+import { default_theme, test_theme, test_theme2 } from "./themes";
 // import { default_theme, test_theme, test_theme2 } from "./test/themes";
 export default function Home() {
   const ref = useRef(null);

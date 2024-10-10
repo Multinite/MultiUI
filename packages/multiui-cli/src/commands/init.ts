@@ -5,6 +5,7 @@ import logUpdate from "log-update";
 import path from "path";
 import getMultiUIConfig, { defaultConfig } from "../utils/multiUIConfig.js";
 import chalk from "chalk";
+import type { MultiUIConfig } from "./../types/multiUiConfig.js";
 import { spawn } from "child_process";
 import { getWorkspaces } from "../utils/getWorkspaces.js";
 
@@ -18,6 +19,7 @@ async function init(args: {
   workspace: string | undefined;
   skipInstallMultiui: boolean | undefined;
   skipInstallComponents: boolean | undefined;
+  useTypescript: boolean | undefined;
 }) {
   if (args.framework && valid_frameworks.indexOf(args.framework) === -1) {
     console.log(`❌ Invalid framework ${chalk.blue(args.framework)}`);
@@ -55,11 +57,16 @@ async function init(args: {
     root_path = find.path;
   }
 
-  const configPath = path.join(root_path, "multiui.config.json");
+  const configPathTs = path.join(root_path, "multiui.config.ts");
+  const configPathJs = path.join(root_path, "multiui.config.js");
   console.log(`Root path: ${root_path}`);
-  if (fs.existsSync(configPath)) {
+  if (fs.existsSync(configPathTs)) {
     console.log(`❌ Config file already exists:`);
-    console.log(chalk.gray(`${configPath}`));
+    console.log(chalk.gray(`${configPathTs}`));
+    process.exit(1);
+  } else if (fs.existsSync(configPathJs)) {
+    console.log(`❌ Config file already exists:`);
+    console.log(chalk.gray(`${configPathJs}`));
     process.exit(1);
   }
   if (
@@ -74,6 +81,7 @@ async function init(args: {
         args.components_output_dir || defaultConfig.components_output_dir,
       framework: args.framework || defaultConfig.framework,
       package_manager: args.package_manager || defaultConfig.package_manager,
+      typescript: args.useTypescript,
     });
   else
     inquirer
@@ -89,6 +97,18 @@ async function init(args: {
                   message: "What framework do you want to use?",
                   choices: ["react", "angular", "svelte"],
                   default: defaultConfig.framework,
+                  required: true,
+                },
+              ]),
+          ,
+          ...(args.useTypescript
+            ? []
+            : [
+                {
+                  type: "confirm",
+                  name: "typescript",
+                  message: "Are you using typescript?",
+                  default: true,
                   required: true,
                 },
               ]),
@@ -161,13 +181,17 @@ async function init(args: {
     package_manager: string | undefined;
     components_output_dir: string | undefined;
     components: string[] | undefined;
+    typescript: boolean | undefined;
   }) {
-    const default_config = {
-      [`$schema`]: "https://multiui.org/multiui.config.schema.json",
+    const default_config: MultiUIConfig = {
       ...defaultConfig,
     };
+    const file = getDemoMultiUIConfig(
+      Boolean(answers.typescript),
+      default_config
+    );
 
-    fs.writeFileSync(configPath, JSON.stringify(default_config, null, 2));
+    fs.writeFileSync(answers.typescript ? configPathTs : configPathJs, file);
     console.log();
     console.log(`✅ Config file created!`);
 
@@ -257,7 +281,18 @@ function startInstallingMultiUi(args: any) {
     console.log(chalk.grey(`Running: ${pkgManager} ${spawnArgs.join(" ")}`));
     console.log();
 
-    const install = spawn(pkgManager, spawnArgs, {
+    let spawnCommand = /^win/.test(process.platform) ? "npm.cmd" : "npm";
+    switch (pkgManager) {
+      case "npm":
+        spawnCommand = /^win/.test(process.platform) ? "npm.cmd" : "npm";
+        break;
+
+      default:
+        spawnCommand = /^win/.test(process.platform) ? "npm.cmd" : "npm";
+        break;
+    }
+
+    const install = spawn(spawnCommand, spawnArgs, {
       stdio: "inherit",
     });
     install.on("error", (err) => {
@@ -301,5 +336,38 @@ function startInstallingComponents(
       )
     );
     console.log("✅ No components to install, all finished!");
+  }
+}
+
+function getDemoMultiUIConfig(typescript: boolean, config: MultiUIConfig) {
+  if (typescript)
+    return ts()
+      .replaceAll("//@ts-ignore", "")
+      .replace(`data`, JSON.stringify(config, null, 2).slice(2, -2));
+  else
+    return js()
+      .replaceAll("//@ts-ignore", "")
+      .replace(`data`, JSON.stringify(config, null, 2).slice(2, -2));
+
+  function ts() {
+    const lines = [
+      `import { multiUIConfigCreator } from "@multinite_official/multiui";`,
+      ``,
+      `export const multiUIConfig = multiUIConfigCreator({`,
+      `data`,
+      `});`,
+    ];
+    return lines.join(`\n`);
+  }
+
+  function js() {
+    const lines = [
+      `const { multiUIConfigCreator } = require("@multinite_official/multiui");`,
+      ``,
+      `export const multiUIConfig = multiUIConfigCreator({`,
+      `data`,
+      `});`,
+    ];
+    return lines.join(`\n`);
   }
 }

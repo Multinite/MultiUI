@@ -3,7 +3,11 @@ export function multiUIConfigCreator({ components_output_dir = "/src/components/
         components_output_dir,
         framework,
         package_manager,
-        theme_names: theme_names.filter((x) => x.trim().length !== 0).map(x => x.replaceAll(" ", "-")),
+        theme_names: theme_names
+            ? theme_names
+                .filter((x) => x.trim().length !== 0)
+                .map((x) => x?.replaceAll(" ", "-"))
+            : [],
         theme_prefix,
         ...rest,
     };

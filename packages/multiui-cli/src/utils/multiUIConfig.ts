@@ -4,6 +4,9 @@ import { object, string } from "yup";
 import * as yup from "yup";
 import { getWorkspaces } from "./getWorkspaces.js";
 import chalk from "chalk";
+import tsNode from "ts-node";
+import { MultiUIConfig } from "../types/multiUiConfig.js";
+import runTypeScriptFile from "./runTypeScriptFile.js";
 
 let configSchema = object({
   components_output_dir: string().required(),
@@ -13,14 +16,18 @@ let configSchema = object({
   package_manager: string<"npm" | "yarn" | "pnpm" | "bun">()
     .required()
     .default("npm"),
+  theme_names: yup.array().of(yup.string().required()).default([]),
+  theme_prefix: string().optional().default("multiui"),
 });
 
 export type Config = yup.InferType<typeof configSchema>;
 
-export const defaultConfig: Config = {
+export const defaultConfig: MultiUIConfig = {
   components_output_dir: "src/components/multiui",
   framework: "react",
   package_manager: "npm",
+  theme_names: [],
+  theme_prefix: "multiui",
 };
 
 export default async function getMultiUIConfig(
@@ -40,10 +47,17 @@ export default async function getMultiUIConfig(
         process.exit(1);
       }
     }
+    const configPathTS = path.join(root_path, "multiui.config.ts");
+    const configPathJS = path.join(root_path, "multiui.config.js");
+    if (fs.existsSync(configPathTS)) {
+      console.log(`found ts file, running tsnode`);
+      const config = await runTypeScriptFile(configPathTS);
+      console.log(`res:`, config);
 
-    const configPath = path.join(root_path, "multiui.config.json");
-    if (fs.existsSync(configPath)) {
-      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      const result = configSchema.validateSync(config);
+      resolve(result);
+    } else if (fs.existsSync(configPathJS)) {
+      const config = JSON.parse(fs.readFileSync(configPathJS, "utf8"));
       delete config["$schema"];
 
       const result = configSchema.validateSync(config);
