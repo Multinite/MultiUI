@@ -4,6 +4,7 @@ import GlobalThemeSet from "./GlobalThemeSet";
 // import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
 import { cn } from "../utils";
+import ThemeContextProvider from "./ThemeContextProvider";
 
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
 
@@ -223,7 +224,9 @@ export const Theme = forwardRef<
             }}
             ref={ref}
           >
-            {children}
+            <ThemeContextProvider themeId={$themeId}>
+              {children}
+            </ThemeContextProvider>
           </div>
           <ScriptComponnet
             theme={$theme}
@@ -267,7 +270,9 @@ export const Theme = forwardRef<
             position: $enableBoxSelection ? "relative" : "static",
           }}
         >
-          {children}
+          <ThemeContextProvider themeId={$themeId}>
+            {children}
+          </ThemeContextProvider>
         </div>
         <ScriptComponnet
           theme={$theme}

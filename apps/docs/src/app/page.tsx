@@ -15,20 +15,10 @@ import { default_theme, test_theme, test_theme2 } from "./test/themes";
 // import { default_theme, test_theme, test_theme2 } from "./test/themes";
 export default function Home() {
   const ref = useRef(null);
-  const scheme = useThemeScheme(ref);
-  const { setTheme, theme, subscribe } = useTheme("default", {
-    rerenderOnThemeChange: true,
-  });
+  const { setTheme, theme, subscribe } = useTheme();
   const rerenders = useRef(0);
   rerenders.current++;
   console.log("Rerender:", rerenders.current);
-  console.log(`Closest theme's Color scheme:`, scheme);
-
-  useEffect(() => {
-    return subscribe((theme) => {
-      console.log(`theme changed:`, theme.name);
-    });
-  }, [subscribe]);
 
   const { pressProps } = usePress({
     isDisabled: false,
@@ -139,7 +129,7 @@ export default function Home() {
               >
                 <div
                   className={cn(
-                    scheme === "light" ? "bg-white text-white" : ""
+                    theme.scheme === "light" ? "bg-white text-white" : ""
                   )}
                 >
                   if your system is light, I am light. if your system is dark, I
@@ -227,53 +217,5 @@ export default function Home() {
         {/* <Button>Test</Button> */}
       </div>
     </BoxSelection>
-  );
-}
-
-/**
- *  Find the closest <Theme> based on the input ref element.
- */
-function findClosestTheme(elementRef: { current: HTMLElement | null }) {
-  if (!elementRef.current) return null;
-  const theme = elementRef.current.closest(`[data-theme]`);
-  return theme;
-}
-
-/**
- * Returns the closest <Theme> component's color scheme.
- */
-function useThemeScheme(elementRef: {
-  current: HTMLElement | null;
-}): null | "dark" | "light" {
-  const [scheme, $scheme] = useState<null | "dark" | "light">(null);
-  useEffect(() => {
-    const theme = findClosestTheme(elementRef);
-    if (!theme) return $scheme(null);
-    console.log(theme);
-    setTimeout(() => {
-      $scheme(theme.getAttribute("data-theme-scheme")! as "dark" | "light");
-    }, 200);
-  }, []);
-  return scheme;
-}
-
-/**
- * We will find the closest parent <Theme>.
- */
-function useThemeFinder() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const themeId = findClosestTheme(ref)?.getAttribute("data-theme-id");
-    console.log(themeId);
-  }, []);
-
-  return (
-    <div
-      className="absolute invisible hidden"
-      aria-hidden
-      aria-disabled
-      ref={ref}
-    ></div>
   );
 }

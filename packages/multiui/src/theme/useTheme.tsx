@@ -3,6 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import type { ThemeT } from "../types";
 import { ThemeContext } from "./ThemeProvider";
+import { useInternalThemeContext } from "./ThemeContextProvider";
 
 type UseThemeReturnType = {
   /**
@@ -52,13 +53,17 @@ type UseThemeWithRerenderReturnType = {
 };
 
 export function useTheme<RerenderOnThemeChange extends boolean = true>(
-  themeId: string,
-  options: { rerenderOnThemeChange: RerenderOnThemeChange } = {
+  options: {
+    rerenderOnThemeChange: RerenderOnThemeChange;
+    themeId?: string;
+  } = {
     rerenderOnThemeChange: true as RerenderOnThemeChange,
   }
 ): RerenderOnThemeChange extends true
   ? UseThemeWithRerenderReturnType
   : UseThemeReturnType {
+  let { themeId = useInternalThemeContext().getThemeId() } = options;
+
   const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error("useTheme must be used within a <ThemeProvider>");

@@ -45,7 +45,8 @@ type UseThemeWithRerenderReturnType = {
      */
     subscribe: (callback: (theme: ThemeT) => void) => () => void;
 };
-export declare function useTheme<RerenderOnThemeChange extends boolean = true>(themeId: string, options?: {
+export declare function useTheme<RerenderOnThemeChange extends boolean = true>(options?: {
     rerenderOnThemeChange: RerenderOnThemeChange;
+    themeId?: string;
 }): RerenderOnThemeChange extends true ? UseThemeWithRerenderReturnType : UseThemeReturnType;
 export {};

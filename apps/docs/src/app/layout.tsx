@@ -1,3 +1,10 @@
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -28,18 +35,26 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           "overflow-hidden bg-background text-foreground ring-focus transition-[background-color] ease-in-out duration-300"
         )}
       >
-        <MultiUIProvider>
-          {process.env.NODE_ENV === "production" && <Analytics />}
-          <Theme
-            $theme={default_theme}
-            $themeId="default"
-            $enableBoxSelection={true}
-            $persistOnLocalstorage
-            $updateDocumentColorScheme
-          >
-            {children as any}
-          </Theme>
-        </MultiUIProvider>
+        {process.env.NODE_ENV === "production" && <Analytics />}
+        <ClerkProvider>
+          <MultiUIProvider>
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <Theme
+              $theme={default_theme}
+              $themeId="default"
+              $enableBoxSelection={true}
+              $persistOnLocalstorage
+              $updateDocumentColorScheme
+            >
+              {children as any}
+            </Theme>
+          </MultiUIProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
