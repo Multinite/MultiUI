@@ -53,15 +53,21 @@ export default function Home() {
         </h1>
         <button
           className="selectable select:bg-primary select:text-foreground"
-          // onClick={() => setTheme(test_theme)}
+          onClick={() => setTheme(test_theme)}
         >
           Click to toggle theme (0)
         </button>
         <button
           className="selectable select:bg-secondary select:text-foreground"
-          // onClick={() => setTheme(default_theme)}
+          onClick={() => setTheme(default_theme)}
         >
           Click to toggle theme (1)
+        </button>
+        <button
+          className="selectable select:bg-secondary select:text-foreground"
+          onClick={() => setTheme(test_theme2)}
+        >
+          Click to toggle theme (2)
         </button>
         <div className="relative mt-32 border border-red-500 select-none w-fit h-fit">
           <Theme
@@ -103,7 +109,7 @@ export default function Home() {
               <div className="border border-yellow-500 selectable box-select:bg-primary text-secondary">
                 Option 1
               </div>
-              <div className="border-[3px] border-yellow-500 selectable box-select:bg-primary text-secondary box-select-by-name-[multiui_default]:!border-green-500 rounded-r-lg rounded-ss-large">
+              <div className="border-[3px] border-yellow-500 selectable box-select:bg-primary text-secondary box-select-by-name-[multiui_default]:!border-green-500">
                 Option 2
               </div>
             </SelectableGroup>
@@ -117,7 +123,7 @@ export default function Home() {
                 className="w-full h-[30px] border-[3px] border-indigo-500"
                 $persistOnLocalstorage={false}
               >
-                <div className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black  ">
+                <div className=" theme-[multiui_default]:text-white theme-[test_theme2]:bg-white theme-[test_theme2]:text-black">
                   if your system is light, I am light. if your system is dark, I
                   am dark.
                 </div>
