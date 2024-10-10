@@ -14,9 +14,11 @@ import {
   Theme,
   MultiUIProvider,
   disableDarkModeExtensions,
+  BoxSelection,
 } from "@multinite_official/multiui";
 import type { ReactNode } from "react";
 import { default_theme, test_theme2 } from "./test/themes";
+import ClientWrapper from "./ClientWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,25 +38,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         )}
       >
         {process.env.NODE_ENV === "production" && <Analytics />}
-        <ClerkProvider>
-          <MultiUIProvider>
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <Theme
-              $theme={default_theme}
-              $themeId="default"
-              $enableBoxSelection={true}
-              $persistOnLocalstorage
-              $updateDocumentColorScheme
+        <MultiUIProvider>
+          <Theme
+            $theme={default_theme}
+            $themeId="default"
+            $enableBoxSelection={true}
+            $persistOnLocalstorage
+            $updateDocumentColorScheme
+            className="w-screen h-screen bg-background text-foreground"
+          >
+            <BoxSelection
+              $boxSelectionId="default"
+              className="w-screen h-screen"
             >
-              {children as any}
-            </Theme>
-          </MultiUIProvider>
-        </ClerkProvider>
+              <ClientWrapper>{children as any}</ClientWrapper>
+            </BoxSelection>
+          </Theme>
+        </MultiUIProvider>
       </body>
     </html>
   );

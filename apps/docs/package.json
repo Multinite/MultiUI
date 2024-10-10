@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^5.7.2",
+    "@clerk/themes": "^2.1.35",
     "@planetscale/database": "^1.18.0",
     "chroma-js": "^2.6.0",
     "dotenv": "^16.4.5",
