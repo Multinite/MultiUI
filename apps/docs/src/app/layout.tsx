@@ -16,7 +16,7 @@ import {
   disableDarkModeExtensions,
 } from "@multinite_official/multiui";
 import type { ReactNode } from "react";
-import { default_theme } from "./test/themes";
+import { default_theme, test_theme2 } from "./test/themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
