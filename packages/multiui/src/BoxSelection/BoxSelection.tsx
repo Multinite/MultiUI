@@ -43,7 +43,13 @@ export function BoxSelection({
   };
   children?: ReactNode;
 } & Omit<HTMLAttributes<HTMLDivElement>, "children">) {
-  useEffectOnce(() => {
+  if ($boxSelectionId.trim() === "")
+    throw new Error(
+      "MultiUI: BoxSelection must have a $boxSelectionId, and it should not be empty.\n" +
+        `ID: "${$boxSelectionId}"`
+    );
+
+  useEffect(() => {
     if (existingBoxSelectionIds.includes($boxSelectionId)) {
       throw new Error(
         `BoxSelection with id "${$boxSelectionId}" already exists.`
@@ -56,8 +62,7 @@ export function BoxSelection({
         1
       );
     };
-  });
-
+  }, [$boxSelectionId]);
   const boxSelectWrapperEl = useRef(null);
   $boxSelectionOptions = {
     lazyLoad: $boxSelectionOptions.lazyLoad ?? true,
@@ -69,37 +74,6 @@ export function BoxSelection({
     disableUnselection: $boxSelectionOptions.disableUnselection ?? false,
     className: $boxSelectionOptions.className ?? undefined,
   };
-
-  // console.log(
-  //   "If I am: ",
-  //   themeId,
-  //   ` than, these are excluded: `,
-  //   typeof document === "undefined"
-  //     ? []
-  //     : [
-  //         ...Array.from(document.querySelectorAll(`[data-theme]`))
-  //           .filter((x) => x.getAttribute("data-theme-id") !== themeId)
-  //           .filter((x) => !element.current!.closest(`#${x.id}`)),
-  //       ]
-  // );
-
-  // const [isDragging, setIsDragging] = useState(false);
-  // useEffect(() => {
-  //   if (element.current!.id.includes("sup1")) {
-  //     setIsDragging(true);
-  //   }
-  // }, []);
-  // console.log(
-  //   "If I am: ",
-  //   themeId,
-  //   ` than, these are excluded: `,
-  //   typeof document === "undefined"
-  //     ? []
-  //     : Array.from(document.querySelectorAll(`[data-theme]`))
-  //         .filter((x) => x.getAttribute("data-theme-id") !== themeId)
-  //         .filter((x) => !x.querySelector(`[data-theme-id="${themeId}"]`))
-  //         .map((x) => x.parentElement)
-  // );
 
   const { SelectBoxOutlet } = useSelectify(boxSelectWrapperEl, {
     selectCriteria: `[data-box-select-id="${$boxSelectionId}"][data-selectable=true], [data-box-select-id="${$boxSelectionId}"][data-selectable="${$boxSelectionId}"]`,

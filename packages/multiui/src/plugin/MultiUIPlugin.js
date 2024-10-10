@@ -32,6 +32,8 @@ function addThemeClasses({ addVariant, matchVariant, multiUIConfig, }) {
         return `[data-theme="${themeName}"] &`;
     });
     addVariant("themed", "[data-theme] &");
+    addVariant("dark-theme", "[data-theme-scheme=dark] &");
+    addVariant("light-theme", "[data-theme-scheme=light] &");
 }
 function addBoxSelectClasses({ addVariant, matchVariant, }) {
     addVariant("box-select", "&[aria-selected]");

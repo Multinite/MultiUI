@@ -41,10 +41,14 @@ export default function Home() {
 
   return (
     <BoxSelection $boxSelectionId="hi">
-      <BoxSelection $boxSelectionId="hey">
-
-      </BoxSelection>
+      <BoxSelection $boxSelectionId="hey"></BoxSelection>
       <div className="flex flex-col items-center justify-center w-screen h-screen gap-5 bg-background text-foreground">
+        <div className="opacity-0 dark-theme:opacity-100">
+          If it's a dark theme, then I'm visible!
+        </div>
+        <div className="opacity-0 light-theme:opacity-100">
+          If it's a light theme, then I'm visible!
+        </div>
         <span className="text-lg text-primary">
           Hello and welcome to the MultiUI docs!
         </span>

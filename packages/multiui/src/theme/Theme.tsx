@@ -211,6 +211,7 @@ export const Theme = forwardRef<
             slot="multiui-theme"
             id={`multiui-theme-${$themeId}`}
             data-theme={$serverSelectedTheme.name}
+            data-theme-scheme={$serverSelectedTheme.scheme}
             {...(!$themeId ? {} : { "data-theme-id": $themeId })}
             style={{
               ...style,
@@ -259,6 +260,7 @@ export const Theme = forwardRef<
           data-theme={$serverSelectedTheme.name}
           id={`multiui-theme-${$themeId}`}
           className={cn(`${$serverSelectedTheme.name}_theme`, className)}
+          data-theme-scheme={$serverSelectedTheme.scheme}
           {...(!$themeId ? {} : { "data-theme-id": $themeId })}
           ref={ref}
           style={{

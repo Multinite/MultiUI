@@ -2,6 +2,8 @@
 import { createContext, type ReactNode, useRef } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 import { setThemeToUI } from "./setTheme";
+import type { Schemes } from "./Theme";
+import { getColorSchemeSync } from "./useColorScheme";
 
 type ThemeContextType = {
   addThemeHook: (theme_id: string) => void;
@@ -16,7 +18,11 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const themeHooks = useRef<
-    { themeId: string; theme: ThemeT; subs: ((theme: ThemeT) => void)[] }[]
+    {
+      themeId: string;
+      theme: ThemeT | Schemes;
+      subs: ((theme: ThemeT) => void)[];
+    }[]
   >([]);
 
   return (
@@ -26,7 +32,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           if (themeHooks.current.find((x) => x.themeId === id)) return;
           themeHooks.current.push({
             themeId: id,
-            theme: globalThis.multiUI.themes[id] as ThemeT,
+            theme: globalThis.multiUI.themes[id],
             subs: [],
           });
         },
@@ -59,8 +65,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             ].subs.filter((x) => x !== callback);
           };
         },
-        getTheme: (themeId) =>
-          themeHooks.current.find((x) => x.themeId === themeId)!.theme,
+        getTheme: (themeId) => {
+          const currentScheme = getColorSchemeSync();
+          const f = themeHooks.current.find(
+            (x) => x.themeId === themeId
+          )!.theme;
+          return Array.isArray(f)
+            ? currentScheme === "light"
+              ? f[1]
+              : f[0]
+            : f;
+        },
       }}
     >
       {children}

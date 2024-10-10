@@ -167,6 +167,7 @@ const test_theme = {
 const test_theme2 = {
   ...default_theme,
   name: "test_theme2" as const,
+  scheme: "light",
   primary: {
     ...default_theme.primary,
     DEFAULT: "118, 95%, 53%",

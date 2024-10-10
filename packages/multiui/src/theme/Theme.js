@@ -47,7 +47,7 @@ export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesIn
     }
     const $serverSelectedTheme = Array.isArray($theme) ? $theme[0] : $theme;
     if ($defineThemeStylesInline) {
-        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, updateDocumentColorScheme: $updateDocumentColorScheme, persistOnLocalstorage: $persistOnLocalstorage }), _jsx("div", { suppressHydrationWarning: true, ...attr, slot: "multiui-theme", id: `multiui-theme-${$themeId}`, "data-theme": $serverSelectedTheme.name, ...(!$themeId ? {} : { "data-theme-id": $themeId }), style: {
+        return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, updateDocumentColorScheme: $updateDocumentColorScheme, persistOnLocalstorage: $persistOnLocalstorage }), _jsx("div", { suppressHydrationWarning: true, ...attr, slot: "multiui-theme", id: `multiui-theme-${$themeId}`, "data-theme": $serverSelectedTheme.name, "data-theme-scheme": $serverSelectedTheme.scheme, ...(!$themeId ? {} : { "data-theme-id": $themeId }), style: {
                         ...style,
                         position: $enableBoxSelection ? "relative" : "static",
                         ...getThemeFormatted({
@@ -62,7 +62,7 @@ export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesIn
                         theme: $serverSelectedTheme,
                         outputType: "style-element",
                     }),
-                }, ...(!$themeId ? {} : { "data-style-theme-id": $themeId }) }), _jsx("div", { ...rest, slot: "multiui-theme", "data-theme": $serverSelectedTheme.name, id: `multiui-theme-${$themeId}`, className: cn(`${$serverSelectedTheme.name}_theme`, className), ...(!$themeId ? {} : { "data-theme-id": $themeId }), ref: ref, style: {
+                }, ...(!$themeId ? {} : { "data-style-theme-id": $themeId }) }), _jsx("div", { ...rest, slot: "multiui-theme", "data-theme": $serverSelectedTheme.name, id: `multiui-theme-${$themeId}`, className: cn(`${$serverSelectedTheme.name}_theme`, className), "data-theme-scheme": $serverSelectedTheme.scheme, ...(!$themeId ? {} : { "data-theme-id": $themeId }), ref: ref, style: {
                     position: $enableBoxSelection ? "relative" : "static",
                 }, children: children }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
 });

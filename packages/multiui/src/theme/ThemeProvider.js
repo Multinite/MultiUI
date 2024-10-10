@@ -2,6 +2,7 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import { createContext, useRef } from "react";
 import { setThemeToUI } from "./setTheme";
+import { getColorSchemeSync } from "./useColorScheme";
 export const ThemeContext = createContext(undefined);
 export function ThemeProvider({ children }) {
     const themeHooks = useRef([]);
@@ -37,7 +38,15 @@ export function ThemeProvider({ children }) {
                     themeHooks.current[index].subs = themeHooks.current[index].subs.filter((x) => x !== callback);
                 };
             },
-            getTheme: (themeId) => themeHooks.current.find((x) => x.themeId === themeId).theme,
+            getTheme: (themeId) => {
+                const currentScheme = getColorSchemeSync();
+                const f = themeHooks.current.find((x) => x.themeId === themeId).theme;
+                return Array.isArray(f)
+                    ? currentScheme === "light"
+                        ? f[1]
+                        : f[0]
+                    : f;
+            },
         }, children: children }));
 }
 //# sourceMappingURL=ThemeProvider.js.map

@@ -18,13 +18,15 @@ export function setThemeToUI({
 
   const oldTheme = globalThis.multiUI.themes[themeId];
   globalThis.multiUI.themes[themeId] = [theme, theme];
-
+  const wrapperEl = document.querySelector<HTMLDivElement>(
+    `[data-theme-id="${themeId}"]`
+  );
   const defineThemeStylesInline =
     globalThis.multiUI.defineThemeStylesInline[themeId];
+
+  wrapperEl?.setAttribute("data-theme", theme.name);
+  wrapperEl?.setAttribute("data-theme-scheme", theme.scheme);
   if (defineThemeStylesInline) {
-    const wrapperEl = document.querySelector<HTMLDivElement>(
-      `[data-theme-id="${themeId}"]`
-    );
     if (!wrapperEl)
       throw new Error(
         `Failed to setTheme, no <div> element found representing the "${themeId}" themeId.`
@@ -42,9 +44,6 @@ export function setThemeToUI({
   } else {
     const styleEl = document.querySelector<HTMLStyleElement>(
       `[data-style-theme-id="${themeId}"]`
-    );
-    const wrapperEl = document.querySelector<HTMLDivElement>(
-      `[data-theme-id="${themeId}"]`
     );
     if (!styleEl)
       throw new Error(

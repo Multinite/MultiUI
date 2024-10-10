@@ -192,6 +192,7 @@ const setThemeScript = (args: {
       : args.theme;
 
     theme_element.setAttribute("data-theme", theme.name);
+    theme_element.setAttribute("data-theme-scheme", theme.scheme);
     if (args.defineThemeStylesInline) {
       theme_element.style.cssText = getThemeFormatted({
         theme: theme,
