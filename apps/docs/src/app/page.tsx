@@ -41,6 +41,9 @@ export default function Home() {
 
   return (
     <BoxSelection $boxSelectionId="hi">
+      <BoxSelection $boxSelectionId="hey">
+
+      </BoxSelection>
       <div className="flex flex-col items-center justify-center w-screen h-screen gap-5 bg-background text-foreground">
         <span className="text-lg text-primary">
           Hello and welcome to the MultiUI docs!

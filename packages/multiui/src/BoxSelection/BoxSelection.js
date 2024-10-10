@@ -4,6 +4,8 @@ import { useRef } from "react";
 import { isMobile } from "react-device-detect";
 import useSelectify from "use-selectify";
 import { cn } from "../utils";
+import useEffectOnce from "../utils/useEffectOnce";
+const existingBoxSelectionIds = [];
 /**
  * Enable box-selection for this component.
  *
@@ -19,6 +21,15 @@ export function BoxSelection({ $boxSelectionId, $boxSelectionOptions = {
     disableUnselection: false,
     className: undefined,
 }, children, className, ...attr }) {
+    useEffectOnce(() => {
+        if (existingBoxSelectionIds.includes($boxSelectionId)) {
+            throw new Error(`BoxSelection with id "${$boxSelectionId}" already exists.`);
+        }
+        existingBoxSelectionIds.push($boxSelectionId);
+        return () => {
+            existingBoxSelectionIds.splice(existingBoxSelectionIds.indexOf($boxSelectionId), 1);
+        };
+    });
     const boxSelectWrapperEl = useRef(null);
     $boxSelectionOptions = {
         lazyLoad: $boxSelectionOptions.lazyLoad ?? true,
