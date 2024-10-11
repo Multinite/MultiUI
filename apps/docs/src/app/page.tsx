@@ -18,7 +18,7 @@ function Header() {
     <div className="w-screen h-32 py-10 grid grid-cols-[10%_80%_10%]">
       <div className="pl-10"></div>
       <div className="flex items-center justify-center">
-        <header className="w-[50vw] h-full rounded-full border border-default bg-foreground/50"></header>
+        <header className="w-[50vw] h-full rounded-full border border-default bg-foreground/50 "></header>
       </div>
       <div className="flex items-center justify-center pr-10">
         <SignedIn>

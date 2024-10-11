@@ -9,7 +9,10 @@ export const MultiUIPlugin = function (multiUIConfig,
 exampleTheme) {
     const prefix = (multiUIConfig.theme_prefix || "multiui");
     return plugin(function ({ addUtilities, addComponents, addBase, e, config, addVariant, matchVariant, }) {
-        const { utils } = formatTheme(prefix, e, exampleTheme);
+        const { utils, matches } = formatTheme(prefix, e, exampleTheme);
+        matches.forEach((match) => {
+            matchVariant(match.name, match.callback);
+        });
         addUtilities(utils);
         addThemeClasses({ addVariant, matchVariant, multiUIConfig });
         addBoxSelectClasses({ addVariant, matchVariant });

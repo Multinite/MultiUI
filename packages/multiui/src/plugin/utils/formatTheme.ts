@@ -83,6 +83,8 @@ export function formatTheme(
   e: (className: string) => string,
   exampleTheme?: ThemeT
 ) {
+  let matches: { name: string; callback: (value: string) => string }[] = [];
+
   const getCSSStylesFromColorData = {
     bg: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
       const color = cssVar(
@@ -95,6 +97,22 @@ export function formatTheme(
         colorIndex,
         colorTransparency
       );
+      if (colorTransparency) {
+        matches.push({
+          name: `bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}\\/`,
+          callback: (value) => {
+            return (
+              color +
+              generateHexFromColor(
+                exampleTheme,
+                colorType,
+                colorIndex,
+                value as any as ColorTransparencyValues
+              )
+            );
+          },
+        });
+      }
       return {
         backgroundColor: color + colorExample,
       };
@@ -471,9 +489,9 @@ export function formatTheme(
       "--tw-ring-color": `hsl(var(--${prefix}-focus) / var(--tw-ring-opacity))`,
     },
   };
-
   return {
     utils,
+    matches,
   };
 
   function cssVar<
@@ -488,7 +506,6 @@ export function formatTheme(
       .map((x) => x.replaceAll("-", "_"))
       .filter((x) => x)
       .join("-")})${transp ? `, ${transp}` : ""})` as const;
-
   }
 }
 type JoinWithHyphen<T extends string[]> = T extends []

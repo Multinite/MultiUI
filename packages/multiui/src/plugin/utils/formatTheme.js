@@ -29,10 +29,20 @@ const allColorTransparencyValues = [
     95, 100,
 ];
 export function formatTheme(prefix = "multiui", e, exampleTheme) {
+    let matches = [];
     const getCSSStylesFromColorData = {
         bg: ({ colorIndex, colorType, colorTransparency }) => {
             const color = cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined);
             const colorExample = generateHexFromColor(exampleTheme, colorType, colorIndex, colorTransparency);
+            if (colorTransparency) {
+                matches.push({
+                    name: `bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}\\/`,
+                    callback: (value) => {
+                        return (color +
+                            generateHexFromColor(exampleTheme, colorType, colorIndex, value));
+                    },
+                });
+            }
             return {
                 backgroundColor: color + colorExample,
             };
@@ -328,6 +338,7 @@ export function formatTheme(prefix = "multiui", e, exampleTheme) {
     };
     return {
         utils,
+        matches,
     };
     function cssVar(value, transp) {
         //@ts-expect-error - this works.

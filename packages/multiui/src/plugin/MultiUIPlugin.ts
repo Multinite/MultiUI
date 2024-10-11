@@ -51,8 +51,11 @@ export const MultiUIPlugin = function (
     addVariant,
     matchVariant,
   }) {
-    const { utils } = formatTheme(prefix, e, exampleTheme);
+    const { utils, matches } = formatTheme(prefix, e, exampleTheme);
 
+    matches.forEach((match) => {
+      matchVariant(match.name, match.callback);
+    });
     addUtilities(utils);
     addThemeClasses({ addVariant, matchVariant, multiUIConfig });
     addBoxSelectClasses({ addVariant, matchVariant });
