@@ -109,15 +109,17 @@ async function loadConfig(
 export default loadConfig;
 
 async function cleanupOnError(tempJsPath: string) {
-  console.log();
-  console.log(chalk.gray(`𝐢 Cleaning up temp file: ${tempJsPath}`));
-  try {
-    await fs.promises.unlink(tempJsPath);
-    console.log(chalk.gray(`✓ Cleaned up temp file.`));
+  if (fs.existsSync(tempJsPath)) {
     console.log();
-  } catch (error) {
-    console.error(`❌ Error cleaning up temp file: ${tempJsPath}`);
-    console.log();
-    throw error;
+    console.log(chalk.gray(`𝐢 Cleaning up temp file: ${tempJsPath}`));
+    try {
+      await fs.promises.unlink(tempJsPath);
+      console.log(chalk.gray(`✓ Cleaned up temp file.`));
+      console.log();
+    } catch (error) {
+      console.error(`❌ Error cleaning up temp file: ${tempJsPath}`);
+      console.log();
+      throw error;
+    }
   }
 }
