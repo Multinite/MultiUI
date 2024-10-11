@@ -46,6 +46,11 @@ const allColorTypes = [
   "secondary",
   "foreground",
   "background",
+  "default",
+  "info",
+  "success",
+  "danger",
+  "warning",
 ] as const;
 
 type ColorTypes = (typeof allColorTypes)[number];
@@ -79,17 +84,21 @@ export function formatTheme(
   exampleTheme?: ThemeT
 ) {
   const getCSSStylesFromColorData = {
-    bg: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => ({
-      backgroundColor: cssVar(
-        [
-          colorType,
-          colorIndex === undefined
-            ? ""
-            : (colorIndex.toString() as NumberToString<ColorIndexs>),
-        ],
+    bg: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
+      const color = cssVar(
+        [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
         colorTransparency ? colorTransparency / 100 : undefined
-      ),
-    }),
+      );
+      const colorExample = generateHexFromColor(
+        exampleTheme,
+        colorType,
+        colorIndex,
+        colorTransparency
+      );
+      return {
+        backgroundColor: color + colorExample,
+      };
+    },
     text: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
       const colorVar = cssVar(
         [colorType, colorIndex === undefined ? "" : colorIndex.toString()],
@@ -479,6 +488,7 @@ export function formatTheme(
       .map((x) => x.replaceAll("-", "_"))
       .filter((x) => x)
       .join("-")})${transp ? `, ${transp}` : ""})` as const;
+
   }
 }
 type JoinWithHyphen<T extends string[]> = T extends []

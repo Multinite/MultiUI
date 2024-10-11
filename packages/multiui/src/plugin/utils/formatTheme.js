@@ -7,6 +7,11 @@ const allColorTypes = [
     "secondary",
     "foreground",
     "background",
+    "default",
+    "info",
+    "success",
+    "danger",
+    "warning",
 ];
 const allColorUtils = [
     "bg",
@@ -25,14 +30,13 @@ const allColorTransparencyValues = [
 ];
 export function formatTheme(prefix = "multiui", e, exampleTheme) {
     const getCSSStylesFromColorData = {
-        bg: ({ colorIndex, colorType, colorTransparency }) => ({
-            backgroundColor: cssVar([
-                colorType,
-                colorIndex === undefined
-                    ? ""
-                    : colorIndex.toString(),
-            ], colorTransparency ? colorTransparency / 100 : undefined),
-        }),
+        bg: ({ colorIndex, colorType, colorTransparency }) => {
+            const color = cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined);
+            const colorExample = generateHexFromColor(exampleTheme, colorType, colorIndex, colorTransparency);
+            return {
+                backgroundColor: color + colorExample,
+            };
+        },
         text: ({ colorIndex, colorType, colorTransparency }) => {
             const colorVar = cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined);
             const colorExample = generateHexFromColor(exampleTheme, colorType, colorIndex, colorTransparency);
