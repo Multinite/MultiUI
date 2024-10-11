@@ -1,16 +1,19 @@
-import boxen from "boxen";
-import { centerAlign } from "ansi-center-align";
-import chalk from "chalk";
-import difflib from "difflib";
-import inquirer from "inquirer";
-import path, { dirname } from "path";
-import terminalImage from "terminal-image";
-import { fileURLToPath } from "url";
-import stripAnsi from "strip-ansi";
-import logUpdate from "log-update";
+// import boxen from "boxen";
+// import { centerAlign } from "ansi-center-align";
+// import chalk from "chalk";
+// import difflib from "difflib";
+// import inquirer from "inquirer";
+// import path, { dirname } from "path";
+// import terminalImage from "terminal-image";
+// import { fileURLToPath } from "url";
+// import stripAnsi from "strip-ansi";
+// import logUpdate from "log-update";
+// import getMultiUIConfig from "../utils/multiUIConfig";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import getMultiUIConfig from "../utils/multiUIConfig.js";
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 // export default function test() {
 //   const current = ["const a = 1;", "const b = 2;", "const c = 3; const d = 4;"];
@@ -80,31 +83,35 @@ const __dirname = dirname(__filename);
 //     });
 // }
 
+// export default async function test() {
+//   async function getImageBox(width: number=process.stdout.columns - 2) {
+//     const size = 30;
+//     const img = await terminalImage.file(
+//       path.join(__dirname, "../../assets/logo_500.png"),
+//       {
+//         width:
+//           process.stdout.columns - 2 > size ? size : process.stdout.columns - 2,
+//         height: process.stdout.columns - 2 > size ? size : undefined,
+//       }
+//     );
+//     return boxen("\n" + centerAlign(img, width), {
+//       title: "[ " + chalk.red(`Live Preview`) + " ]",
+//       titleAlignment: "center",
+//       width: process.stdout.columns,
+//     });
+//   }
+//   // console.log(process.stdout.columns);
+//   let counter = 30;
+//   let direction = 1;
+//   setInterval(async () => {
+//     counter += direction;
+//     if (counter === process.stdout.columns + 42) direction = -1;
+//     if (counter === 30) direction = 1;
+//     const box = await getImageBox(counter);
+//     logUpdate(box);
+//   }, 10);
+// }
+
 export default async function test() {
-  async function getImageBox(width: number=process.stdout.columns - 2) {
-    const size = 30;
-    const img = await terminalImage.file(
-      path.join(__dirname, "../../assets/logo_500.png"),
-      {
-        width:
-          process.stdout.columns - 2 > size ? size : process.stdout.columns - 2,
-        height: process.stdout.columns - 2 > size ? size : undefined,
-      }
-    );
-    return boxen("\n" + centerAlign(img, width), {
-      title: "[ " + chalk.red(`Live Preview`) + " ]",
-      titleAlignment: "center",
-      width: process.stdout.columns,
-    });
-  }
-  // console.log(process.stdout.columns);
-  let counter = 30;
-  let direction = 1;
-  setInterval(async () => {
-    counter += direction;
-    if (counter === process.stdout.columns + 42) direction = -1;
-    if (counter === 30) direction = 1;
-    const box = await getImageBox(counter);
-    logUpdate(box);
-  }, 10);
+  const config = getMultiUIConfig();
 }

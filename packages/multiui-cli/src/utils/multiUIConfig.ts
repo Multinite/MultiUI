@@ -4,9 +4,8 @@ import { object, string } from "yup";
 import * as yup from "yup";
 import { getWorkspaces } from "./getWorkspaces.js";
 import chalk from "chalk";
-import tsNode from "ts-node";
 import { MultiUIConfig } from "../types/multiUiConfig.js";
-import runTypeScriptFile from "./runTypeScriptFile.js";
+import loadConfig from "./loadConfig.js";
 
 let configSchema = object({
   components_output_dir: string().required(),
@@ -50,15 +49,14 @@ export default async function getMultiUIConfig(
     const configPathTS = path.join(root_path, "multiui.config.ts");
     const configPathJS = path.join(root_path, "multiui.config.js");
     if (fs.existsSync(configPathTS)) {
-      console.log(`found ts file, running tsnode`);
-      const config = await runTypeScriptFile(configPathTS);
+      const config = await loadConfig(configPathTS, true);
       console.log(`res:`, config);
 
       const result = configSchema.validateSync(config);
       resolve(result);
     } else if (fs.existsSync(configPathJS)) {
-      const config = JSON.parse(fs.readFileSync(configPathJS, "utf8"));
-      delete config["$schema"];
+      const config = await loadConfig(configPathJS, true);
+      console.log(`res:`, config);
 
       const result = configSchema.validateSync(config);
       resolve(result);

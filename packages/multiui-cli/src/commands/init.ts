@@ -353,9 +353,11 @@ function getDemoMultiUIConfig(typescript: boolean, config: MultiUIConfig) {
     const lines = [
       `import { multiUIConfigCreator } from "@multinite_official/multiui";`,
       ``,
-      `export const multiUIConfig = multiUIConfigCreator({`,
+      `const multiUIConfig = multiUIConfigCreator({`,
       `data`,
       `});`,
+      ``,
+      `export default multiUIConfig;`,
     ];
     return lines.join(`\n`);
   }
@@ -364,9 +366,11 @@ function getDemoMultiUIConfig(typescript: boolean, config: MultiUIConfig) {
     const lines = [
       `const { multiUIConfigCreator } = require("@multinite_official/multiui");`,
       ``,
-      `export const multiUIConfig = multiUIConfigCreator({`,
+      `const multiUIConfig = multiUIConfigCreator({`,
       `data`,
       `});`,
+      ``,
+      `module.exports = multiUIConfig;`,
     ];
     return lines.join(`\n`);
   }
