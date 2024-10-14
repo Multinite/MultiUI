@@ -32,7 +32,7 @@ type AddVariant = (
 ) => void;
 
 export const MultiUIPlugin = function (
-  multiUIConfig: MultiUIConfig & { $schema?: string },
+  multiUIConfig: MultiUIConfig,
   /**
    * We use this theme to generate the colors for you to preview in Tailwind.
    *
@@ -50,13 +50,16 @@ export const MultiUIPlugin = function (
     config,
     addVariant,
     matchVariant,
+    matchUtilities,
   }) {
     const { utils, matches } = formatTheme(prefix, e, exampleTheme);
-
-    matches.forEach((match) => {
-      matchVariant(match.name, match.callback);
-    });
     addUtilities(utils);
+    matchUtilities(
+      matches.reduce((prev, { callback, utility }) => {
+        prev[utility] = callback;
+        return prev;
+      }, {})
+    );
     addThemeClasses({ addVariant, matchVariant, multiUIConfig });
     addBoxSelectClasses({ addVariant, matchVariant });
   });

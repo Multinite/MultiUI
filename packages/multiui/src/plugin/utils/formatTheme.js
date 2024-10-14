@@ -34,12 +34,15 @@ export function formatTheme(prefix = "multiui", e, exampleTheme) {
         bg: ({ colorIndex, colorType, colorTransparency }) => {
             const color = cssVar([colorType, colorIndex === undefined ? "" : colorIndex.toString()], colorTransparency ? colorTransparency / 100 : undefined);
             const colorExample = generateHexFromColor(exampleTheme, colorType, colorIndex, colorTransparency);
-            if (colorTransparency) {
+            if (colorTransparency === undefined) {
                 matches.push({
-                    name: `bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}\\/`,
+                    utility: `bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}/`,
                     callback: (value) => {
-                        return (color +
-                            generateHexFromColor(exampleTheme, colorType, colorIndex, value));
+                        console.log(`[MultiUI] Found bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}/`);
+                        return {
+                            backgroundColor: color +
+                                generateHexFromColor(exampleTheme, colorType, colorIndex, (parseFloat(value) * 100)),
+                        };
                     },
                 });
             }
@@ -128,8 +131,9 @@ export function formatTheme(prefix = "multiui", e, exampleTheme) {
             }, {}),
         };
     }, {});
-    console.log(colorUtils);
-    console.log(Object.keys(colorUtils).length);
+    console.log(`[MultiUI] Loaded ${Object.keys(colorUtils).length} color utils`);
+    console.log(`[MultiUI] Loaded ${Object.keys(matches).length} color matches`);
+    console.log(matches);
     const allSizeClasses = [
         {
             class: "text",

@@ -1,5 +1,8 @@
 import Color from "color";
-import type { RecursiveKeyValuePair } from "tailwindcss/types/config";
+import type {
+  CSSRuleObject,
+  RecursiveKeyValuePair,
+} from "tailwindcss/types/config";
 import { ThemeT } from "../../types";
 type ColorIndexs = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 type ColorIndexValues =
@@ -83,7 +86,10 @@ export function formatTheme(
   e: (className: string) => string,
   exampleTheme?: ThemeT
 ) {
-  let matches: { name: string; callback: (value: string) => string }[] = [];
+  let matches: {
+    utility: string;
+    callback: (value: string) => CSSRuleObject;
+  }[] = [];
 
   const getCSSStylesFromColorData = {
     bg: ({ colorIndex, colorType, colorTransparency }: getCssVariable) => {
@@ -97,19 +103,23 @@ export function formatTheme(
         colorIndex,
         colorTransparency
       );
-      if (colorTransparency) {
+      if (colorTransparency === undefined) {
         matches.push({
-          name: `bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}\\/`,
+          utility: `bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}/`,
           callback: (value) => {
-            return (
-              color +
-              generateHexFromColor(
-                exampleTheme,
-                colorType,
-                colorIndex,
-                value as any as ColorTransparencyValues
-              )
+            console.log(
+              `[MultiUI] Found bg-${colorType}${colorIndex === undefined ? "" : `-${colorIndex}`}/`
             );
+            return {
+              backgroundColor:
+                color +
+                generateHexFromColor(
+                  exampleTheme,
+                  colorType,
+                  colorIndex,
+                  (parseFloat(value) * 100) as any as ColorTransparencyValues
+                ),
+            };
           },
         });
       }
@@ -277,8 +287,9 @@ export function formatTheme(
       }, {}),
     };
   }, {}) as Utils;
-  console.log(colorUtils);
-  console.log(Object.keys(colorUtils).length);
+  console.log(`[MultiUI] Loaded ${Object.keys(colorUtils).length} color utils`);
+  console.log(`[MultiUI] Loaded ${Object.keys(matches).length} color matches`);
+  console.log(matches);
 
   const allSizeClasses = [
     {
