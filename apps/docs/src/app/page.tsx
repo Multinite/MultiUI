@@ -25,7 +25,7 @@ function Header() {
         />
       </div>
       <div className="flex items-center justify-center">
-        <header className="w-[50vw] h-full rounded-full border border-default bg-foreground/[0.5] bg-primary/50 "></header>
+        <header className="w-[50vw] h-full rounded-full border border-default bg-foreground/[0.5] "></header>
       </div>
       <div className="flex items-center justify-center pr-10">
         <SignedIn>

@@ -1,3 +1,6 @@
+"use client";
+import type { ReactNode } from "react";
+
 /**
  * Pass this object to the NextJS metadata export.
  * We intend to collect the most common dark mode extensions and disable them using meta tags.
@@ -5,23 +8,26 @@
  * @example
  * ```ts
  * export const metadata: Metadata = {
- *   title: "MultiUI Docs",
- *   description: "The MultiUI documentation.",
- *   ...disableDarkReaderMeta,
+ *   title: "Some Title!",
+ *   description: "Some text",
+ *   ...disableDarkModeMeta,
  * };
  * ```
  */
-export const disableDarkModeExtensions = {
+export const disableDarkModeMeta = {
   other: {
     "darkreader-lock": "true",
   },
 };
 
-/**
- * This is the same as the `disableDarkModeExtensions` object, but as a JSX element.
- */
-export const disableModeExtensions_metaJSX = (
-  <>
-    <meta name="darkreader-lock" />
-  </>
-);
+
+export function DisableDarkModeExtensions({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  if (typeof document != "undefined") {
+    document.body.style.setProperty(`--ml-ignore`, "true");
+  }
+  return children;
+}

@@ -1,4 +1,4 @@
-import { jsx as _jsx, Fragment as _Fragment } from "react/jsx-runtime";
+"use client";
 /**
  * Pass this object to the NextJS metadata export.
  * We intend to collect the most common dark mode extensions and disable them using meta tags.
@@ -6,19 +6,21 @@ import { jsx as _jsx, Fragment as _Fragment } from "react/jsx-runtime";
  * @example
  * ```ts
  * export const metadata: Metadata = {
- *   title: "MultiUI Docs",
- *   description: "The MultiUI documentation.",
- *   ...disableDarkReaderMeta,
+ *   title: "Some Title!",
+ *   description: "Some text",
+ *   ...disableDarkModeMeta,
  * };
  * ```
  */
-export const disableDarkModeExtensions = {
+export const disableDarkModeMeta = {
     other: {
         "darkreader-lock": "true",
     },
 };
-/**
- * This is the same as the `disableDarkModeExtensions` object, but as a JSX element.
- */
-export const disableModeExtensions_metaJSX = (_jsx(_Fragment, { children: _jsx("meta", { name: "darkreader-lock" }) }));
+export function DisableDarkModeExtensions({ children, }) {
+    if (typeof document != "undefined") {
+        document.body.style.setProperty(`--ml-ignore`, "true");
+    }
+    return children;
+}
 //# sourceMappingURL=disableDarkModeExtensions.js.map
