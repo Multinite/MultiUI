@@ -174,29 +174,13 @@ export const MultiUIPlugin = function (
       matchVariant,
       matchUtilities,
     }) {
-      // const { utils, matches } = formatTheme(prefix, e, exampleTheme);
-      // addUtilities(utils);
-      // matchUtilities(
-      //   matches.reduce((prev, { callback, utility }) => {
-      //     prev[utility] = callback;
-      //     return prev;
-      //   }, {})
-      // );
-      console.log(getColors());
       addThemeClasses({ addVariant, matchVariant, multiUIConfig });
       addBoxSelectClasses({ addVariant, matchVariant });
     },
     {
       theme: {
         extend: {
-          colors: {
-            //@ts-ignore
-            "sup-10": (d) => {
-              console.log(d);
-              return `hey; /* #fff */`;
-            },
-            ...getColors(),
-          },
+          colors: getColors(),
         },
       },
     }
