@@ -23,9 +23,11 @@ jobs:
       - name: Install
         uses: ./.github/common-actions/install
 
-      - name: Build
-        run: npm run build
-        timeout-minutes: 15
+      # I commented this out since remote-caching isn't linking to my local dev
+      # Despite this, during build time, docs can't seem to get the @multinite_official/multiui lib despite it being turborepo's job to link it.
+      # - name: Build
+      #   run: npm run build
+      #   timeout-minutes: 15
 
       - name: Create Release Pull Request or Publish to NPM
         id: changesets
