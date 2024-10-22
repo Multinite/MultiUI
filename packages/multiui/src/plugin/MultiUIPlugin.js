@@ -75,7 +75,7 @@ exampleTheme) {
                         getHexComment(name, undefined, parseFloat(opacityValue)));
                 }
                 if (opacityVariable) {
-                    return (`hsl(var(${multiUIColorVariable}), var(${opacityVariable})))` +
+                    return (`hsl(var(${multiUIColorVariable}), var(${opacityVariable}))` +
                         getHexComment(name, undefined, parseFloat(opacityValue)));
                 }
                 return (`hsl(var(${multiUIColorVariable}), 1))` +
@@ -89,7 +89,7 @@ exampleTheme) {
                             getHexComment(name, value, parseFloat(opacityValue)));
                     }
                     if (opacityVariable) {
-                        return (`hsl(var(${multiUIColorVariable}), var(${opacityVariable})))` +
+                        return (`hsl(var(${multiUIColorVariable}), var(${opacityVariable}))` +
                             getHexComment(name, value, parseFloat(opacityValue)));
                     }
                     return (`hsl(var(${multiUIColorVariable}), 1))` +

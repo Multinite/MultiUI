@@ -114,7 +114,7 @@ export const MultiUIPlugin = function (
         }
         if (opacityVariable) {
           return (
-            `hsl(var(${multiUIColorVariable}), var(${opacityVariable})))` +
+            `hsl(var(${multiUIColorVariable}), var(${opacityVariable}))` +
             getHexComment(name, undefined, parseFloat(opacityValue))
           );
         }
@@ -135,7 +135,7 @@ export const MultiUIPlugin = function (
           }
           if (opacityVariable) {
             return (
-              `hsl(var(${multiUIColorVariable}), var(${opacityVariable})))` +
+              `hsl(var(${multiUIColorVariable}), var(${opacityVariable}))` +
               getHexComment(name, value, parseFloat(opacityValue))
             );
           }
