@@ -1,5 +1,11 @@
 # multiui-cli
 
+## 3.0.1
+
+### Patch Changes
+
+- 738a6c7: Fix: MultiUI installation for windows
+
 ## 3.0.0
 
 ### Major Changes
