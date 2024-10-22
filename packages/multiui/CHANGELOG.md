@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.2
+
+### Patch Changes
+
+- 8007e07: Fix: MultiUIPlugin causing incorrect CSS values
+
 ## 3.0.1
 
 ### Patch Changes
