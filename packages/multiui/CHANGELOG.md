@@ -1,5 +1,15 @@
 # @multinite_official/multiui
 
+## 3.0.0
+
+### Major Changes
+
+- 4477ba0: API refactoring
+
+### Minor Changes
+
+- 3f411e4: Updated: Main API
+
 ## 2.8.5
 
 ### Patch Changes

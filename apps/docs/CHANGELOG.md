@@ -1,5 +1,11 @@
 # @multinite_official/multiui-docs
 
+## 3.3.0
+
+### Minor Changes
+
+- 3f411e4: Updated: Main API
+
 ## 3.2.1
 
 ### Patch Changes
