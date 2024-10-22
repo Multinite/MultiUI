@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.1
+
+### Patch Changes
+
+- 8a22a28: Chore
+
 ## 3.0.0
 
 ### Major Changes
