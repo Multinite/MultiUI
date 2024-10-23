@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.4
+
+### Patch Changes
+
+- 1f720ae: Fix: theme <script> now correctly generates theme values
+
 ## 3.0.3
 
 ### Patch Changes
