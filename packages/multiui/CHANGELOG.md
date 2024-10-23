@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.7
+
+### Patch Changes
+
+- 0b8a8df: Fix: TS errors in MultiUI plugin
+
 ## 3.0.6
 
 ### Patch Changes
