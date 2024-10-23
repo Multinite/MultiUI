@@ -1,5 +1,4 @@
 import { ThemeT } from "../types";
-import { type GlobalThisMultiUIType } from "./GlobalThemeSet";
 import { getThemeFormatted, Schemes } from "./Theme";
 import { getColorSchemeSync } from "./useColorScheme";
 
