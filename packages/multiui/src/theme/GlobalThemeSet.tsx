@@ -124,7 +124,7 @@ function setDefaultGlobalValues({
   persistOnLocalstorage: boolean;
   setValue: Dispatch<SetStateAction<Schemes>>;
 }) {
-  if (!globalThis["multiUI"]) {
+  if (typeof globalThis["multiUI"] === undefined) {
     globalThis.multiUI = {
       themes: {},
       defineThemeStylesInline: {},
