@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.10
+
+### Patch Changes
+
+- 252bc4c: Fix: Type error on GlobalThemeSet
+
 ## 3.0.9
 
 ### Patch Changes
