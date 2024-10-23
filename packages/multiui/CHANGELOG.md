@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.6
+
+### Patch Changes
+
+- 2e17930: Fix: MultiUI TW plugin now exports background & foreground classes
+
 ## 3.0.5
 
 ### Patch Changes
