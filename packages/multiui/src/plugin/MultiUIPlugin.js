@@ -74,7 +74,21 @@ export const MultiUIPlugin = function (multiUIConfig,
 exampleTheme) {
     const prefix = (multiUIConfig.theme_prefix || "multiui");
     function getColors() {
-        let colors = {};
+        let colors = {
+            background: () => "",
+            content1: () => "",
+            content2: () => "",
+            content3: () => "",
+            content4: () => "",
+            danger: () => "",
+            default: () => "",
+            foreground: () => "",
+            info: () => "",
+            primary: () => "",
+            secondary: () => "",
+            success: () => "",
+            warning: () => "",
+        };
         themeLayout.forEach(({ name, range }) => {
             const multiUIColorVariable = `--${prefix}-${name}`;
             colors[name] = ({ opacityVariable, opacityValue }) => {
@@ -121,6 +135,7 @@ exampleTheme) {
     }, {
         theme: {
             extend: {
+                //@ts-expect-error - This works.
                 colors: getColors(),
             },
         },
