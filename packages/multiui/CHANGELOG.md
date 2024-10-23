@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.5
+
+### Patch Changes
+
+- 64ba94e: Fix: Last release didn't have JS generated, now fixed.
+
 ## 3.0.4
 
 ### Patch Changes
