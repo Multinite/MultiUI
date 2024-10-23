@@ -41,6 +41,14 @@ const themeLayout = [
         range: basic_range,
     },
     {
+        name: "background",
+        range: basic_range,
+    },
+    {
+        name: "foreground",
+        range: basic_range,
+    },
+    {
         name: "content1",
         range: ["foreground"],
     },
