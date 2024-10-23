@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.3
+
+### Patch Changes
+
+- e0aeee5: Fix: Theme component generates all of the theme values
+
 ## 3.0.2
 
 ### Patch Changes
