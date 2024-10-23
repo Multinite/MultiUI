@@ -111,6 +111,14 @@ function useClearServerGlobalThis() {
   }
 }
 
+declare global {
+  interface MultiUI extends GlobalThisMultiUIType {
+
+  }
+
+  var multiUI: MultiUI;
+}
+
 function setDefaultGlobalValues({
   theme,
   themeId,
@@ -124,7 +132,7 @@ function setDefaultGlobalValues({
   persistOnLocalstorage: boolean;
   setValue: Dispatch<SetStateAction<Schemes>>;
 }) {
-  if (typeof globalThis["multiUI"] === undefined) {
+  if (typeof (globalThis as any).multiUI === 'undefined') {
     globalThis.multiUI = {
       themes: {},
       defineThemeStylesInline: {},
