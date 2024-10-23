@@ -59,7 +59,7 @@ const setThemeScript = (args: {
         [`--${theme_prefix}-${color}-900`]: theme[color][900],
       };
     }
-    function getThemeValue(keys) {
+    function getThemeValue(keys: string[]) {
       if (theme === undefined) return {};
       let val = theme;
       for (let i = 0; i < keys.length; i++) {
@@ -168,7 +168,7 @@ const setThemeScript = (args: {
   let color_scheme = (() => {
     if (window.matchMedia) {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      function handler(e) {
+      function handler(e: MediaQueryListEvent) {
         if (e.matches) {
           // dark mode
           color_scheme = "dark";

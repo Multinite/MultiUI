@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
-    "noImplicitAny": false
+    "noImplicitAny": true
   },
   "include": ["src/**/*", "index.ts", "./src/global.d.ts"],
   "exclude": ["**/node_modules", "tailwind.config.ts"]

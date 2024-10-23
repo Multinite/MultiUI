@@ -123,7 +123,8 @@ exampleTheme) {
     }
     function getHexComment(colorType, colorIndex, colorTransparency) {
         let color = exampleTheme
-            ? exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
+            ? //@ts-ignore - it works
+                exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
             : undefined;
         return color
             ? ` /* ${Color(`hsla(${color}${colorTransparency ? `, ${colorTransparency}` : ""})`).hexa()} */`

@@ -347,7 +347,7 @@ export const getThemeFormatted: <
       [`--${theme_prefix}-${color}-900`]: theme[color][900],
     };
   }
-  function getThemeValue(keys) {
+  function getThemeValue(keys:string[]) {
     if (theme === undefined) return {};
     let val = theme;
     for (let i = 0; i < keys.length; i++) {

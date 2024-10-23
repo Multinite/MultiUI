@@ -175,12 +175,13 @@ export const MultiUIPlugin = function (
   }
 
   function getHexComment(
-    colorType: string,
+    colorType: keyof ThemeT,
     colorIndex?: string,
     colorTransparency?: number
   ) {
     let color: string | undefined = exampleTheme
-      ? exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
+      ? //@ts-ignore - it works
+        exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
       : undefined;
 
     return color
