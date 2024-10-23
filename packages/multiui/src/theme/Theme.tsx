@@ -361,6 +361,12 @@ export const getThemeFormatted: <
   const primary = colorValues("primary");
   const secondary = colorValues("secondary");
   const default_ = colorValues("default");
+  const danger = colorValues("danger");
+  const success = colorValues("success");
+  const info = colorValues("info");
+  const warning = colorValues("warning");
+
+
   const content = {
     [`--${theme_prefix}-content1`]: theme.content1.DEFAULT,
     [`--${theme_prefix}-content2-foreground`]: theme.content2.foreground,
@@ -413,6 +419,14 @@ export const getThemeFormatted: <
     ...default_,
     [`/* Content Values`]: "*/",
     ...content,
+    [`/* Danger Values`]: "*/",
+    ...danger,
+    [`/* Success Values`]: "*/",
+    ...success,
+    [`/* Info Values`]: "*/",
+    ...info,
+    [`/* Warning Values`]: "*/",
+    ...warning,
     [`/* Other Values`]: "*/",
     ...other,
   };
