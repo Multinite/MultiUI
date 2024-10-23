@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.8
+
+### Patch Changes
+
+- 2f6fa75: Fix: Ts errors
+
 ## 3.0.7
 
 ### Patch Changes
