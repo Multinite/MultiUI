@@ -1,4 +1,4 @@
-import { MultiUIPlugin } from "@multinite_official/multiui/out";
+import { MultiUIPlugin } from "@multinite_official/multiui";
 import type { Config } from "tailwindcss";
 import { test_theme2 } from "./src/app/test/themes";
 import multiUIConfig from "./multiui.config";

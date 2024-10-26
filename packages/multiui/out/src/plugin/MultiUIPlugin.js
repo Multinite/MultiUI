@@ -65,6 +65,7 @@ const themeLayout = [
         range: ["foreground"],
     },
 ];
+const borderRadius = ["small", "medium", "large"];
 export const MultiUIPlugin = function (multiUIConfig, 
 /**
  * We use this theme to generate the colors for you to preview in Tailwind.
@@ -130,14 +131,23 @@ exampleTheme) {
             ? ` /* ${Color(`hsla(${color}${colorTransparency ? `, ${colorTransparency}` : ""})`).hexa()} */`
             : "";
     }
+    function getBorderRadius() {
+        const radiusObj = {};
+        borderRadius.forEach((radius) => {
+            radiusObj[radius] = `var(--${prefix}-radius-${radius})`;
+        });
+        console.log(`BorderRadius:`, radiusObj);
+        return radiusObj;
+    }
     return plugin(function ({ addUtilities, addComponents, addBase, e, config, addVariant, matchVariant, matchUtilities, }) {
         addThemeClasses({ addVariant, matchVariant, multiUIConfig });
         addBoxSelectClasses({ addVariant, matchVariant });
     }, {
         theme: {
             extend: {
-                //@ts-expect-error - This works.
+                // @ts-expect-error - This works.
                 colors: getColors(),
+                borderRadius: getBorderRadius(),
             },
         },
     });

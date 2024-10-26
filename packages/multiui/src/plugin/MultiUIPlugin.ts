@@ -98,6 +98,8 @@ const themeLayout = [
   },
 ] as const;
 
+const borderRadius = ["small", "medium", "large"] as const;
+
 export const MultiUIPlugin = function (
   multiUIConfig: MultiUIConfig,
   /**
@@ -189,6 +191,15 @@ export const MultiUIPlugin = function (
       : "";
   }
 
+  function getBorderRadius() {
+    const radiusObj: Record<string, string> = {};
+    borderRadius.forEach((radius) => {
+      radiusObj[radius] = `var(--${prefix}-radius-${radius})`;
+    });
+    console.log(`BorderRadius:`, radiusObj);
+    return radiusObj;
+  }
+
   return plugin(
     function ({
       addUtilities,
@@ -206,8 +217,9 @@ export const MultiUIPlugin = function (
     {
       theme: {
         extend: {
-          //@ts-expect-error - This works.
+          // @ts-expect-error - This works.
           colors: getColors(),
+          borderRadius: getBorderRadius(),
         },
       },
     }
