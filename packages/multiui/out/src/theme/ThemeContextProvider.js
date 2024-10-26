@@ -7,12 +7,11 @@ export const ThemeContext = createContext(null);
  * This component is used internally only.
  *
  */
-function ThemeContextProvider({ children, themeId, }) {
+export function ThemeContextProvider({ children, themeId, }) {
     return (_jsx(ThemeContext.Provider, { value: {
             getThemeId: () => themeId,
         }, children: children }));
 }
-export default ThemeContextProvider;
 export function useInternalThemeContext() {
     return useContext(ThemeContext);
 }

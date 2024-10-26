@@ -58,7 +58,7 @@ const setThemeScript = (args) => {
             [`--${theme_prefix}-content4-foreground`]: theme.content4.foreground,
             [`--${theme_prefix}-content4`]: theme.content4.DEFAULT,
         };
-        const other = {
+        const textSize = {
             [`--${theme_prefix}-text-size-extra-small`]: getThemeValue([
                 "text-size",
                 "extra-small",
@@ -83,6 +83,16 @@ const setThemeScript = (args) => {
                 "text-size",
                 "extra-extra-large",
             ]),
+        };
+        const borderRadius = {
+            [`--${theme_prefix}-radius-small`]: getThemeValue(["borderRadius", "sm"]),
+            [`--${theme_prefix}-radius-medium`]: getThemeValue([
+                "borderRadius",
+                "md",
+            ]),
+            [`--${theme_prefix}-radius-large`]: getThemeValue(["borderRadius", "lg"]),
+        };
+        const other = {
             [`--${theme_prefix}-focus`]: getThemeValue(["focus"]),
         };
         const style = {
@@ -109,6 +119,10 @@ const setThemeScript = (args) => {
             ...info,
             [`/* Warning Values`]: "*/",
             ...warning,
+            [`/* Border Radius Values`]: "*/",
+            ...borderRadius,
+            [`/* Text Size Values`]: "*/",
+            ...textSize,
             [`/* Other Values`]: "*/",
             ...other,
         };

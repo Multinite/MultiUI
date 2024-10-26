@@ -4,7 +4,7 @@ import GlobalThemeSet from "./GlobalThemeSet";
 // import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
 import { cn } from "../utils";
-import ThemeContextProvider from "./ThemeContextProvider";
+import { ThemeContextProvider } from "./ThemeContextProvider";
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
 export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesInline = false, $updateDocumentColorScheme = true, $persistOnLocalstorage = true, $boxSelectionOptions = {
     lazyLoad: true,
@@ -130,7 +130,7 @@ export const getThemeFormatted = function ({ theme, outputType = "inline-style",
         [`--${theme_prefix}-content4-foreground`]: theme.content4.foreground,
         [`--${theme_prefix}-content4`]: theme.content4.DEFAULT,
     };
-    const other = {
+    const textSize = {
         [`--${theme_prefix}-text-size-extra-small`]: getThemeValue([
             "text-size",
             "extra-small",
@@ -155,6 +155,16 @@ export const getThemeFormatted = function ({ theme, outputType = "inline-style",
             "text-size",
             "extra-extra-large",
         ]),
+    };
+    const borderRadius = {
+        [`--${theme_prefix}-radius-small`]: getThemeValue(["borderRadius", "sm"]),
+        [`--${theme_prefix}-radius-medium`]: getThemeValue([
+            "borderRadius",
+            "md",
+        ]),
+        [`--${theme_prefix}-radius-large`]: getThemeValue(["borderRadius", "lg"]),
+    };
+    const other = {
         [`--${theme_prefix}-focus`]: getThemeValue(["focus"]),
     };
     const style = {
@@ -181,6 +191,10 @@ export const getThemeFormatted = function ({ theme, outputType = "inline-style",
         ...info,
         [`/* Warning Values`]: "*/",
         ...warning,
+        [`/* Border Radius Values`]: "*/",
+        ...borderRadius,
+        [`/* Text Size Values`]: "*/",
+        ...textSize,
         [`/* Other Values`]: "*/",
         ...other,
     };

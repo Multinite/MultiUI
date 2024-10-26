@@ -5,11 +5,10 @@ import "./globals.css";
 import {
   cn,
   Theme,
-  MultiUIProvider,
   DisableDarkModeExtensions,
   disableDarkModeMeta,
   BoxSelection,
-} from "@multinite_official/multiui/out";
+} from "@multinite_official/multiui";
 import type { ReactNode } from "react";
 import { default_theme } from "./test/themes";
 import ClientWrapper from "./ClientWrapper";
@@ -33,7 +32,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       >
         <DisableDarkModeExtensions>
           {process.env.NODE_ENV === "production" && <Analytics />}
-          <MultiUIProvider>
             <Theme
               $theme={default_theme}
               $themeId="default"
@@ -49,7 +47,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <ClientWrapper>{children as any}</ClientWrapper>
               </BoxSelection>
             </Theme>
-          </MultiUIProvider>
         </DisableDarkModeExtensions>
       </body>
     </html>

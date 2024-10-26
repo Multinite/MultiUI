@@ -196,7 +196,6 @@ export const MultiUIPlugin = function (
     borderRadius.forEach((radius) => {
       radiusObj[radius] = `var(--${prefix}-radius-${radius})`;
     });
-    console.log(`BorderRadius:`, radiusObj);
     return radiusObj;
   }
 

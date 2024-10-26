@@ -136,7 +136,6 @@ exampleTheme) {
         borderRadius.forEach((radius) => {
             radiusObj[radius] = `var(--${prefix}-radius-${radius})`;
         });
-        console.log(`BorderRadius:`, radiusObj);
         return radiusObj;
     }
     return plugin(function ({ addUtilities, addComponents, addBase, e, config, addVariant, matchVariant, matchUtilities, }) {

@@ -12,7 +12,7 @@ export const ThemeContext = createContext<ThemeContextType>(null);
  * This component is used internally only.
  *
  */
-function ThemeContextProvider({
+export function ThemeContextProvider({
   children,
   themeId,
 }: {
@@ -30,7 +30,6 @@ function ThemeContextProvider({
   );
 }
 
-export default ThemeContextProvider;
 
 export function useInternalThemeContext() {
   return useContext(ThemeContext);
