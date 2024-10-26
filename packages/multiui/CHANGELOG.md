@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.11
+
+### Patch Changes
+
+- be925d5: update: MultiUI TW plugin now supports border-radius
+
 ## 3.0.10
 
 ### Patch Changes
