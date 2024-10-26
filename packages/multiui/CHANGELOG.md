@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.12
+
+### Patch Changes
+
+- e9a58e2: update: MultiUI now generates radius values from theme
+
 ## 3.0.11
 
 ### Patch Changes
