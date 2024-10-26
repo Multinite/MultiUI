@@ -1,4 +1,4 @@
-import { cn } from "@multinite_official/multiui";
+import { cn } from "@multinite_official/multiui/out";
 import { useMemo } from "react";
 
 export function getSizeClass(size: string, isIconOnly: boolean) {

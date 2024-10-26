@@ -6,7 +6,7 @@ import { getComponent } from "./actions/getComponent";
 import Image from "next/image";
 import useSWR from "swr";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { cn } from "@multinite_official/multiui";
+import { cn } from "@multinite_official/multiui/out";
 import { Component } from "../../db/schema/component";
 
 function Page() {

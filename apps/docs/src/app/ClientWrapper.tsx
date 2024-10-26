@@ -1,7 +1,7 @@
 "use client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { useTheme } from "@multinite_official/multiui";
+import { useTheme } from "@multinite_official/multiui/out";
 
 function ClientWrapper({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();

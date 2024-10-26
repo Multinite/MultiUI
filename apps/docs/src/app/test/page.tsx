@@ -7,7 +7,7 @@ import {
   SelectableGroup,
   Theme,
   useTheme,
-} from "@multinite_official/multiui";
+} from "@multinite_official/multiui/out";
 import { RefAttributes, useEffect, useRef, useState } from "react";
 // import Button from "../multiui/test_button";
 import {

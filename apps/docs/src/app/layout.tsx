@@ -9,7 +9,7 @@ import {
   DisableDarkModeExtensions,
   disableDarkModeMeta,
   BoxSelection,
-} from "@multinite_official/multiui";
+} from "@multinite_official/multiui/out";
 import type { ReactNode } from "react";
 import { default_theme } from "./test/themes";
 import ClientWrapper from "./ClientWrapper";
