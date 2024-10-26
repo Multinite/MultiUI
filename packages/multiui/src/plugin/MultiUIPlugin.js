@@ -93,7 +93,7 @@ exampleTheme) {
             const multiUIColorVariable = `--${prefix}-${name}`;
             colors[name] = ({ opacityVariable, opacityValue }) => {
                 if (!isNaN(+opacityValue)) {
-                    return (`hsl(var(${multiUIColorVariable}) / ${opacityValue})` +
+                    return (`hsl(var(${multiUIColorVariable}), ${opacityValue})` +
                         getHexComment(name, undefined, parseFloat(opacityValue)));
                 }
                 if (opacityVariable) {

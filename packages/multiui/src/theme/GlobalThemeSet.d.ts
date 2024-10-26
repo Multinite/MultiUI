@@ -20,3 +20,8 @@ declare function GlobalThemeSet({ theme, themeId, defineThemeStylesInline, updat
     persistOnLocalstorage: boolean;
 }): null;
 export default GlobalThemeSet;
+declare global {
+    interface MultiUI extends GlobalThisMultiUIType {
+    }
+    var multiUI: MultiUI;
+}

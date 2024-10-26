@@ -74,7 +74,7 @@ function useClearServerGlobalThis() {
     }
 }
 function setDefaultGlobalValues({ theme, themeId, defineThemeStylesInline, persistOnLocalstorage, setValue, }) {
-    if (!globalThis["multiUI"]) {
+    if (typeof globalThis.multiUI === 'undefined') {
         globalThis.multiUI = {
             themes: {},
             defineThemeStylesInline: {},

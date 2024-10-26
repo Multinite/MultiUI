@@ -133,7 +133,7 @@ export const MultiUIPlugin = function (
       colors[name] = ({ opacityVariable, opacityValue }) => {
         if (!isNaN(+opacityValue)) {
           return (
-            `hsl(var(${multiUIColorVariable}) / ${opacityValue})` +
+            `hsl(var(${multiUIColorVariable}), ${opacityValue})` +
             getHexComment(name, undefined, parseFloat(opacityValue))
           );
         }
