@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.13
+
+### Patch Changes
+
+- e244688: remove: Use-selectify package.
+
 ## 3.0.12
 
 ### Patch Changes
