@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.15
+
+### Patch Changes
+
+- 7c33887: Fix: <Theme> now internally wraps the ThemeProvider
+
 ## 3.0.14
 
 ### Patch Changes
