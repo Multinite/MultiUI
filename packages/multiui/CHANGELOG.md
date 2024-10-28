@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.14
+
+### Patch Changes
+
+- 3e36904: fix: Made react & react-dom use peer deps
+
 ## 3.0.13
 
 ### Patch Changes
