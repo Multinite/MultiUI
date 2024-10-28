@@ -19,4 +19,4 @@ export declare function BoxSelection({ $boxSelectionId, $boxSelectionOptions, ch
         className?: string;
     };
     children?: ReactNode;
-} & Omit<HTMLAttributes<HTMLDivElement>, "children">): null;
+} & Omit<HTMLAttributes<HTMLDivElement>, "children">): ReactNode;

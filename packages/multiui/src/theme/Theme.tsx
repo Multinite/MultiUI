@@ -5,6 +5,7 @@ import GlobalThemeSet from "./GlobalThemeSet";
 import { ScriptComponnet } from "./ScriptComponnet";
 import { cn } from "../utils";
 import { ThemeContextProvider } from "./ThemeContextProvider";
+import { ThemeProvider } from "./ThemeProvider";
 
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
 
@@ -225,7 +226,7 @@ export const Theme = forwardRef<
             ref={ref}
           >
             <ThemeContextProvider themeId={$themeId}>
-              {children}
+              <ThemeProvider>{children}</ThemeProvider>
             </ThemeContextProvider>
           </div>
           <ScriptComponnet
@@ -271,7 +272,7 @@ export const Theme = forwardRef<
           }}
         >
           <ThemeContextProvider themeId={$themeId}>
-            {children}
+            <ThemeProvider>{children}</ThemeProvider>
           </ThemeContextProvider>
         </div>
         <ScriptComponnet
@@ -347,7 +348,7 @@ export const getThemeFormatted: <
       [`--${theme_prefix}-${color}-900`]: theme[color][900],
     };
   }
-  function getThemeValue(keys:string[]) {
+  function getThemeValue(keys: string[]) {
     if (theme === undefined) return {};
     let val = theme;
     for (let i = 0; i < keys.length; i++) {
@@ -405,10 +406,7 @@ export const getThemeFormatted: <
 
   const borderRadius = {
     [`--${theme_prefix}-radius-small`]: getThemeValue(["borderRadius", "sm"]),
-    [`--${theme_prefix}-radius-medium`]: getThemeValue([
-      "borderRadius",
-      "md",
-    ]),
+    [`--${theme_prefix}-radius-medium`]: getThemeValue(["borderRadius", "md"]),
     [`--${theme_prefix}-radius-large`]: getThemeValue(["borderRadius", "lg"]),
   };
 

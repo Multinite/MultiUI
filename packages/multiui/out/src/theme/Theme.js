@@ -5,6 +5,7 @@ import GlobalThemeSet from "./GlobalThemeSet";
 import { ScriptComponnet } from "./ScriptComponnet";
 import { cn } from "../utils";
 import { ThemeContextProvider } from "./ThemeContextProvider";
+import { ThemeProvider } from "./ThemeProvider";
 const validThemeIdRegex = /^[a-zA-Z0-9-_]+$/;
 export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesInline = false, $updateDocumentColorScheme = true, $persistOnLocalstorage = true, $boxSelectionOptions = {
     lazyLoad: true,
@@ -55,7 +56,7 @@ export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesIn
                             theme: $serverSelectedTheme,
                             outputType: "inline-style-object",
                         }),
-                    }, ref: ref, children: _jsx(ThemeContextProvider, { themeId: $themeId, children: children }) }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
+                    }, ref: ref, children: _jsx(ThemeContextProvider, { themeId: $themeId, children: _jsx(ThemeProvider, { children: children }) }) }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
     }
     const { className, ...rest } = attr;
     return (_jsxs(_Fragment, { children: [_jsx(GlobalThemeSet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline, persistOnLocalstorage: $persistOnLocalstorage, updateDocumentColorScheme: $updateDocumentColorScheme }), _jsx("style", { slot: "multiui-theme-style", suppressHydrationWarning: true, dangerouslySetInnerHTML: {
@@ -65,7 +66,7 @@ export const Theme = forwardRef(({ $theme, $themeId, style, $defineThemeStylesIn
                     }),
                 }, ...(!$themeId ? {} : { "data-style-theme-id": $themeId }) }), _jsx("div", { ...rest, slot: "multiui-theme", "data-theme": $serverSelectedTheme.name, id: `multiui-theme-${$themeId}`, className: cn(`${$serverSelectedTheme.name}_theme`, className), "data-theme-scheme": $serverSelectedTheme.scheme, ...(!$themeId ? {} : { "data-theme-id": $themeId }), ref: ref, style: {
                     position: $enableBoxSelection ? "relative" : "static",
-                }, children: _jsx(ThemeContextProvider, { themeId: $themeId, children: children }) }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
+                }, children: _jsx(ThemeContextProvider, { themeId: $themeId, children: _jsx(ThemeProvider, { children: children }) }) }), _jsx(ScriptComponnet, { theme: $theme, themeId: $themeId, defineThemeStylesInline: $defineThemeStylesInline })] }));
 });
 export default Theme;
 /**
@@ -158,10 +159,7 @@ export const getThemeFormatted = function ({ theme, outputType = "inline-style",
     };
     const borderRadius = {
         [`--${theme_prefix}-radius-small`]: getThemeValue(["borderRadius", "sm"]),
-        [`--${theme_prefix}-radius-medium`]: getThemeValue([
-            "borderRadius",
-            "md",
-        ]),
+        [`--${theme_prefix}-radius-medium`]: getThemeValue(["borderRadius", "md"]),
         [`--${theme_prefix}-radius-large`]: getThemeValue(["borderRadius", "lg"]),
     };
     const other = {

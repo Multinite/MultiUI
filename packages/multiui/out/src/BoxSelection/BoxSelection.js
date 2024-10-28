@@ -71,7 +71,7 @@ export function BoxSelection({ $boxSelectionId, $boxSelectionOptions = {
     //   disableUnselection: $boxSelectionOptions.disableUnselection,
     //   maxSelections: $boxSelectionOptions.maxSelections,
     // });
-    return null;
+    return children;
     // return (
     // <div
     //   data-box-selection

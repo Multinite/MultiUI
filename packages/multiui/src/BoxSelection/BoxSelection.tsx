@@ -107,7 +107,7 @@ export function BoxSelection({
   //   maxSelections: $boxSelectionOptions.maxSelections,
   // });
 
-  return null
+  return children
 
   // return (
     // <div
