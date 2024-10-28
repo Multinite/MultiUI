@@ -19,4 +19,4 @@ export declare function BoxSelection({ $boxSelectionId, $boxSelectionOptions, ch
         className?: string;
     };
     children?: ReactNode;
-} & Omit<HTMLAttributes<HTMLDivElement>, "children">): import("react/jsx-runtime").JSX.Element;
+} & Omit<HTMLAttributes<HTMLDivElement>, "children">): null;
