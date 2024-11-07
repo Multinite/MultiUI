@@ -1,6 +1,6 @@
 {
   "name": "@multinite_official/multiui",
-  "version": "3.0.15",
+  "version": "3.0.16",
   "description": "The first and only Component Framework.",
   "main": "./out/index.js",
   "scripts": {

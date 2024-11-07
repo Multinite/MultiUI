@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.16
+
+### Patch Changes
+
+- 697f3e7: Re-enabled createComponent code
+
 ## 3.0.15
 
 ### Patch Changes
