@@ -1,7 +1,6 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import type { ThemeT } from "../types/MultiUIConfig";
 import GlobalThemeSet from "./GlobalThemeSet";
-// import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
 import { cn } from "../utils";
 import { ThemeContextProvider } from "./ThemeContextProvider";

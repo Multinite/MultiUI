@@ -1,7 +1,6 @@
 import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
 import { forwardRef } from "react";
 import GlobalThemeSet from "./GlobalThemeSet";
-// import BoxSelection from "./BoxSelection";
 import { ScriptComponnet } from "./ScriptComponnet";
 import { cn } from "../utils";
 import { ThemeContextProvider } from "./ThemeContextProvider";
