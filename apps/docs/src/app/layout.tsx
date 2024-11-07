@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import {
-  cn,
   Theme,
   DisableDarkModeExtensions,
   disableDarkModeMeta,
@@ -12,6 +11,7 @@ import {
 import type { ReactNode } from "react";
 import { default_theme } from "./test/themes";
 import ClientWrapper from "./ClientWrapper";
+import { cn } from "./hooks";
 
 const inter = Inter({ subsets: ["latin"] });
 
