@@ -100,15 +100,7 @@ const themeLayout = [
 
 const borderRadius = ["small", "medium", "large"] as const;
 
-export const MultiUIPlugin = function (
-  multiUIConfig: MultiUIConfig,
-  /**
-   * We use this theme to generate the colors for you to preview in Tailwind.
-   *
-   * ![Example Image showing how you can see the color next to the tailwind class](https://multiui.org/code/example-tw-with-color.png)
-   */
-  exampleTheme?: ThemeT
-) {
+export const MultiUIPlugin = function (multiUIConfig: MultiUIConfig) {
   const prefix = (multiUIConfig.theme_prefix || "multiui") as "multiui";
 
   function getColors() {
@@ -181,7 +173,7 @@ export const MultiUIPlugin = function (
     colorIndex?: string,
     colorTransparency?: number
   ) {
-    let color: string | undefined = exampleTheme
+    let color: string | undefined = multiUIConfig.exampleTheme
       ? //@ts-ignore - it works
         exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
       : undefined;

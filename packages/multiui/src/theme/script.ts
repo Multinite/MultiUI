@@ -244,9 +244,6 @@ const setThemeScript = (args: {
       }
     }
   }
-
-  // clean up - delete this script.
-  //   document.getElementById(`multiui-theme-script-${args.themeId}`)!.remove();
 };
 
 export default setThemeScript;

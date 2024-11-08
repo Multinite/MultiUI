@@ -23,6 +23,12 @@ export type MultiUIConfig = {
    * @default "multiui"
    */
   theme_prefix?: string;
+  /**
+   * We use this theme to generate the colors for you to preview in Tailwind.
+   *
+   * ![Example Image showing how you can see the color next to the tailwind class](https://multiui.org/code/example-tw-with-color.png)
+   */
+  exampleTheme?: ThemeT;
 };
 
 export type ThemeT = {
