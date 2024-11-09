@@ -103,14 +103,14 @@ export declare function createComponent<CustomProperties extends Record<`$${stri
     createComponnetFn: (componentProps: Omit<ComponentProperties<CustomProperties, Element, Slots>, "children"> & {
         children?: ReactNode;
     }, args: {
-        createSlot: <ComponentName extends keyof Slots, Component extends (props: HTMLAttributes<Slots[ComponentName]> & {
+        createSlot: <SlotName extends keyof Slots, Component extends (props: Omit<HTMLAttributes<Slots[SlotName]>, "children"> & {
             children?: ReactNode;
-        }, variantsPropertiesType: any) => ReactNode>(name: ComponentName, component: Component) => {
-            [K in UppercaseFirstLetter<ComponentName>]: ((props: Parameters<Component>[0]) => ReturnType<Component>) & {
-                name: ComponentName;
+        }, variantsPropertiesType: any) => ReactNode>(name: SlotName, component: Component) => {
+            [K in UppercaseFirstLetter<SlotName>]: ((props: Parameters<Component>[0]) => ReturnType<Component>) & {
+                name: SlotName;
             };
         } & {
-            [K in `get${UppercaseFirstLetter<ComponentName>}VariantClasses`]: (props: Parameters<Component>[1]) => string;
+            [K in `get${UppercaseFirstLetter<SlotName>}VariantClasses`]: (props: Parameters<Component>[1]) => string;
         };
         assembleClassname: (default_classes: string) => string;
     }) => ReactNode;

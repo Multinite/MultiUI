@@ -1,3 +1,4 @@
+import { jsx as _jsx } from "react/jsx-runtime";
 import { forwardRef } from "react";
 import { cn } from "../utils";
 //================================ CODE ==================================
@@ -82,44 +83,29 @@ function capitalize(s) {
     return (s.charAt(0).toUpperCase() + s.slice(1));
 }
 //============================================================================= TESTING API:
-// const createButton = createComponent<
-//   {
-//     isDisabled?: boolean;
-//   },
-//   HTMLButtonElement,
-//   {
-//     /**
-//      * Hello world
-//      * @param isDisabled
-//      * @returns
-//      */
-//     setDisabled: (isDisabled?: boolean) => void;
-//   }
-// >({
-//   name: "Button",
-//   createFn({ props }) {
-//     const { $isDisabled = false } = props;
-//     const [isDisabled, setIsDisabled] = useState($isDisabled);
-//     const Component = <button disabled={isDisabled} {...props}></button>;
-//     return {
-//       Component,
-//       hooks: {
-//         setDisabled: (isDisabled?: boolean) => {
-//           setIsDisabled(isDisabled ?? true);
-//         },
-//       },
-//     };
-//   },
-// });
-// const Button = createButton(({ props, Component }, { setDisabled }) => {
-//   const comp = <Component {...props} />;
-//   setDisabled(true);
-//   return comp;
-// });
-// <Button $isDisabled>
-//   {({ props, Component }, { setDisabled }) => {
-//     setDisabled(true);
-//     return <Component {...props}>Hello</Component>;
-//   }}
-// </Button>;
+const createButton = createComponent({
+    name: "Button",
+    createFn({ props }) {
+        const { $isDisabled = false } = props;
+        const [isDisabled, setIsDisabled] = useState($isDisabled);
+        const Component = _jsx("button", { disabled: isDisabled, ...props });
+        return {
+            Component,
+            hooks: {
+                setDisabled: (isDisabled) => {
+                    setIsDisabled(isDisabled ?? true);
+                },
+            },
+        };
+    },
+});
+const Button = createButton(({ props, Component }, { setDisabled }) => {
+    const comp = _jsx(Component, { ...props });
+    setDisabled(true);
+    return comp;
+});
+_jsx(Button, { "$isDisabled": true, children: ({ props, Component }, { setDisabled }) => {
+        setDisabled(true);
+        return _jsx(Component, { ...props, children: "Hello" });
+    } });
 //# sourceMappingURL=createComponent.js.map

@@ -66,13 +66,7 @@ const themeLayout = [
     },
 ];
 const borderRadius = ["small", "medium", "large"];
-export const MultiUIPlugin = function (multiUIConfig, 
-/**
- * We use this theme to generate the colors for you to preview in Tailwind.
- *
- * ![Example Image showing how you can see the color next to the tailwind class](https://multiui.org/code/example-tw-with-color.png)
- */
-exampleTheme) {
+export const MultiUIPlugin = function (multiUIConfig) {
     const prefix = (multiUIConfig.theme_prefix || "multiui");
     function getColors() {
         let colors = {
@@ -123,7 +117,7 @@ exampleTheme) {
         return colors;
     }
     function getHexComment(colorType, colorIndex, colorTransparency) {
-        let color = exampleTheme
+        let color = multiUIConfig.exampleTheme
             ? //@ts-ignore - it works
                 exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
             : undefined;
