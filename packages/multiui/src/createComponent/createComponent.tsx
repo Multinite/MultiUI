@@ -196,24 +196,24 @@ export function createComponent<
     > & { children?: ReactNode },
     args: {
       createSlot: <
-        ComponentName extends keyof Slots,
+        SlotName extends keyof Slots,
         Component extends (
-          props: HTMLAttributes<Slots[ComponentName]> & {
+          props: Omit<HTMLAttributes<Slots[SlotName]>, "children"> & {
             children?: ReactNode;
           },
-          variantsPropertiesType: any
+          variantsPropertiesType: any //any is intentional
         ) => ReactNode,
       >(
-        name: ComponentName,
+        name: SlotName,
         component: Component
       ) => {
         //@ts-expect-error - it works
-        [K in UppercaseFirstLetter<ComponentName>]: ((
+        [K in UppercaseFirstLetter<SlotName>]: ((
           props: Parameters<Component>[0]
-        ) => ReturnType<Component>) & { name: ComponentName };
+        ) => ReturnType<Component>) & { name: SlotName };
       } & {
         //@ts-expect-error - it works
-        [K in `get${UppercaseFirstLetter<ComponentName>}VariantClasses`]: (
+        [K in `get${UppercaseFirstLetter<SlotName>}VariantClasses`]: (
           props: Parameters<Component>[1]
         ) => string;
       };
@@ -388,49 +388,49 @@ export type { CapitalizeKeys as CreateSlotsType };
 
 //============================================================================= TESTING API:
 
-// const createButton = createComponent<
-//   {
-//     isDisabled?: boolean;
-//   },
-//   HTMLButtonElement,
-//   {
-//     /**
-//      * Hello world
-//      * @param isDisabled
-//      * @returns
-//      */
-//     setDisabled: (isDisabled?: boolean) => void;
-//   }
-// >({
-//   name: "Button",
-//   createFn({ props }) {
-//     const { $isDisabled = false } = props;
-//     const [isDisabled, setIsDisabled] = useState($isDisabled);
+const createButton = createComponent<
+  {
+    isDisabled?: boolean;
+  },
+  HTMLButtonElement,
+  {
+    /**
+     * Hello world
+     * @param isDisabled
+     * @returns
+     */
+    setDisabled: (isDisabled?: boolean) => void;
+  }
+>({
+  name: "Button",
+  createFn({ props }) {
+    const { $isDisabled = false } = props;
+    const [isDisabled, setIsDisabled] = useState($isDisabled);
 
-//     const Component = <button disabled={isDisabled} {...props}></button>;
+    const Component = <button disabled={isDisabled} {...props}></button>;
 
-//     return {
-//       Component,
-//       hooks: {
-//         setDisabled: (isDisabled?: boolean) => {
-//           setIsDisabled(isDisabled ?? true);
-//         },
-//       },
-//     };
-//   },
-// });
+    return {
+      Component,
+      hooks: {
+        setDisabled: (isDisabled?: boolean) => {
+          setIsDisabled(isDisabled ?? true);
+        },
+      },
+    };
+  },
+});
 
-// const Button = createButton(({ props, Component }, { setDisabled }) => {
-//   const comp = <Component {...props} />;
+const Button = createButton(({ props, Component }, { setDisabled }) => {
+  const comp = <Component {...props} />;
 
-//   setDisabled(true);
+  setDisabled(true);
 
-//   return comp;
-// });
+  return comp;
+});
 
-// <Button $isDisabled>
-//   {({ props, Component }, { setDisabled }) => {
-//     setDisabled(true);
-//     return <Component {...props}>Hello</Component>;
-//   }}
-// </Button>;
+<Button $isDisabled>
+  {({ props, Component }, { setDisabled }) => {
+    setDisabled(true);
+    return <Component {...props}>Hello</Component>;
+  }}
+</Button>;
