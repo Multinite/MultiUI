@@ -1,7 +1,20 @@
-import { FC, forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import {
+  FC,
+  forwardRef,
+  useState,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { cn } from "../utils";
 
 // =========================== TYPES ==================================
+
+/**
+ * The Prettify helper is a utility type that takes an object type and makes the hover overlay more readable.
+ */
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
 
 // Pass the `Element` and it returns all the attributes for said element type, plus `ref` attributes.
 type GetElementAttributes<Element> = React.RefAttributes<Element> &
@@ -18,9 +31,11 @@ type ComponentProperties<
   Slots extends {
     [K in string]: HTMLElement;
   },
-> = ConvertToValidProps<CustomProperties> &
-  OmitUnwantedElementAttributes<GetElementAttributes<Element>> &
-  AppendDefaultProperties<CustomProperties, Element, Slots>;
+> = Prettify<
+  ConvertToValidProps<CustomProperties> &
+    OmitUnwantedElementAttributes<GetElementAttributes<Element>> &
+    AppendDefaultProperties<CustomProperties, Element, Slots>
+>;
 
 // A Type function which removes all the attributes that are provided by an element, but are not wanted.
 // This is because we provide custom attributes that overwrite the default behavour of it.
@@ -229,33 +244,37 @@ export function createComponent<
 
   function createSpecificComponent(
     createFn: (
-      args: {
-        props: Omit<
-          ComponentProperties<CustomProperties, Element, Slots>,
-          "children"
-        > & { children: ReactNode };
-      } & {
-        [K in keyof Slots as K extends string
-          ? UppercaseFirstLetter<K>
-          : never]: FC<
-          ComponentProperties<CustomProperties, Slots[K], Slots> & {
-            children?: ReactNode;
-          }
-        >;
-      },
+      args: Prettify<
+        {
+          props: Prettify<
+            Omit<
+              ComponentProperties<CustomProperties, Element, Slots>,
+              "children"
+            > & { children: ReactNode }
+          >;
+        } & {
+          [K in keyof Slots as K extends string
+            ? UppercaseFirstLetter<K>
+            : never]: FC<
+            ComponentProperties<CustomProperties, Slots[K], Slots> & {
+              children?: ReactNode;
+            }
+          >;
+        }
+      >,
       hooks: DefaultHooks
     ) => ReactNode
   ) {
     // ========== Component Function Stage ===========
     const ComponentFn = forwardRef<
       Element,
-      ComponentProperties<CustomProperties, Element, Slots>
+      Prettify<ComponentProperties<CustomProperties, Element, Slots>>
     >((props, ref) => {
       console.log(123, slots);
       const Component = createFn(
         {
           props: { ...props, ref: ref },
-          ...slots, 
+          ...slots,
         },
         hooks
       );
@@ -268,7 +287,7 @@ export function createComponent<
   // the lowest component in theory should be the one made in `createButton.tsx`
   const LowestComponent = forwardRef<
     Element,
-    ComponentProperties<CustomProperties, Element, Slots>
+    Prettify<ComponentProperties<CustomProperties, Element, Slots>>
   >((props, ref) => {
     // this assembles the className based on all the className related info passed along the way.
     function assembleClassname(default_classes: string) {
@@ -312,8 +331,8 @@ export function createComponent<
       } {
         const cmp = (props) => component({ ...props, slot: name }, {});
         cmp.name = `MultiUI.${args.name}.${name.toString()}`;
-        console.log(121222, cmp.name)
-        slots[name.toString()] = cmp
+        console.log(121222, cmp.name);
+        slots[name.toString()] = cmp;
 
         //@ts-expect-error - This is a hack to make the type checker happy.
         return {
@@ -394,20 +413,21 @@ const createButton = createComponent<
   },
   HTMLButtonElement,
   {
-    /**
-     * Hello world
-     * @param isDisabled
-     * @returns
-     */
-    setDisabled: (isDisabled?: boolean) => void;
+    base: HTMLButtonElement;
+    wrapper: HTMLDivElement;
   }
 >({
   name: "Button",
-  createFn({ props }) {
+  createComponnetFn(props, helpers) {
     const { $isDisabled = false } = props;
     const [isDisabled, setIsDisabled] = useState($isDisabled);
 
     const Component = <button disabled={isDisabled} {...props}></button>;
+
+    const base = helpers.createSlot("base", (props, variantTypes: number) => {
+      return <div>{props.children}</div>;
+    });
+    base.getBaseVariantClasses();
 
     return {
       Component,
@@ -420,10 +440,8 @@ const createButton = createComponent<
   },
 });
 
-const Button = createButton(({ props, Component }, { setDisabled }) => {
-  const comp = <Component {...props} />;
-
-  setDisabled(true);
+const Button = createButton(({ props, Base, Wrapper }, { className }) => {
+  const comp = <Base {...props} />;
 
   return comp;
 });

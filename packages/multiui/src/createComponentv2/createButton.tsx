@@ -1,7 +1,10 @@
 import {
+  cloneElement,
+  createElement,
   type ForwardedRef,
   forwardRef,
   type HTMLAttributes,
+  ReactElement,
   type ReactNode,
 } from "react";
 import type { Prettify } from "./types";
@@ -61,32 +64,39 @@ function createButton_(cb: CreateButtonCallback) {
 
 export const buttonSlots = createSlots({
   base: (props: SlotElement<"button">) => (
-    <button
-      {...props}
-      className={cn("rounded-medium", props.className)}
-      slot={props.slot}
-    />
+    <button {...props} className={cn("rounded-medium", props.className)} />
   ),
   wrapper: (props: SlotElement<"div">) => (
-    <div
-      {...props}
-      className={cn("text-3xl", props.className)}
-      slot={props.slot}
-    />
+    <div {...props} className={cn("text-3xl", props.className)} />
   ),
+  hey: (props) => <h1 {...props}>sup</h1>,
+});
+export const buttonSlots2 = createSlots2<{
+  base: HTMLButtonElement;
+  wrapper: HTMLDivElement;
+  hey: HTMLHeadingElement;
+}>({
+  base: <button />,
+  wrapper: <div />,
+  hey: <h1 />,
 });
 
-const myHook = buttonSlots.createHook((slots) => {
-  slots.base;
+const a = <h1>hi</h1>;
+const b = <buttonSlots2.base className="hello world" check>hi</buttonSlots2.base>;
 
+const myHook = buttonSlots.createHook(() => {
   return { a: 1, b: 2, c: 3 };
 });
+myHook();
 
-const myVariant = buttonSlots.createVariant((slots) => {
-  return {
-    base: "HI",
-  };
-});
+// const myVariant = buttonSlots.createVariant<{ isDisabled: boolean }>(
+//   (slots, args) => {
+//     args.isDisabled;
+//     return {
+//       base: "HI",
+//     };
+//   }
+// );
 
 // ===================================================================================================
 
@@ -99,8 +109,6 @@ type CreateHook<
   >,
 > = <HookCB extends (slots: Slots) => unknown>(cb: HookCB) => HookCB;
 
-
-
 type CreateVariant<
   Slots extends Record<
     string,
@@ -108,41 +116,54 @@ type CreateVariant<
       props: Prettify<HTMLAttributes<HTMLElement> & { slot: string }>
     ) => JSX.Element
   >,
-> = <VariantCB extends (slots: Slots) => Partial<Record<keyof Slots, string>>>(
-  cb: VariantCB
-) => VariantCB;
-
-
-
+> = <Args, ReturnType extends Partial<Record<keyof Slots, string>>>(
+  cb: (slots: Slots, args: Args) => ReturnType
+) => (args: Args) => ReturnType;
 
 function createSlots<
-  T extends Record<
+  Slots extends Record<
     string,
     (
       props: Prettify<HTMLAttributes<HTMLElement> & { slot: string }>
     ) => JSX.Element
   >,
->(
-  slots: T
-): Prettify<
-  T & {
-    createHook: CreateHook<T>;
-    createVariant: CreateVariant<T>;
+>(slots: Slots) {
+  function createHook<Res>(cb: () => Res): () => Res {
+    return cb;
   }
-> {
-  const createHook: CreateHook<T> = (cb) => {
-    return cb;
-  };
 
-  const createVariant: CreateVariant<T> = (cb) => {
-    return cb;
+  const createVariant: CreateVariant<Slots> = (cb) => {
+    return (args) => {
+      return cb(slots, args);
+    };
   };
 
   return Object.assign(slots, { createHook, createVariant });
 }
 
-
-
 type SlotElement<Element extends keyof JSX.IntrinsicElements> = Prettify<
   JSX.IntrinsicElements[Element] & { slot: string }
 >;
+
+function createSlots2<Slots extends Record<string, HTMLElement>>(
+  slots: Record<keyof Slots, ReactElement<Slots[keyof Slots]>>
+) {
+  const slots2 = {} as Record<
+    string,
+    React.ForwardRefExoticComponent<
+      Prettify<
+        HTMLAttributes<HTMLButtonElement> &
+          React.RefAttributes<HTMLButtonElement>
+      >
+    >
+  >;
+  for (const slot in slots) {
+    slots2[slot] = forwardRef((props, ref) => {
+      const { className = "", ...rest } = props;
+      const el = cloneElement(slots[slot], { ref, ...rest });
+      el.props.className = cn(el.props.className, className);
+      return el;
+    });
+  }
+  return slots2;
+}
