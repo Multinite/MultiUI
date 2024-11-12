@@ -1,8 +1,10 @@
+//@ts-nocheck
+
 import {
   cloneElement,
-  createElement,
   type ForwardedRef,
   forwardRef,
+  ForwardRefExoticComponent,
   type HTMLAttributes,
   ReactElement,
   type ReactNode,
@@ -73,16 +75,20 @@ export const buttonSlots = createSlots({
 });
 export const buttonSlots2 = createSlots2<{
   base: HTMLButtonElement;
-  wrapper: HTMLDivElement;
-  hey: HTMLHeadingElement;
+  // wrapper: HTMLDivElement;
+  // hey: HTMLHeadingElement;
 }>({
   base: <button />,
-  wrapper: <div />,
-  hey: <h1 />,
+  // wrapper: <div />,
+  // hey: <h1 />,
 });
 
-const a = <h1>hi</h1>;
-const b = <buttonSlots2.base className="hello world" check>hi</buttonSlots2.base>;
+<buttonSlots2.base className="hello world" __Element="base">
+  hi
+</buttonSlots2.base>;
+{
+  /* <buttonSlots2.wrapper className="hello world">hi</buttonSlots2.wrapper>; */
+}
 
 const myHook = buttonSlots.createHook(() => {
   return { a: 1, b: 2, c: 3 };
@@ -145,21 +151,24 @@ type SlotElement<Element extends keyof JSX.IntrinsicElements> = Prettify<
   JSX.IntrinsicElements[Element] & { slot: string }
 >;
 
-function createSlots2<Slots extends Record<string, HTMLElement>>(
-  slots: Record<keyof Slots, ReactElement<Slots[keyof Slots]>>
-) {
-  const slots2 = {} as Record<
-    string,
-    React.ForwardRefExoticComponent<
-      Prettify<
-        HTMLAttributes<HTMLButtonElement> &
-          React.RefAttributes<HTMLButtonElement>
-      >
+type SlotComponents<Slots extends Record<string, HTMLElement>> = {
+  [SlotName in keyof Slots]: ForwardRefExoticComponent<
+    Prettify<
+      HTMLAttributes<Slots[SlotName]> &
+        React.RefAttributes<Slots[SlotName]> & { __Element?: SlotName }
     >
   >;
+};
+
+function createSlots2<Slots extends Record<string, HTMLElement>>(
+  slots: Record<keyof Slots, ReactElement<Slots[keyof Slots]>>
+): SlotComponents<Slots> {
+  const slots2 = {} as SlotComponents<Slots>;
+
   for (const slot in slots) {
     slots2[slot] = forwardRef((props, ref) => {
       const { className = "", ...rest } = props;
+      //@ts-expect-error - INTENTIONAL
       const el = cloneElement(slots[slot], { ref, ...rest });
       el.props.className = cn(el.props.className, className);
       return el;
@@ -167,3 +176,28 @@ function createSlots2<Slots extends Record<string, HTMLElement>>(
   }
   return slots2;
 }
+// ===================================================================================================
+
+const Input = () => {
+  return <>hi</>;
+};
+const Wrapper = (props: { children: ReactNode }) => {
+  return <div>sup</div>;
+};
+const InputElement = () => {
+  return <input />;
+};
+Wrapper.InputElement = InputElement;
+Input.Wrapper = Wrapper;
+
+// ==============
+
+// access all of Input
+<Input />;
+
+// or
+<Input.Wrapper>
+  <Input.Wrapper.InputElement />
+</Input.Wrapper>;
+
+// ==============
