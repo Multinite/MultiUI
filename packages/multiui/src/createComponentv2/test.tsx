@@ -112,5 +112,5 @@ type CapitalLetters =
 </Slot.ButtonWrapper>;
 
 function MyCustomComponent(args: { hello: "World" }) {
-  return <h1>Hello World</h1>;
+  return <h1>Hello {args.hello}</h1>;
 }
