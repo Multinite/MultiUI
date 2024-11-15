@@ -1,9 +1,15 @@
 import { FC, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../utils";
+/**
+ * The Prettify helper is a utility type that takes an object type and makes the hover overlay more readable.
+ */
+type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
 type GetElementAttributes<Element> = React.RefAttributes<Element> & HTMLAttributes<Element>;
 type ComponentProperties<CustomProperties extends Record<string, unknown>, Element extends HTMLElement, Slots extends {
     [K in string]: HTMLElement;
-}> = ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & AppendDefaultProperties<CustomProperties, Element, Slots>;
+}> = Prettify<ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & AppendDefaultProperties<CustomProperties, Element, Slots>>;
 type OmitUnwantedElementAttributes<Attributes extends {}> = Omit<Attributes, UnwantedAttributes>;
 type UnwantedAttributes = "children" | "className" | "slot";
 type ConvertToValidProps<CustomProperties extends Record<string, unknown>> = Omit<{
@@ -114,13 +120,293 @@ export declare function createComponent<CustomProperties extends Record<`$${stri
         };
         assembleClassname: (default_classes: string) => string;
     }) => ReactNode;
-}): (createFn: (args: {
-    props: Omit<ComponentProperties<CustomProperties, Element, Slots>, "children"> & {
+}): (createFn: (args: Prettify<{
+    props: Prettify<Omit<ComponentProperties<CustomProperties, Element, Slots>, "children"> & {
         children: ReactNode;
-    };
+    }>;
 } & { [K in keyof Slots as K extends string ? UppercaseFirstLetter<K> : never]: FC<ComponentProperties<CustomProperties, Slots[K], Slots> & {
     children?: ReactNode;
-}>; }, hooks: DefaultHooks) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<ComponentProperties<CustomProperties, Element, Slots>> & import("react").RefAttributes<Element>>;
+}>; }>, hooks: DefaultHooks) => ReactNode) => import("react").ForwardRefExoticComponent<import("react").PropsWithoutRef<(ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & CustomProperties & {
+    /**
+     * ### ───────────────────────────
+     * ![Image of demo-code](https://multiui.org/assets/code/classname.png|width=569.6|height=68)
+     * ### ───────────────────────────
+     * ## Pick your poison: Assigning classes with better control.
+     * ### ㅤㅤ
+     * ### Function: More control over the button's classes.
+     * ```tsx
+     * <Button $className={({ classes, cn }) => cn(classes, "your TW classes")}>
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ㅤㅤ
+     * # OR
+     * ### ㅤㅤ
+     *
+     * ### String: Default classes are prepended, followed by your classes.
+     * ```tsx
+     * <Button $className="your TW classes">
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ───────────────────────────
+     * Note: If you use the default `className` prop, it will be overridden by this `$className` prop.
+     * @see {@link https://multiui.org/docs/custom-classes}
+     */
+    $className?: ClassNameFn;
+    /**
+     * # Do not use!
+     * You're completely fine to use the `className` prop, however, we recommend you use the MultiUI custom `$className` prop to have further granularity over the classes.
+     *
+     * Note: If you use both, the `$className` prop will take priority and override the `className` prop.
+     *
+     * @deprecated
+     */
+    className?: string;
+    /**
+     * # Do not use!
+     * MultiUI will automatically add a slot.
+     *
+     * @deprecated
+     */
+    slot?: string;
+    /**
+     * # Children
+     * Children works like normal, however if you pass a function, it will be treated as a custom component builder.
+     *
+     * Custom Component Builder:
+     * ```tsx
+     * <Button>
+     *   {({ Component, props, classNameSeperator }) => (
+     *     <Component {...props} className={classNameSeperator((cn) => [cn("bg-red-500"), cn("bg-blue-500")])} />
+     *   )}
+     * </Button>
+     * ```
+     *
+     * @see {@link https://multiui.org/docs/custom-components}
+     *
+     */
+    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element, Slots>, Element, Slots>;
+    /**
+     * # Don't use.
+     * This is a prop made for the sake of DX, it makes it easier to see the seperation between custom properties that are defined with `$` and the normal properties.
+     * ### ───────────────────────────
+     * ![Image of demo](https://multiui.org/assets/code/underscore_property_seperator)
+     * ### ───────────────────────────
+     *
+     */
+    _______________________?: never;
+} extends infer T_1 ? { [K_1 in keyof T_1]: (ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & CustomProperties & {
+    /**
+     * ### ───────────────────────────
+     * ![Image of demo-code](https://multiui.org/assets/code/classname.png|width=569.6|height=68)
+     * ### ───────────────────────────
+     * ## Pick your poison: Assigning classes with better control.
+     * ### ㅤㅤ
+     * ### Function: More control over the button's classes.
+     * ```tsx
+     * <Button $className={({ classes, cn }) => cn(classes, "your TW classes")}>
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ㅤㅤ
+     * # OR
+     * ### ㅤㅤ
+     *
+     * ### String: Default classes are prepended, followed by your classes.
+     * ```tsx
+     * <Button $className="your TW classes">
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ───────────────────────────
+     * Note: If you use the default `className` prop, it will be overridden by this `$className` prop.
+     * @see {@link https://multiui.org/docs/custom-classes}
+     */
+    $className?: ClassNameFn;
+    /**
+     * # Do not use!
+     * You're completely fine to use the `className` prop, however, we recommend you use the MultiUI custom `$className` prop to have further granularity over the classes.
+     *
+     * Note: If you use both, the `$className` prop will take priority and override the `className` prop.
+     *
+     * @deprecated
+     */
+    className?: string;
+    /**
+     * # Do not use!
+     * MultiUI will automatically add a slot.
+     *
+     * @deprecated
+     */
+    slot?: string;
+    /**
+     * # Children
+     * Children works like normal, however if you pass a function, it will be treated as a custom component builder.
+     *
+     * Custom Component Builder:
+     * ```tsx
+     * <Button>
+     *   {({ Component, props, classNameSeperator }) => (
+     *     <Component {...props} className={classNameSeperator((cn) => [cn("bg-red-500"), cn("bg-blue-500")])} />
+     *   )}
+     * </Button>
+     * ```
+     *
+     * @see {@link https://multiui.org/docs/custom-components}
+     *
+     */
+    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element, Slots>, Element, Slots>;
+    /**
+     * # Don't use.
+     * This is a prop made for the sake of DX, it makes it easier to see the seperation between custom properties that are defined with `$` and the normal properties.
+     * ### ───────────────────────────
+     * ![Image of demo](https://multiui.org/assets/code/underscore_property_seperator)
+     * ### ───────────────────────────
+     *
+     */
+    _______________________?: never;
+})[K_1]; } : never) extends infer T ? { [K in keyof T]: (ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & CustomProperties & {
+    /**
+     * ### ───────────────────────────
+     * ![Image of demo-code](https://multiui.org/assets/code/classname.png|width=569.6|height=68)
+     * ### ───────────────────────────
+     * ## Pick your poison: Assigning classes with better control.
+     * ### ㅤㅤ
+     * ### Function: More control over the button's classes.
+     * ```tsx
+     * <Button $className={({ classes, cn }) => cn(classes, "your TW classes")}>
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ㅤㅤ
+     * # OR
+     * ### ㅤㅤ
+     *
+     * ### String: Default classes are prepended, followed by your classes.
+     * ```tsx
+     * <Button $className="your TW classes">
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ───────────────────────────
+     * Note: If you use the default `className` prop, it will be overridden by this `$className` prop.
+     * @see {@link https://multiui.org/docs/custom-classes}
+     */
+    $className?: ClassNameFn;
+    /**
+     * # Do not use!
+     * You're completely fine to use the `className` prop, however, we recommend you use the MultiUI custom `$className` prop to have further granularity over the classes.
+     *
+     * Note: If you use both, the `$className` prop will take priority and override the `className` prop.
+     *
+     * @deprecated
+     */
+    className?: string;
+    /**
+     * # Do not use!
+     * MultiUI will automatically add a slot.
+     *
+     * @deprecated
+     */
+    slot?: string;
+    /**
+     * # Children
+     * Children works like normal, however if you pass a function, it will be treated as a custom component builder.
+     *
+     * Custom Component Builder:
+     * ```tsx
+     * <Button>
+     *   {({ Component, props, classNameSeperator }) => (
+     *     <Component {...props} className={classNameSeperator((cn) => [cn("bg-red-500"), cn("bg-blue-500")])} />
+     *   )}
+     * </Button>
+     * ```
+     *
+     * @see {@link https://multiui.org/docs/custom-components}
+     *
+     */
+    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element, Slots>, Element, Slots>;
+    /**
+     * # Don't use.
+     * This is a prop made for the sake of DX, it makes it easier to see the seperation between custom properties that are defined with `$` and the normal properties.
+     * ### ───────────────────────────
+     * ![Image of demo](https://multiui.org/assets/code/underscore_property_seperator)
+     * ### ───────────────────────────
+     *
+     */
+    _______________________?: never;
+} extends infer T_1 ? { [K_1 in keyof T_1]: (ConvertToValidProps<CustomProperties> & OmitUnwantedElementAttributes<GetElementAttributes<Element>> & CustomProperties & {
+    /**
+     * ### ───────────────────────────
+     * ![Image of demo-code](https://multiui.org/assets/code/classname.png|width=569.6|height=68)
+     * ### ───────────────────────────
+     * ## Pick your poison: Assigning classes with better control.
+     * ### ㅤㅤ
+     * ### Function: More control over the button's classes.
+     * ```tsx
+     * <Button $className={({ classes, cn }) => cn(classes, "your TW classes")}>
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ㅤㅤ
+     * # OR
+     * ### ㅤㅤ
+     *
+     * ### String: Default classes are prepended, followed by your classes.
+     * ```tsx
+     * <Button $className="your TW classes">
+     * ㅤHello, World!
+     * </Button>
+     * ```
+     * ### ───────────────────────────
+     * Note: If you use the default `className` prop, it will be overridden by this `$className` prop.
+     * @see {@link https://multiui.org/docs/custom-classes}
+     */
+    $className?: ClassNameFn;
+    /**
+     * # Do not use!
+     * You're completely fine to use the `className` prop, however, we recommend you use the MultiUI custom `$className` prop to have further granularity over the classes.
+     *
+     * Note: If you use both, the `$className` prop will take priority and override the `className` prop.
+     *
+     * @deprecated
+     */
+    className?: string;
+    /**
+     * # Do not use!
+     * MultiUI will automatically add a slot.
+     *
+     * @deprecated
+     */
+    slot?: string;
+    /**
+     * # Children
+     * Children works like normal, however if you pass a function, it will be treated as a custom component builder.
+     *
+     * Custom Component Builder:
+     * ```tsx
+     * <Button>
+     *   {({ Component, props, classNameSeperator }) => (
+     *     <Component {...props} className={classNameSeperator((cn) => [cn("bg-red-500"), cn("bg-blue-500")])} />
+     *   )}
+     * </Button>
+     * ```
+     *
+     * @see {@link https://multiui.org/docs/custom-components}
+     *
+     */
+    children?: ReactNode | CustomComponentFn<AppendDefaultProperties<CustomProperties, Element, Slots>, Element, Slots>;
+    /**
+     * # Don't use.
+     * This is a prop made for the sake of DX, it makes it easier to see the seperation between custom properties that are defined with `$` and the normal properties.
+     * ### ───────────────────────────
+     * ![Image of demo](https://multiui.org/assets/code/underscore_property_seperator)
+     * ### ───────────────────────────
+     *
+     */
+    _______________________?: never;
+})[K_1]; } : never)[K]; } : never> & import("react").RefAttributes<Element>>;
 export declare function getClassname({ $className, default_className, }: {
     $className: ClassNameFn;
     default_className: string;

@@ -1,5 +1,5 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import { forwardRef } from "react";
+import { forwardRef, useState, } from "react";
 import { cn } from "../utils";
 //================================ CODE ==================================
 export function createComponent(args) {
@@ -85,10 +85,14 @@ function capitalize(s) {
 //============================================================================= TESTING API:
 const createButton = createComponent({
     name: "Button",
-    createFn({ props }) {
+    createComponnetFn(props, helpers) {
         const { $isDisabled = false } = props;
         const [isDisabled, setIsDisabled] = useState($isDisabled);
         const Component = _jsx("button", { disabled: isDisabled, ...props });
+        const base = helpers.createSlot("base", (props, variantTypes) => {
+            return _jsx("div", { children: props.children });
+        });
+        base.getBaseVariantClasses();
         return {
             Component,
             hooks: {
@@ -99,9 +103,8 @@ const createButton = createComponent({
         };
     },
 });
-const Button = createButton(({ props, Component }, { setDisabled }) => {
-    const comp = _jsx(Component, { ...props });
-    setDisabled(true);
+const Button = createButton(({ props, Base, Wrapper }, { className }) => {
+    const comp = _jsx(Base, { ...props });
     return comp;
 });
 _jsx(Button, { "$isDisabled": true, children: ({ props, Component }, { setDisabled }) => {
