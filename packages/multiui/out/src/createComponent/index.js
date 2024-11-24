@@ -1,3 +1,4 @@
-export * from "./createComponent";
-export * from "./createComponentTypes";
+"use strict";
+// export * from "./createComponent";
+// export * from "./createComponentTypes";
 //# sourceMappingURL=index.js.map

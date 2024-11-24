@@ -117,9 +117,9 @@ export const MultiUIPlugin = function (multiUIConfig) {
         return colors;
     }
     function getHexComment(colorType, colorIndex, colorTransparency) {
-        let color = multiUIConfig.exampleTheme
+        let color = typeof multiUIConfig.exampleTheme != "undefined"
             ? //@ts-ignore - it works
-                exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
+                multiUIConfig.exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
             : undefined;
         return color
             ? ` /* ${Color(`hsla(${color}${colorTransparency ? `, ${colorTransparency}` : ""})`).hexa()} */`
@@ -138,7 +138,7 @@ export const MultiUIPlugin = function (multiUIConfig) {
     }, {
         theme: {
             extend: {
-                // @ts-expect-error - This works.
+                //@ts-expect-error - intentional
                 colors: getColors(),
                 borderRadius: getBorderRadius(),
             },

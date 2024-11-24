@@ -1,13 +1,12 @@
+"use strict";
 // import { ForwardedRef, HTMLAttributes, ReactNode } from "react";
 // // import type { cn as cn_, __seperateClasses } from "../utils/cn";
-
 // /**
 //  * Represents a chain of variants for component slots.
 //  */
 // export type VariantChain<Slots extends Record<string, Record<string, any>>> = {
 //   createChainedVariant: CreateVariantFromChainedVariant<Slots, keyof Slots>;
 // };
-
 // /**
 //  * Type for creating a chained variant from an existing variant.
 //  */
@@ -22,7 +21,6 @@
 //     cn: typeof cn_
 //   ) => string;
 // }) => VariantChain<Slots>;
-
 // /**
 //  * Type for creating a new variant function.
 //  */
@@ -34,7 +32,6 @@
 //   name: string;
 //   create: (props: Slots[Slot], cn: typeof cn_) => string;
 // }) => VariantChain<Slots>;
-
 // /**
 //  * # Creates a new MultiUI component
 //  * Allows you to create a MultiUI component with customizable slots, variants and other features.
@@ -186,10 +183,8 @@
 //     ref: ForwardedRef<Element>;
 //   } & HTMLAttributes<Element>
 // >;
-
 // type UppercaseFirstLetter<T extends string> =
 //   T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T;
-
 // const { test } = (<SlotName extends string>(): {
 //   test: <SomethingElse>(name: SlotName) => Record<`lol_${SlotName}`, "d">; // Change here
 // } => {
@@ -207,9 +202,7 @@
 //   //    ^?
 //   a: 1;
 // }>("hi");
-
 // ddddddd;
-
 // /**
 //  * This allows you to create slots for your component which in-turn supports variants.
 //  *
@@ -235,18 +228,14 @@
 //     [`get${capitalize(slotName)}Classes`]: 1,
 //   } as any;
 // }
-
 // function capitalize<T extends string>(s: T): Capitalize<T> {
 //   return (s.charAt(0).toUpperCase() + s.slice(1)) as Capitalize<T>;
 // }
-
 // const test2 = createSlot<
 //   "base",
 //   {
 //     a: 1;
 //   }
 // >("base");
-
 // createSlot<"hi", { 1: 1 }>("hi");
-
-
+//# sourceMappingURL=createComponentTypes.js.map

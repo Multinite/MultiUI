@@ -10,12 +10,12 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
      *
      * @default true
      */
-    $updateDocumentColorScheme?: boolean;
+    $updateDocumentColorScheme?: boolean | undefined;
     /**
      * Whether to persist the theme on localStorage or not.
      * @default true
      */
-    $persistOnLocalstorage?: boolean;
+    $persistOnLocalstorage?: boolean | undefined;
     /**
      * The theme to use.
      *
@@ -36,7 +36,7 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
      * Otherwise, the theme style will be defined using a `<style>` element.
      * @default false
      */
-    $defineThemeStylesInline?: boolean;
+    $defineThemeStylesInline?: boolean | undefined;
     /**
      * The id of the theme.
      * This is required if you want to use the `useTheme` hook.
@@ -48,7 +48,7 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
      * If `true`, the box selection feature will be enabled.
      * @default false
      */
-    $enableBoxSelection?: boolean;
+    $enableBoxSelection?: boolean | undefined;
     /**
      * The options for the box selection feature.
      */
@@ -58,56 +58,56 @@ export declare const Theme: import("react").ForwardRefExoticComponent<{
          *
          * @default true
          */
-        lazyLoad?: boolean;
+        lazyLoad?: boolean | undefined;
         /**
          * Disable box selection on mobile devices.
          *
          * @deafult true
          */
-        disableOnMobile?: boolean;
+        disableOnMobile?: boolean | undefined;
         /**
          * Only enables the selection box if the user was pressing a meta key while initiating the drag. Included meta keys are: Shift, Ctrl, Cmd and Alt.
          * @default true
          */
-        activateOnMetaKey?: boolean;
+        activateOnMetaKey?: boolean | undefined;
         /**
          * Only enables the selection box if the user was pressing a specified key while initiating the drag.
          *
          * @default undefined
          */
-        activateOnKey?: string[];
+        activateOnKey?: string[] | undefined;
         /**
          * Automatically try to scroll the window when the pointer approaches the viewport edge while dragging.
          *
          * @default true
          */
-        autoScroll?: boolean;
+        autoScroll?: boolean | undefined;
         /**
          * Distance in px from the viewport's edges from which the box will try scrolling the window when the pointer approaches the viewport edge while dragging.
          * @default 100
          */
-        autoScrollEdgeDistance?: number;
+        autoScrollEdgeDistance?: number | undefined;
         /**
          * Auto scroll speed.
          * @default 30
          */
-        autoScrollStep?: number;
+        autoScrollStep?: number | undefined;
         /**
          * Will keep every item selected after selection. Can be cleared with clearSelection()
          * @default false
          */
-        disableUnselection?: boolean;
+        disableUnselection?: boolean | undefined;
         /**
          * Maximum number of elements that can be selected. Will stop selecting after reaching that number and keep already selected elements. false = Infinite
          * @default Infinity
          */
-        maxSelections?: number | false;
+        maxSelections?: number | false | undefined;
         /**
          * Any additional className to be added to the box-selection element.
          * @default undefined
          */
-        className?: string;
-    };
+        className?: string | undefined;
+    } | undefined;
 } & HTMLAttributes<HTMLDivElement> & import("react").RefAttributes<HTMLDivElement>>;
 export default Theme;
 export type ThemeRenderOutputType = "style-element" | "inline-style-string" | "inline-style-object";
