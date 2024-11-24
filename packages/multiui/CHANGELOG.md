@@ -1,5 +1,12 @@
 # @multinite_official/multiui
 
+## 3.0.17
+
+### Patch Changes
+
+- 72fca10: fix: revert to tailwind v3
+- dd268a0: Update: Tailwind v4
+
 ## 3.0.16
 
 ### Patch Changes
