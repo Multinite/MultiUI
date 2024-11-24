@@ -173,10 +173,13 @@ export const MultiUIPlugin = function (multiUIConfig: MultiUIConfig) {
     colorIndex?: string,
     colorTransparency?: number
   ) {
-    let color: string | undefined = multiUIConfig.exampleTheme
-      ? //@ts-ignore - it works
-        exampleTheme[colorType][colorIndex ? colorIndex : "DEFAULT"]
-      : undefined;
+    let color: string | undefined =
+      typeof multiUIConfig.exampleTheme != "undefined"
+        ? //@ts-ignore - it works
+          multiUIConfig.exampleTheme[colorType][
+            colorIndex ? colorIndex : "DEFAULT"
+          ]
+        : undefined;
 
     return color
       ? ` /* ${Color(`hsla(${color}${colorTransparency ? `, ${colorTransparency}` : ""})`).hexa()} */`
