@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.18
+
+### Patch Changes
+
+- 500ba60: version bump
+
 ## 3.0.17
 
 ### Patch Changes
