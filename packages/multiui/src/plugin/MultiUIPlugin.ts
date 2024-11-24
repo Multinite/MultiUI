@@ -208,7 +208,7 @@ export const MultiUIPlugin = function (multiUIConfig: MultiUIConfig) {
     {
       theme: {
         extend: {
-          // @ts-expect-error - This works.
+          //@ts-expect-error - intentional
           colors: getColors(),
           borderRadius: getBorderRadius(),
         },
