@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.19
+
+### Patch Changes
+
+- 4682d25: fix: type-error
+
 ## 3.0.18
 
 ### Patch Changes
