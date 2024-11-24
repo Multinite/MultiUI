@@ -1,5 +1,11 @@
 # @multinite_official/multiui
 
+## 3.0.20
+
+### Patch Changes
+
+- 074764b: WIP: Built MultiUI for MultiUIPLugin for Multinite.com
+
 ## 3.0.19
 
 ### Patch Changes
